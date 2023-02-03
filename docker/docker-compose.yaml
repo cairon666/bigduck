@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  database.redis:
+    image: redis:7
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - ../database/redis/data:/data
+      - ../database/redis/redis.conf:/etc/redis/redis.conf
+    command: [ "redis-server", "/etc/redis/redis.conf" ]
+  database.postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: example
+      POSTGRES_DB: example
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    volumes:
+      - ../database/postgres/data:/var/lib/postgresql/data
+      - ../database/postgres/scripts/init:/docker-entrypoint-initdb.d
+
+volumes:
+  db:
+    driver: local
+  cache:
+    driver: local

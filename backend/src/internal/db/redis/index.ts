@@ -17,6 +17,10 @@ export class RedisController {
         await this.client.connect()
     }
 
+    public async disconnect() {
+        await this.client.disconnect()
+    }
+
     public async SET(key: string, value: string, opt?: {
         EX: number
     }) {

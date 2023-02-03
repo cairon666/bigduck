@@ -38,7 +38,7 @@ export class AuthService {
 
         } catch (e) {
             if (e instanceof QueryFailedError) {
-                const regexp = /Key \(([a-zA-Z]+)\)=\(([a-zA-Z0-9]+)\) already exists./
+                const regexp = /Key \(([a-zA-Z_]+)\)=\(([a-zA-Z0-9_]+)\) already exists./
                 const result = (e.driverError.detail as string).match(regexp)
                 if (result != null) {
                     throw Error(AlreadyExistError(result[1]))

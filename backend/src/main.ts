@@ -11,7 +11,6 @@ import {AuthTokenStorage} from "./internal/adapters/authTokenStorage/authTokenSt
 
     const redisController = new RedisController(config, 0)
     await redisController.connect()
-
     const authTokenStorage = new AuthTokenStorage(redisController)
 
     const postgresClient = await NewDataSource(config)
@@ -26,5 +25,6 @@ import {AuthTokenStorage} from "./internal/adapters/authTokenStorage/authTokenSt
         authTokenStorage
     )
 
+    server.setup()
     server.run()
 })()

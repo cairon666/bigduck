@@ -4,6 +4,13 @@ import * as CryptoJS from "crypto-js";
 const hourInSecond = 60 * 60
 const monthInSecond = 60 * 60 * 24 * 30
 
+
+interface TokenRefreshUnit {
+    lastDate: number
+    value: string
+    accessToken: string
+}
+
 export class AuthTokenStorage {
     private redis: RedisController
 
@@ -15,19 +22,51 @@ export class AuthTokenStorage {
         access: string,
         refresh: string
     }> {
-        const accessToken = this.generateHash(value)
+        const accessToken = this.generateHash(value + Date.now())
         const refreshToken = this.generateHash(accessToken)
 
         await this.redis.SET(accessToken, value, {
             EX: hourInSecond
         })
-        await this.redis.SET(refreshToken, accessToken, {
-            EX: monthInSecond,
-        })
+
+        const refreshUnit: TokenRefreshUnit = {
+            lastDate: Date.now(),
+            value: value,
+            accessToken: accessToken,
+        }
+        await this.redis.SET(refreshToken, JSON.stringify(refreshUnit))
 
         return {
             access: accessToken,
             refresh: refreshToken
+        }
+    }
+
+    public async refresh(refreshToken: string): Promise<{
+        accessToken: string
+    } | null> {
+        const res = await this.redis.GET(refreshToken)
+
+        if (!res) {
+            return null
+        }
+
+        const resJson: TokenRefreshUnit = JSON.parse(res)
+
+        const accessToken = this.generateHash(resJson.value + Date.now())
+
+        await this.redis.SET(accessToken, resJson.value, {
+            EX: hourInSecond
+        })
+        const refreshUnit: TokenRefreshUnit = {
+            lastDate: Date.now(),
+            value: resJson.value,
+            accessToken: accessToken,
+        }
+        await this.redis.SET(refreshToken, JSON.stringify(refreshUnit))
+
+        return {
+            accessToken: accessToken,
         }
     }
 

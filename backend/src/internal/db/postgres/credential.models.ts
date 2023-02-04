@@ -1,8 +1,8 @@
-import {Column, Entity, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, PrimaryColumn} from "typeorm";
 
 @Entity("credentials")
 export class Credential {
-    @PrimaryColumn("uuid")
+    @PrimaryColumn({type: "uuid"})
     public id: string
 
     @Column({type: "text"})

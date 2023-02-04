@@ -1,8 +1,6 @@
 import {Request, Response, Router} from "express";
-import cookieParser from "cookie-parser";
-import * as core from "express-serve-static-core";
 import {AuthTokenProvider} from "../adapters/authTokenProvider/authTokenProvider";
-import {HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_BAD_UNAUTHORIZED, HTTP_STATUS_OK} from "../../pkg/http-status";
+import {HTTP_STATUS_BAD_UNAUTHORIZED, HTTP_STATUS_OK} from "../../pkg/http-status";
 import {UserService} from "../domain/services/user/user.service";
 import {
     getUsersDTO, getUsersFilter, possibleFiltersPrams, usersFilter
@@ -10,6 +8,7 @@ import {
 import bodyParser from "body-parser";
 import {Order} from "../domain/services/types";
 import {AuthStorageUnit, parseAndSendError, sendJson} from "./utils";
+import cookieParser from "cookie-parser";
 
 export class UserRouter {
     private authStorage: AuthTokenProvider
@@ -23,7 +22,7 @@ export class UserRouter {
         this.userService = userService
     }
 
-    public router(): core.Router {
+    public router(): Router {
         const userRoute = Router()
         userRoute.use("/*", cookieParser())
         userRoute.use("/:id", async (req, resp, next) => {
@@ -85,7 +84,7 @@ export class UserRouter {
 
     private getByIdHandle(req: Request, resp: Response) {
         try {
-
+            sendJson(resp, {test: "test"}, HTTP_STATUS_OK)
         } catch (e) {
             parseAndSendError(e, resp)
         }
@@ -133,7 +132,7 @@ export class UserRouter {
 
     private updateByIdHandle(req: Request, resp: Response) {
         try {
-
+            sendJson(resp, {test: "test"}, HTTP_STATUS_OK)
         } catch (e) {
             parseAndSendError(e, resp)
         }
@@ -142,7 +141,7 @@ export class UserRouter {
 
     private updatePasswordByIdHandle(req: Request, resp: Response) {
         try {
-
+            sendJson(resp, {test: "test"}, HTTP_STATUS_OK)
         } catch (e) {
             parseAndSendError(e, resp)
         }
@@ -151,7 +150,7 @@ export class UserRouter {
 
     private updateEmailByIdHandle(req: Request, resp: Response) {
         try {
-
+            sendJson(resp, {test: "test"}, HTTP_STATUS_OK)
         } catch (e) {
             parseAndSendError(e, resp)
         }

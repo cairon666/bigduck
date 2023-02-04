@@ -5,8 +5,7 @@ import {boolean, string} from "yup";
 
 export class UserService {
     private userRepo: Repository<User>
-
-    private page_size: number = 10
+    private page_size = 10
 
     constructor(userRepo: Repository<User>) {
         this.userRepo = userRepo

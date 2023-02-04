@@ -1,5 +1,3 @@
-import * as process from "process";
-
 export interface Config {
     POSTGRES: {
         PASSWORD: string

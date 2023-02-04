@@ -10,8 +10,12 @@ import {DataSource} from "typeorm";
 import {Application} from "express";
 import supertest = require("supertest");
 import {Cookie, CookieAccessInfo} from "cookiejar";
-import {NameCookieAccess, NameCookieRefresh} from "./types";
 import {HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK} from "../../pkg/http-status";
+import {createLogger, format, transports} from "winston";
+import {Logger} from "../../pkg/logger";
+import {User} from "../db/postgres/user.models";
+import {UserService} from "../domain/services/user/user.service";
+import {NameCookieAccess, NameCookieRefresh} from "./utils";
 
 let server: HTTPServer
 let postgresClient: DataSource
@@ -24,21 +28,69 @@ describe('auth service', async function () {
     before(async () => {
         const config = LoadEnv()
 
-        redisController = new RedisController(config, 0)
-        await redisController.connect()
-        const authTokenStorage = new AuthTokenProvider(redisController)
+        const loggerW = createLogger({
+            level: 'info',
+            format: format.json(),
+            defaultMeta: { service: 'backend' },
+            transports: [
+                // new transports.Console({
+                //     format: format.json(),
+                //     level: "info"
+                // })
+            ],
+        });
 
-        postgresClient = await NewDataSource(config)
+        if (config.APP.DEBUG) {
+            loggerW.add(new transports.Console({
+                format: format.json(),
+                level: "debug",
+            }));
+        }
+
+        const logger = new Logger(loggerW)
+
+        logger.info({
+            msg: "connect redis"
+        })
+        const redisController = new RedisController(config, 0)
+        await redisController.connect()
+
+        logger.info({
+            msg: "connect postgres"
+        })
+        const postgresClient = await NewDataSource(config)
         const managerStorage = await postgresClient.manager
+
+        logger.info({
+            msg: "create auth token storage"
+        })
+        const authTokenProvider = new AuthTokenProvider(redisController)
+
+        logger.info({
+            msg: "create auth service"
+        })
         const authService = new AuthService(
+            logger,
             managerStorage
         )
 
-        server = new HTTPServer(
+        logger.info({
+            msg: "create user service"
+        })
+        const userStorage = await postgresClient.getRepository(User)
+        const userService = new UserService(userStorage)
+
+        logger.info({
+            msg: "create http server"
+        })
+        const server = new HTTPServer(
             config,
+            logger,
+            authTokenProvider,
             authService,
-            authTokenStorage
+            userService
         )
+
         server.setup()
 
         app = server.app

@@ -1,6 +1,5 @@
 import {AuthService} from "../domain/services/auth/auth.service";
 import {AuthTokenProvider} from "../adapters/authTokenProvider/authTokenProvider";
-import * as core from "express-serve-static-core";
 import {json, Request, Response, Router} from "express";
 import {LoginDTO, RegisterDTO} from "../domain/services/auth/dto";
 import {serialize} from "cookie";
@@ -23,7 +22,7 @@ export class AuthRouter {
         this.authTokenProvider = authTokenProvider
     }
 
-    public router(): core.Router {
+    public router(): Router {
         const userRoute = Router()
 
         userRoute.use(json())

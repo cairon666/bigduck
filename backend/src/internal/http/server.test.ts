@@ -4,7 +4,7 @@ import {NewDataSource} from "../db/postgres";
 import {AuthService} from "../domain/services/auth/auth.service";
 import assert from "assert";
 import {RedisController} from "../db/redis";
-import {AuthTokenStorage} from "../adapters/authTokenStorage/authTokenStorage";
+import {AuthTokenProvider} from "../adapters/authTokenProvider/authTokenProvider";
 import {HTTPServer} from "./server";
 import {DataSource} from "typeorm";
 import {Application} from "express";
@@ -26,7 +26,7 @@ describe('auth service', async function () {
 
         redisController = new RedisController(config, 0)
         await redisController.connect()
-        const authTokenStorage = new AuthTokenStorage(redisController)
+        const authTokenStorage = new AuthTokenProvider(redisController)
 
         postgresClient = await NewDataSource(config)
         const managerStorage = await postgresClient.manager

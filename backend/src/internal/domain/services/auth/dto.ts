@@ -1,4 +1,25 @@
 import {Beda} from "../../../../pkg/beda/Beda";
+import {CodeError} from "../../exceptions/codes";
+import {ValidateError} from "../../exceptions/exceptions";
+import {object, string, ValidationError} from "yup";
+
+const registerSchemeDTO = object({
+    login: string()
+        .required("login is required")
+        .min(4, "short login"),
+    password: string()
+        .required("password is required")
+        .min(4, "short password"),
+    first_name: string()
+        .required("first_name is required")
+        .min(4, "short first_name"),
+    second_name: string()
+        .required("second_name is required")
+        .min(4, "short second_name"),
+    email: string()
+        .required("email is required")
+        .email("invalid email"),
+})
 
 export class RegisterDTO {
     login: string
@@ -22,31 +43,25 @@ export class RegisterDTO {
     }
 
     isValid() {
-        const err = new Beda("validate")
+        try {
+            registerSchemeDTO.validateSync({
+                login: this.login,
+                password: this.password,
+                first_name: this.first_name,
+                second_name: this.second_name,
+                email: this.email,
+            }, {
+                abortEarly: false,
+            })
+        } catch (e) {
+            const err = new Beda(ValidateError, CodeError.Valid)
 
-        if (this.login == "") {
-            err.addDesc("empty login")
-        }
+            if (e instanceof ValidationError) {
+                e.errors.forEach((error) => {
+                    err.addDesc(error)
+                })
+            }
 
-        if (this.password == "") {
-            err.addDesc("empty password")
-        }
-
-        if (this.first_name == "") {
-            err.addDesc("empty first_name")
-        }
-
-        if (this.second_name == "") {
-            err.addDesc("empty second_name")
-        }
-
-
-        if (this.email == "") {
-            err.addDesc("empty email")
-        }
-
-
-        if (!err.isEmpty()) {
             throw err
         }
     }
@@ -60,6 +75,15 @@ export class RegisterResponseDTO {
     }
 }
 
+const loginShemeDTO = object({
+    login: string()
+        .required("login is required")
+        .min(4, "short login"),
+    password: string()
+        .required("password is required")
+        .min(4, "short password"),
+})
+
 export class LoginDTO {
     public login: string
     public password: string
@@ -70,16 +94,22 @@ export class LoginDTO {
     }
 
     isValid() {
-        const err = new Beda("validate")
-        if (this.login == "") {
-            err.addDesc("empty login")
-        }
+        try {
+            loginShemeDTO.validateSync({
+                login: this.login,
+                password: this.password,
+            }, {
+                abortEarly: false,
+            })
+        } catch (e) {
+            const err = new Beda(ValidateError, CodeError.Valid)
 
-        if (this.password == "") {
-            err.addDesc("empty password")
-        }
+            if (e instanceof ValidationError) {
+                e.errors.forEach((error) => {
+                    err.addDesc(error)
+                })
+            }
 
-        if (!err.isEmpty()) {
             throw err
         }
     }

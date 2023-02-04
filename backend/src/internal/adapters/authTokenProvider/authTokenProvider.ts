@@ -2,8 +2,6 @@ import {RedisController} from "../../db/redis";
 import * as CryptoJS from "crypto-js";
 
 const hourInSecond = 60 * 60
-const monthInSecond = 60 * 60 * 24 * 30
-
 
 interface TokenRefreshUnit {
     lastDate: number
@@ -11,17 +9,14 @@ interface TokenRefreshUnit {
     accessToken: string
 }
 
-export class AuthTokenStorage {
+export class AuthTokenProvider {
     private redis: RedisController
 
     constructor(redis: RedisController) {
         this.redis = redis
     }
 
-    public async setNew(value: string): Promise<{
-        access: string,
-        refresh: string
-    }> {
+    public async setNew(value: string): Promise<{ access: string, refresh: string }> {
         const accessToken = this.generateHash(value + Date.now())
         const refreshToken = this.generateHash(accessToken)
 

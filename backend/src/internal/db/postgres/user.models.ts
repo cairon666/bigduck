@@ -35,13 +35,13 @@ export class User {
     email: string
 
     @Column({type: "text", nullable: true})
-    phone?: string
+    phone?: string | null
 
     @Column({type: "text", nullable: true})
-    avatar_url?: string
+    avatar_url?: string | null
 
     @Column({type: "text", nullable: true})
-    bio?: string
+    bio?: string | null
 
     constructor(
         id: string,

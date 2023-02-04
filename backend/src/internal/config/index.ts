@@ -23,8 +23,8 @@ export interface Config {
 export function LoadEnv(): Config {
     return {
         POSTGRES: {
-            PASSWORD: process.env.POSTGRES_PASSWORD || "example",
             USER: process.env.POSTGRES_USER || "example",
+            PASSWORD: process.env.POSTGRES_PASSWORD || "example",
             DATABASE: process.env.POSTGRES_DATABASE || "example",
             PORT: process.env.POSTGRES_PORT || "5432",
             HOST: process.env.POSTGRES_HOST || "localhost",

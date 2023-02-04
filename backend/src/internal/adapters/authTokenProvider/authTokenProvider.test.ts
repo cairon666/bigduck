@@ -1,10 +1,10 @@
 import {after, before, describe, it} from "node:test";
 import * as assert from "assert";
-import {AuthTokenStorage} from "./authTokenStorage";
+import {AuthTokenProvider} from "./authTokenProvider";
 import {RedisController} from "../../db/redis";
 import {LoadEnv} from "../../config";
 
-let authTokenStorage: AuthTokenStorage
+let authTokenStorage: AuthTokenProvider
 let redisController: RedisController
 const testValue = JSON.stringify({
     some: "test",
@@ -17,7 +17,7 @@ describe('auth token storage', async function () {
 
         redisController = new RedisController(config, 0)
         await redisController.connect()
-        authTokenStorage = new AuthTokenStorage(redisController)
+        authTokenStorage = new AuthTokenProvider(redisController)
     })
 
     describe("tests", () => {

@@ -1,14 +1,23 @@
-export class Beda {
-    private title: string
-    private descriptions: string[]
+export class Beda extends Error {
+    private readonly title: string
+    private readonly code: number
+    private readonly details: string[]
 
-    constructor(title: string) {
+    constructor(title: string, code: number) {
+        super(title)
+
+        // https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/useonlythebuiltinerror.russian.md
+        Object.setPrototypeOf(this, new.target.prototype); // восстанавливаем цепочку прототипов
+
         this.title = title
-        this.descriptions = []
+        this.code = code
+        this.details = []
+
+        Error.captureStackTrace(this);
     }
 
-    addDesc(desc: string) {
-        this.descriptions.push(desc)
+    addDesc(detail: string) {
+        this.details.push(detail)
     }
 
     getTitle(): string {
@@ -16,10 +25,14 @@ export class Beda {
     }
 
     getDesc(): string[] {
-        return this.descriptions
+        return this.details
+    }
+
+    getCode(): number {
+        return this.code
     }
 
     isEmpty(): boolean {
-        return !this.descriptions.length
+        return !this.details.length
     }
 }

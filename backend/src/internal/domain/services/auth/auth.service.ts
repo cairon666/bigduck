@@ -4,14 +4,20 @@ import {User} from "../../../db/postgres/user.models";
 import {LoginDTO, LoginResponseDTO, RegisterDTO, RegisterResponseDTO} from "./dto";
 import {AlreadyExistError, AuthBadId, AuthBadPassword, AuthNotFound, UnknownError} from "../../exceptions/exceptions";
 import {v4 as uuidv4} from 'uuid';
+import {Beda} from "../../../../pkg/beda/Beda";
+import {CodeError} from "../../exceptions/codes";
+import {Logger} from "../../../../pkg/logger";
 
 export class AuthService {
     private managerStorage: EntityManager
+    private logger: Logger
 
     constructor(
-        managerStorage: EntityManager
+        logger: Logger,
+        managerStorage: EntityManager,
     ) {
         this.managerStorage = managerStorage
+        this.logger = logger
     }
 
     async Register(dto: RegisterDTO): Promise<RegisterResponseDTO> {
@@ -35,19 +41,24 @@ export class AuthService {
                 await mgr.insert(Credential, credential)
                 await mgr.insert(User, user)
             })
-
         } catch (e) {
             if (e instanceof QueryFailedError) {
                 const regexp = /Key \(([a-zA-Z_]+)\)=\(([a-zA-Z0-9_]+)\) already exists./
                 const result = (e.driverError.detail as string).match(regexp)
+
                 if (result != null) {
-                    throw Error(AlreadyExistError(result[1]))
+                    throw new Beda(AlreadyExistError(result[1]), CodeError.AlreadyExist)
                 } else {
-                    throw Error(UnknownError)
+                    this.logger.error({
+                        "not_handle_error": e,
+                    })
+                    throw new Beda(UnknownError, CodeError.Unknown)
                 }
             } else {
-                console.log(e)
-                throw e
+                this.logger.error({
+                    "not_handle_error": e,
+                })
+                throw new Beda(UnknownError, CodeError.Unknown)
             }
         }
 
@@ -66,20 +77,22 @@ export class AuthService {
                 }
             })
         } catch (e) {
-            console.log(e)
-            throw new Error(UnknownError)
+            this.logger.error({
+                "not_handle_error": e,
+            })
+            throw new Beda(UnknownError, CodeError.Unknown)
         }
 
         if (!resC) {
-            throw new Error(AuthNotFound)
+            throw new Beda(AuthNotFound, CodeError.AuthNotFound)
         }
 
         if (resC.password_hash !== dto.password) {
-            throw new Error(AuthBadPassword)
+            throw new Beda(AuthBadPassword, CodeError.AuthBadPassword)
         }
 
         if (!resC.id) {
-            throw new Error(AuthBadId)
+            throw new Beda(AuthBadId, CodeError.AuthBadId)
         }
 
         let resU: User | null
@@ -90,13 +103,17 @@ export class AuthService {
                 }
             })
         } catch (e) {
-            console.log(e)
-            throw new Error(UnknownError)
+            this.logger.error({
+                "not_handle_error": e,
+            })
+            throw new Beda(UnknownError, CodeError.Unknown)
         }
 
         if (!resU) {
-            console.log("dont found user after credential")
-            throw new Error(UnknownError)
+            this.logger.error({
+                "not_handle_error": "dont found user after credential",
+            })
+            throw new Beda(UnknownError, CodeError.Unknown)
         }
 
         return new LoginResponseDTO(

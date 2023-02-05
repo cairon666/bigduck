@@ -87,7 +87,7 @@ describe('auth service', async function () {
 
             } catch (e) {
                 if (e instanceof Beda) {
-                    if (e.getTitle() === Exceptions.LoginBadPassword) {
+                    if (e.getTitle() === Exceptions.BadPassword) {
                         assert.ok(true)
                     } else {
                         assert.fail("should error validate")

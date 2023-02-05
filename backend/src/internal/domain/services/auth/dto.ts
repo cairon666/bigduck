@@ -1,15 +1,14 @@
 import {Beda} from "../../../../pkg/beda/Beda";
-import {CodeError} from "../../exceptions/codes";
-import {Exceptions, ValidateError} from "../../exceptions/exceptions";
+import {CodeError, Exceptions} from "../../exceptions/exceptions";
 import {boolean, date, object, string, ValidationError} from "yup";
 
 const registerSchemeDTO = object({
     login: string()
-        .required(Exceptions.RegisterLoginRequired)
-        .min(4, Exceptions.RegisterLoginShort),
+        .required(Exceptions.LoginRequired)
+        .min(4, Exceptions.LoginShort),
     password: string()
-        .required(Exceptions.RegisterPasswordRequired)
-        .min(4, Exceptions.RegisterPasswordShort),
+        .required(Exceptions.PasswordRequired)
+        .min(4, Exceptions.PasswordShort),
     is_staff: boolean()
         .default(false),
     is_admin: boolean()
@@ -17,17 +16,17 @@ const registerSchemeDTO = object({
     phone: string()
         .nullable(),
     email: string()
-        .required(Exceptions.RegisterEmailRequired)
-        .email(Exceptions.RegisterEmailInvalid),
+        .required(Exceptions.EmailRequired)
+        .email(Exceptions.EmailInvalid),
     username: string()
-        .required(Exceptions.RegisterUsernameRequired)
-        .min(4, Exceptions.RegisterUsernameShort),
+        .required(Exceptions.UsernameRequired)
+        .min(4, Exceptions.UsernameShort),
     first_name: string()
-        .required(Exceptions.RegisterFirstNameRequired)
-        .min(4, Exceptions.RegisterFirstNameShort),
+        .required(Exceptions.FirstNameRequired)
+        .min(4, Exceptions.FirstNameShort),
     second_name: string()
-        .required(Exceptions.RegisterSecondNameRequired)
-        .min(4, Exceptions.RegisterSecondNameShort),
+        .required(Exceptions.SecondNameRequired)
+        .min(4, Exceptions.SecondNameShort),
     avatar_url: string().nullable(),
     day_of_birth: date().nullable(),
     gender: string().nullable(),
@@ -93,11 +92,11 @@ export class RegisterDTO {
 
 const loginShemeDTO = object({
     login: string()
-        .required(Exceptions.RegisterLoginRequired)
-        .min(4, Exceptions.RegisterLoginShort),
+        .required(Exceptions.LoginRequired)
+        .min(4, Exceptions.LoginShort),
     password: string()
-        .required(Exceptions.RegisterPasswordRequired)
-        .min(4, Exceptions.RegisterPasswordShort),
+        .required(Exceptions.PasswordRequired)
+        .min(4, Exceptions.PasswordShort),
 })
 
 export class LoginDTO {
@@ -113,7 +112,7 @@ export class LoginDTO {
         try {
             loginShemeDTO.validateSync(this, {abortEarly: false})
         } catch (e) {
-            const err = new Beda(ValidateError, CodeError.Valid)
+            const err = new Beda(Exceptions.Validate, CodeError.Valid)
             if (e instanceof ValidationError) {
                 e.errors.forEach((error) => {
                     err.addDesc(error)

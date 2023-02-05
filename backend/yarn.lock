@@ -30,6 +30,11 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
+"@drdgvhbh/postgres-error-codes@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@drdgvhbh/postgres-error-codes/-/postgres-error-codes-0.0.6.tgz#ff1c6258771894c5c7662495531c38b46e1cc037"
+  integrity sha512-tAz0Xp+qhq90x0r/3VW96iRdHFw72cYQqXa65u0eFVhSMC27bc2gZ8Ky5WXEmshrl/bCe7QTYBNEF0U5zeSQjw==
+
 "@eslint/eslintrc@^1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.4.1.tgz#af58772019a2d271b7e2d4c23ff4ddcba3ccfb3e"

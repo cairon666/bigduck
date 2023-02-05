@@ -1,37 +1,45 @@
-export const AuthNotFound = "user not found"
-export const AuthBadPassword = "bad password"
-export const AuthBadId = "bad id"
-export const UnknownError = "unknown error"
-export const AlreadyExistError = (column: string) => `${column} already exists`
-export const InvalidDataTypeError = (key: string) => `${key} invalid type`
-export const ValidateError = ""
-export const IdRequiredError = "Id required error"
 export const NotAllowedError = "NotAllowedError"
-export const ForbiddenError = "Forbidden"
 
 export enum Exceptions {
-    RegisterLoginRequired = "login is required",
-    RegisterLoginShort = "login is short",
-    RegisterPasswordRequired = "password is required",
-    RegisterPasswordShort = "password is short",
-    RegisterEmailRequired = "email is required",
-    RegisterEmailInvalid = "password is invalid",
-    RegisterFirstNameRequired = "first_name is required",
-    RegisterFirstNameShort = "first_name is short",
-    RegisterSecondNameRequired = "second_name is required",
-    RegisterSecondNameShort = "second_name is short",
-    RegisterUsernameRequired = "username is required",
-    RegisterUsernameShort = "username is short",
-    RegisterDatabase = "database error",
-
-    LoginDatabase = "database error",
-    LoginNotFound = "not found",
-    LoginBadPassword = "bad password",
-
-    RefreshDontHaveRefreshCookie = "dont have refresh cookie",
-    RefreshCookieTimeout = "refresh cookie timeout",
-
     Validate = "validate error",
+    LoginRequired = "login is required",
+    LoginShort = "login is short",
+    PasswordRequired = "password is required",
+    PasswordShort = "password is short",
+    EmailRequired = "email is required",
+    EmailInvalid = "password is invalid",
+    FirstNameRequired = "first_name is required",
+    FirstNameShort = "first_name is short",
+    SecondNameRequired = "second_name is required",
+    SecondNameShort = "second_name is short",
+    UsernameRequired = "username is required",
+    UsernameShort = "username is short",
+    IdNotUUID = "id is uuid",
+    IdRequired = "id is required",
+    Database = "database error",
+    NotFound = "not found",
+    BadPassword = "bad password",
+    DontHaveRefreshCookie = "dont have refresh cookie",
+    CookieTimeout = "refresh cookie timeout",
+    UnknownDatabase = "unknown error",
+    UsernameAlreadyExist = "username already exists",
+    LoginAlreadyExist = "login already exists",
+    EmailAlreadyExist = "email already exists",
+    SomeAlreadyExist = "something already exist"
+}
 
-    UnknownDatabase = "unknown error"
+export enum CodeError {
+    Valid,
+    Unknown,
+    AlreadyExist,
+    DontHaveRefreshCookie,
+    CookieTimeout,
+    InvalidDataType,
+    IdRequired,
+    NotAllowed,
+    Forbidden,
+    UnknownDatabase,
+    NotFound,
+    BadPassword,
+    Database,
 }

@@ -1,7 +1,7 @@
 import {Beda} from "../../pkg/beda/Beda";
 import {Response} from "express"
-import {CodeError} from "../domain/exceptions/codes";
 import {HttpStatus} from "../../pkg/http-status";
+import {CodeError} from "../domain/exceptions/exceptions";
 
 export interface AuthStorageUnit {
     id: string
@@ -44,4 +44,3 @@ export function sendJson(resp: Response, data: object, status: number) {
     resp.status(status)
     resp.json(data)
 }
-

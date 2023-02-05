@@ -6,8 +6,7 @@ import {serialize} from "cookie";
 import {Beda} from "../../pkg/beda/Beda";
 import cookieParser from "cookie-parser";
 import {AuthStorageUnit, NameCookieAccess, NameCookieRefresh, parseAndSendError, sendJson} from "./utils";
-import {CodeError} from "../domain/exceptions/codes";
-import {Exceptions} from "../domain/exceptions/exceptions";
+import {CodeError, Exceptions} from "../domain/exceptions/exceptions";
 import {HttpStatus} from "../../pkg/http-status";
 
 export class AuthRouter {
@@ -75,12 +74,12 @@ export class AuthRouter {
         try {
             const cookie = req.cookies.refreshToken
             if (!cookie) {
-                throw new Beda(Exceptions.RefreshDontHaveRefreshCookie, CodeError.RefreshDontHaveRefreshCookie)
+                throw new Beda(Exceptions.DontHaveRefreshCookie, CodeError.DontHaveRefreshCookie)
             }
 
             const res = await this.authTokenProvider.refresh(cookie)
             if (!res) {
-                throw new Beda(Exceptions.RefreshCookieTimeout, CodeError.RefreshCookieTimeout)
+                throw new Beda(Exceptions.CookieTimeout, CodeError.CookieTimeout)
             }
 
             resp.setHeader("Set-Cookie", [

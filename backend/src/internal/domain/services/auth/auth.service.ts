@@ -2,19 +2,12 @@ import {EntityManager, QueryFailedError} from "typeorm";
 import {Credential} from "../../../db/postgres/credential.models";
 import {User} from "../../../db/postgres/user.models";
 import {LoginDTO, LoginResponseDTO, RegisterDTO} from "./dto";
-import {
-    AlreadyExistError,
-    AuthBadId,
-    AuthBadPassword,
-    AuthNotFound,
-    Exceptions,
-    UnknownError
-} from "../../exceptions/exceptions";
+import {CodeError, Exceptions} from "../../exceptions/exceptions";
 import {v4 as uuidv4} from 'uuid';
 import {Beda} from "../../../../pkg/beda/Beda";
-import {CodeError} from "../../exceptions/codes";
 import {Logger} from "../../../../pkg/logger";
 import {compareSync, genSaltSync, hashSync} from "bcryptjs";
+import {PG_UNIQUE_VIOLATION} from "@drdgvhbh/postgres-error-codes";
 
 export class AuthService {
     private managerStorage: EntityManager
@@ -61,12 +54,24 @@ export class AuthService {
             })
         } catch (e) {
             if (e instanceof QueryFailedError) {
-                this.logger.error({"not_handle_error": e})
-                throw new Beda(Exceptions.RegisterDatabase, CodeError.RegisterDatabase)
+                const err: any = e
+                switch (err.code) {
+                    case PG_UNIQUE_VIOLATION:
+                        switch (err.constraint) {
+                            case "users_username_uniq":
+                                throw new Beda(Exceptions.UsernameAlreadyExist, CodeError.AlreadyExist)
+                            case "credentials_login_uniq":
+                                throw new Beda(Exceptions.LoginAlreadyExist, CodeError.AlreadyExist)
+                            case "credentials_email_uniq":
+                                throw new Beda(Exceptions.EmailAlreadyExist, CodeError.AlreadyExist)
+                            default:
+                                throw new Beda(Exceptions.SomeAlreadyExist, CodeError.AlreadyExist)
+                        }
+                    default:
+                        throw new Beda(Exceptions.Database, CodeError.Database)
+                }
             }
-
-            this.logger.error({"not_handle_error": e})
-            throw new Beda(Exceptions.UnknownDatabase, CodeError.UnknownDatabase)
+            throw new Beda(Exceptions.Database, CodeError.Database)
         }
     }
 
@@ -82,15 +87,15 @@ export class AuthService {
             })
         } catch (e) {
             this.logger.error({"not_handle_error": e})
-            throw new Beda(Exceptions.LoginDatabase, CodeError.LoginDatabase)
+            throw new Beda(Exceptions.Database, CodeError.Database)
         }
 
         if (!cred) {
-            throw new Beda(Exceptions.LoginNotFound, CodeError.LoginNotFound)
+            throw new Beda(Exceptions.NotFound, CodeError.NotFound)
         }
 
         if (!compareSync(dto.password, cred.password_hash)) {
-            throw new Beda(Exceptions.LoginBadPassword, CodeError.LoginBadPassword)
+            throw new Beda(Exceptions.BadPassword, CodeError.BadPassword)
         }
 
         return new LoginResponseDTO(

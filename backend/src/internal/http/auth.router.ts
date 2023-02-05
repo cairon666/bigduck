@@ -5,10 +5,10 @@ import {LoginDTO, RegisterDTO} from "../domain/services/auth/dto";
 import {serialize} from "cookie";
 import {Beda} from "../../pkg/beda/Beda";
 import cookieParser from "cookie-parser";
-import {HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK} from "../../pkg/http-status";
 import {AuthStorageUnit, NameCookieAccess, NameCookieRefresh, parseAndSendError, sendJson} from "./utils";
 import {CodeError} from "../domain/exceptions/codes";
-import {DontHaveRefreshCookieError, RefreshCookieTimeoutError} from "../domain/exceptions/exceptions";
+import {Exceptions} from "../domain/exceptions/exceptions";
+import {HttpStatus} from "../../pkg/http-status";
 
 export class AuthRouter {
     private authService: AuthService
@@ -27,9 +27,10 @@ export class AuthRouter {
 
         userRoute.use(json())
         userRoute.use(cookieParser())
-        userRoute.post("/login", this.loginHandler.bind(this))
-        userRoute.post("/register", this.registerHandler.bind(this))
-        userRoute.post("/refresh", this.refreshHandler.bind(this))
+        userRoute.post("/api/v1/auth/login", this.loginHandler.bind(this))
+        userRoute.post("/api/v1/auth/register", this.registerHandler.bind(this))
+        userRoute.post("/api/v1/auth/refresh", this.refreshHandler.bind(this))
+        // userRoute.post("/api/v1/auth/refresh/check", this.refreshHandler.bind(this)) TODO
 
         return userRoute
     }
@@ -63,8 +64,7 @@ export class AuthRouter {
                     // httpOnly: true,
                 })])
 
-            sendJson(resp, {id: authRes.id}, HTTP_STATUS_OK)
-
+            sendJson(resp, {id: authRes.id}, HttpStatus.OK)
         } catch (e) {
             parseAndSendError(e, resp)
         }
@@ -74,15 +74,13 @@ export class AuthRouter {
     private async refreshHandler(req: Request, resp: Response): Promise<void> {
         try {
             const cookie = req.cookies.refreshToken
-
             if (!cookie) {
-                throw new Beda(DontHaveRefreshCookieError, CodeError.DontHaveRefreshCookie)
+                throw new Beda(Exceptions.RefreshDontHaveRefreshCookie, CodeError.RefreshDontHaveRefreshCookie)
             }
 
             const res = await this.authTokenProvider.refresh(cookie)
-
             if (!res) {
-                throw new Beda(RefreshCookieTimeoutError, CodeError.RefreshCookieTimeout)
+                throw new Beda(Exceptions.RefreshCookieTimeout, CodeError.RefreshCookieTimeout)
             }
 
             resp.setHeader("Set-Cookie", [
@@ -99,7 +97,7 @@ export class AuthRouter {
                     // httpOnly: true,
                 })])
 
-            resp.status(HTTP_STATUS_NO_CONTENT)
+            resp.status(HttpStatus.NO_CONTENT)
         } catch (e) {
             parseAndSendError(e, resp)
         }
@@ -111,14 +109,21 @@ export class AuthRouter {
             const dto = new RegisterDTO(
                 req.body.login,
                 req.body.password,
+                false,
+                false,
+                req.body.phone,
+                req.body.email,
+                req.body.username,
                 req.body.first_name,
                 req.body.second_name,
-                req.body.email,
+                req.body.avatar_url,
+                req.body.day_of_birth ? new Date(req.body.day_of_birth) : null,
+                req.body.gender,
             )
 
-            const authRes = await this.authService.Register(dto)
+            await this.authService.Register(dto)
 
-            sendJson(resp, {id: authRes.id}, HTTP_STATUS_OK)
+            resp.status(HttpStatus.NO_CONTENT)
         } catch (e) {
             parseAndSendError(e, resp)
         }

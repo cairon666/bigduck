@@ -11,7 +11,7 @@ export async function NewDataSource(conf: Config): Promise<DataSource> {
         username: conf.POSTGRES.USER,
         password: conf.POSTGRES.PASSWORD,
         database: conf.POSTGRES.DATABASE,
-        logging: true,
+        logging: conf.APP.DEBUG,
         entities: [
             Credential,
             User,

@@ -1,87 +1,103 @@
 import {Beda} from "../../../../pkg/beda/Beda";
 import {CodeError} from "../../exceptions/codes";
-import {ValidateError} from "../../exceptions/exceptions";
-import {object, string, ValidationError} from "yup";
+import {Exceptions, ValidateError} from "../../exceptions/exceptions";
+import {boolean, date, object, string, ValidationError} from "yup";
 
 const registerSchemeDTO = object({
     login: string()
-        .required("login is required")
-        .min(4, "short login"),
+        .required(Exceptions.RegisterLoginRequired)
+        .min(4, Exceptions.RegisterLoginShort),
     password: string()
-        .required("password is required")
-        .min(4, "short password"),
-    first_name: string()
-        .required("first_name is required")
-        .min(4, "short first_name"),
-    second_name: string()
-        .required("second_name is required")
-        .min(4, "short second_name"),
+        .required(Exceptions.RegisterPasswordRequired)
+        .min(4, Exceptions.RegisterPasswordShort),
+    is_staff: boolean()
+        .default(false),
+    is_admin: boolean()
+        .default(false),
+    phone: string()
+        .nullable(),
     email: string()
-        .required("email is required")
-        .email("invalid email"),
+        .required(Exceptions.RegisterEmailRequired)
+        .email(Exceptions.RegisterEmailInvalid),
+    username: string()
+        .required(Exceptions.RegisterUsernameRequired)
+        .min(4, Exceptions.RegisterUsernameShort),
+    first_name: string()
+        .required(Exceptions.RegisterFirstNameRequired)
+        .min(4, Exceptions.RegisterFirstNameShort),
+    second_name: string()
+        .required(Exceptions.RegisterSecondNameRequired)
+        .min(4, Exceptions.RegisterSecondNameShort),
+    avatar_url: string().nullable(),
+    day_of_birth: date().nullable(),
+    gender: string().nullable(),
 })
 
 export class RegisterDTO {
     login: string
     password: string
+    is_staff: boolean
+    is_admin: boolean
+    phone: string | null
+    email: string
+    username: string
     first_name: string
     second_name: string
-    email: string
+    avatar_url: string | null
+    day_of_birth: Date | null
+    gender: string | null
 
     constructor(
         login: string,
         password: string,
+        is_staff: boolean,
+        is_admin: boolean,
+        phone: string | null,
+        email: string,
+        username: string,
         first_name: string,
         second_name: string,
-        email: string,
+        avatar_url: string | null,
+        day_of_birth: Date | null,
+        gender: string | null,
     ) {
+
         this.login = login
         this.password = password
+        this.is_staff = is_staff
+        this.is_admin = is_admin
+        this.phone = phone
+        this.email = email
+        this.username = username
         this.first_name = first_name
         this.second_name = second_name
-        this.email = email
+        this.avatar_url = avatar_url
+        this.day_of_birth = day_of_birth
+        this.gender = gender
     }
 
     isValid() {
         try {
-            registerSchemeDTO.validateSync({
-                login: this.login,
-                password: this.password,
-                first_name: this.first_name,
-                second_name: this.second_name,
-                email: this.email,
-            }, {
-                abortEarly: false,
-            })
+            registerSchemeDTO.validateSync(this, {abortEarly: false})
         } catch (e) {
-            const err = new Beda(ValidateError, CodeError.Valid)
-
+            const err = new Beda(Exceptions.Validate, CodeError.Valid)
             if (e instanceof ValidationError) {
                 e.errors.forEach((error) => {
                     err.addDesc(error)
                 })
             }
-
             throw err
         }
     }
 }
 
-export class RegisterResponseDTO {
-    public id: string
-
-    constructor(id: string) {
-        this.id = id
-    }
-}
-
 const loginShemeDTO = object({
     login: string()
-        .required("login is required")
-        .min(4, "short login"),
+        .required(Exceptions.RegisterLoginRequired)
+        .min(4, Exceptions.RegisterLoginShort),
     password: string()
-        .required("password is required")
-        .min(4, "short password"),
+        .required(Exceptions.RegisterPasswordRequired)
+        .min(4, Exceptions.RegisterPasswordShort),
 })
 
 export class LoginDTO {
@@ -95,21 +111,14 @@ export class LoginDTO {
 
     isValid() {
         try {
-            loginShemeDTO.validateSync({
-                login: this.login,
-                password: this.password,
-            }, {
-                abortEarly: false,
-            })
+            loginShemeDTO.validateSync(this, {abortEarly: false})
         } catch (e) {
             const err = new Beda(ValidateError, CodeError.Valid)
-
             if (e instanceof ValidationError) {
                 e.errors.forEach((error) => {
                     err.addDesc(error)
                 })
             }
-
             throw err
         }
     }
@@ -123,7 +132,7 @@ export class LoginResponseDTO {
     constructor(
         id: string,
         is_staff: boolean,
-        is_admin: boolean
+        is_admin: boolean,
     ) {
         this.id = id
         this.is_staff = is_staff

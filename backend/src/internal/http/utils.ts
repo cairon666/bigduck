@@ -1,6 +1,7 @@
 import {Beda} from "../../pkg/beda/Beda";
-import {HTTP_STATUS_BAD_REQUEST} from "../../pkg/http-status";
 import {Response} from "express"
+import {CodeError} from "../domain/exceptions/codes";
+import {HttpStatus} from "../../pkg/http-status";
 
 export interface AuthStorageUnit {
     id: string
@@ -12,25 +13,31 @@ export const NameCookieAccess = "accessToken"
 export const NameCookieRefresh = "refreshToken"
 
 export function parseAndSendError(e: unknown, resp: Response) {
-    resp.status(HTTP_STATUS_BAD_REQUEST)
-
     if (e instanceof Beda) {
-        resp.json({
+        sendError(resp, {
             error: e.getTitle(),
             details: e.getDesc(),
             code: e.getCode(),
-        })
-    } else if (e instanceof Error) {
-        resp.json({
-            error: e.message,
-            details: [],
-        })
+        }, HttpStatus.BAD_REQUEST)
     } else {
-        resp.json({
+        console.error(e)
+        sendError(resp, {
             error: "Unknown error",
             details: [],
-        })
+            code: CodeError.Unknown
+        }, HttpStatus.BAD_REQUEST)
     }
+}
+
+export interface Error {
+    error: string
+    details: string[]
+    code: number
+}
+
+export function sendError(resp: Response, err: Error, status: number) {
+    resp.status(status)
+    resp.json(err)
 }
 
 export function sendJson(resp: Response, data: object, status: number) {

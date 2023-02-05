@@ -5,63 +5,66 @@ import {Credential} from "./credential.models";
 export class User {
     @PrimaryColumn({
         type: "uuid",
-        nullable: false
+        name: "id"
     })
     @OneToMany(() => Credential, (credential) => credential.id)
     id: string
 
-    @Column({type: "text"})
+    @Column({
+        type: "text",
+        name: "username",
+        unique: true,
+    })
+    username: string
+
+    @Column({
+        type: "text",
+        name: "first_name",
+    })
     first_name: string
 
-    @Column({type: "text"})
+    @Column({
+        type: "text",
+        name: "second_name",
+    })
     second_name: string
 
-    @Column({type: "timestamptz"})
-    date_create: Date
+    @Column({
+        type: "text",
+        name: "avatar_url",
+        nullable: true
+    })
+    avatar_url: string | null
 
-    @Column({type: "timestamptz"})
-    date_modify: Date
+    @Column({
+        type: "date",
+        name: "day_of_birth",
+        nullable: true
+    })
+    day_of_birth: Date | null
 
-    @Column({type: "boolean"})
-    is_staff: boolean
-
-    @Column({type: "boolean"})
-    is_admin: boolean
-
-    @Column({type: "boolean"})
-    is_active: boolean
-
-    @Column({type: "text", unique: true})
-    email: string
-
-    @Column({type: "text", nullable: true})
-    phone?: string | null
-
-    @Column({type: "text", nullable: true})
-    avatar_url?: string | null
-
-    @Column({type: "text", nullable: true})
-    bio?: string | null
+    @Column({
+        type: "text",
+        name: "gender",
+        nullable: true
+    })
+    gender: string | null
 
     constructor(
         id: string,
+        username: string,
         first_name: string,
         second_name: string,
-        date_create: Date,
-        date_modify: Date,
-        is_staff: boolean,
-        is_admin: boolean,
-        is_active: boolean,
-        email: string,
+        avatar_url: string | null,
+        day_of_birth: Date | null,
+        gender: string | null,
     ) {
         this.id = id
+        this.username = username
         this.first_name = first_name
         this.second_name = second_name
-        this.date_create = date_create
-        this.date_modify = date_modify
-        this.is_staff = is_staff
-        this.is_admin = is_admin
-        this.is_active = is_active
-        this.email = email
+        this.avatar_url = avatar_url
+        this.day_of_birth = day_of_birth
+        this.gender = gender
     }
 }

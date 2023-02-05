@@ -1,12 +1,13 @@
 import {after, before, describe, it} from "node:test";
-import * as assert from "assert";
 import {NewDataSource} from "../../../db/postgres";
 import {AuthService} from "./auth.service";
 import {LoadEnv} from "../../../config";
-import {LoginDTO, RegisterDTO} from "./dto";
-import {Beda} from "../../../../pkg/beda/Beda";
-import {AlreadyExistError, AuthBadPassword, AuthNotFound} from "../../exceptions/exceptions";
 import {DataSource} from "typeorm";
+import {NewDevLogger} from "../../../../pkg/logger";
+import {LoginDTO, RegisterDTO} from "./dto";
+import assert from "assert";
+import {Beda} from "../../../../pkg/beda/Beda";
+import {Exceptions} from "../../exceptions/exceptions";
 
 let authService: AuthService
 let postgresClient: DataSource
@@ -14,132 +15,234 @@ let postgresClient: DataSource
 describe('auth service', async function () {
     before(async () => {
         const config = LoadEnv()
+        const logger = NewDevLogger()
+        config.APP.DEBUG = false
         postgresClient = await NewDataSource(config)
         const managerStorage = await postgresClient.manager
-        authService = new AuthService(
-            managerStorage
-        )
+        authService = new AuthService(logger, managerStorage)
+    })
+    after(async () => {
+        await postgresClient.destroy()
     })
 
-    describe('tests', function () {
-        after(async () => {
-            await postgresClient.destroy()
-        })
-
-        it('should create default success', async function () {
-            const regDto = new RegisterDTO(
-                "test",
-                "test",
-                "test",
-                "test",
-                "test@test.test",
+    describe('methods', () => {
+        it('should success register and login', async () => {
+            const regDTO = new RegisterDTO(
+                "test.auth",
+                "test.auth",
+                false,
+                false,
+                null,
+                "test.auth@email.com",
+                "test.auth",
+                "test.auth",
+                "test.auth",
+                null,
+                null,
+                null,
             )
 
-            const resReg = await authService.Register(regDto)
-
-            if (resReg.id == "") {
-                assert.ok(false)
-                return
-            }
-
-            const resLog = await authService.Login(new LoginDTO(
-                regDto.login,
-                regDto.password
-            ))
-
-            if (resLog.id == "") {
-                assert.ok(false)
-                return
-            }
-
-            assert.ok(true)
-        });
-
-        it('should error register validate', async function () {
             try {
-                await authService.Register(new RegisterDTO(
-                    "test_test",
-                    "test_test",
-                    "test_test",
-                    "test_test",
-                    "test_test",
-                ))
-
-                assert.ok(false)
+                await authService.Register(regDTO)
             } catch (e) {
-                if (e instanceof Error) {
-                    if (e.message === AlreadyExistError("login")) {
-                        assert.ok(true)
-                    } else {
-                        assert.fail(e)
-                    }
-                    return
-                }
+                assert.fail(e as Error)
+                return
+            }
+
+            const loginDTO = new LoginDTO(
+                "test.auth",
+                "test.auth"
+            )
+
+            try {
+                await authService.Login(loginDTO)
+            } catch (e) {
+                assert.fail(e as Error)
+                return
             }
         });
 
-        it('should error register already-exist', async function () {
-            try {
-                await authService.Register(new RegisterDTO(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                ))
+        it('should success login', async () => {
+            const loginDTO = new LoginDTO(
+                "test.auth.duplicate",
+                "super_test1"
+            )
 
-                assert.ok(false)
+            try {
+                await authService.Login(loginDTO)
+                assert.ok(true)
+            } catch (e) {
+                assert.fail(e as Error)
+            }
+        });
+
+        it('should bad password login', async () => {
+            const loginDTO = new LoginDTO(
+                "test.auth.duplicate",
+                "test.auth.duplicate"
+            )
+
+            try {
+                await authService.Login(loginDTO)
+
             } catch (e) {
                 if (e instanceof Beda) {
-                    if (e.getTitle() == "validate") {
-                        assert.ok(true)
-                    }
-                } else if (e instanceof Error) {
-                    assert.fail(e)
-                }
-            }
-        });
-
-        it('should error login non-exist', async function () {
-            try {
-                await authService.Login(new LoginDTO(
-                    "test666999",
-                    "test666999"
-                ))
-
-                assert.ok(false)
-            } catch (e) {
-                if (e instanceof Error) {
-                    if (e.message == AuthNotFound) {
+                    if (e.getTitle() === Exceptions.LoginBadPassword) {
                         assert.ok(true)
                     } else {
-                        assert.fail(e)
+                        assert.fail("should error validate")
                     }
-                    return
+                } else {
+                    assert.fail("should error catch")
                 }
-                assert.fail(e as any)
             }
         });
 
-        it('should error login wrong password', async function () {
+        it('should error duplicate register', async () => {
+            const regDTO = new RegisterDTO(
+                "test.auth.duplicate",
+                "test.auth.duplicate",
+                false,
+                false,
+                null,
+                "test.auth.duplicate@email.com",
+                "test.auth.duplicate",
+                "test.auth.duplicate",
+                "test.auth.duplicate",
+                null,
+                null,
+                null,
+            )
+
             try {
-                await authService.Login(new LoginDTO(
-                    "test_test",
-                    "test_wrong",
-                ))
-
-                assert.ok(false)
+                await authService.Register(regDTO)
+                assert.fail("should error")
             } catch (e) {
-                if (e instanceof Error) {
-                    if (e.message == AuthBadPassword) {
-                        assert.ok(true)
-                    } else {
-                        assert.fail(e)
-                    }
-                    return
-                }
-                assert.ok(false)
+                assert.ok(true)
+                return
             }
         });
+
+        it('should error duplicate email', async () => {
+            const regDTO = new RegisterDTO(
+                "test.auth.duplicate1",
+                "test.auth.duplicate",
+                false,
+                false,
+                null,
+                "test.auth.duplicate@email.com",
+                "test.auth.duplicate",
+                "test.auth.duplicate",
+                "test.auth.duplicate",
+                null,
+                null,
+                null,
+            )
+
+            try {
+                await authService.Register(regDTO)
+                assert.fail("should error")
+            } catch (e) {
+                assert.ok(true)
+                return
+            }
+        });
+
+        it('should error duplicate username', async () => {
+            const regDTO = new RegisterDTO(
+                "test.auth.duplicate1",
+                "test.auth.duplicate",
+                false,
+                false,
+                null,
+                "test.auth.duplicate@email.com2",
+                "test.auth.duplicate",
+                "test.auth.duplicate",
+                "test.auth.duplicate",
+                null,
+                null,
+                null,
+            )
+
+            try {
+                await authService.Register(regDTO)
+                assert.fail("should error")
+            } catch (e) {
+                assert.ok(true)
+                return
+            }
+        });
+    });
+
+    describe('dto', () => {
+        it("should success RegisterDTO valid", () => {
+            try {
+                const dto = new RegisterDTO(
+                    "test.auth",
+                    "test.auth",
+                    false,
+                    false,
+                    null,
+                    "test.auth@email.com",
+                    "test.auth",
+                    "test.auth",
+                    "test.auth",
+                    null,
+                    null,
+                    null,
+                )
+                dto.isValid()
+            } catch (e) {
+                assert.fail(e as Error)
+            }
+        })
+
+        it("should success LoginDTO valid", () => {
+            try {
+                const dto = new LoginDTO(
+                    "test.auth",
+                    "test.auth"
+                )
+                dto.isValid()
+            } catch (e) {
+                assert.fail(e as Error)
+            }
+        })
+
+        it("should invalid loginDTO error", () => {
+            try {
+                const dto = new LoginDTO(
+                    "",
+                    ""
+                )
+                dto.isValid()
+                assert.fail("should erro")
+            } catch (e) {
+                assert.ok(true)
+            }
+        })
+
+        it("should invalid registerDTO error", () => {
+            try {
+                const dto = new RegisterDTO(
+                    "",
+                    "",
+                    false,
+                    false,
+                    null,
+                    "",
+                    "",
+                    "",
+                    "",
+                    null,
+                    null,
+                    null,
+                )
+                dto.isValid()
+                assert.fail("should error")
+            } catch (e) {
+                assert.ok(true)
+            }
+        })
     });
 });

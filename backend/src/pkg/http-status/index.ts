@@ -1,4 +1,8 @@
-export const HTTP_STATUS_BAD_REQUEST = 400
-export const HTTP_STATUS_BAD_UNAUTHORIZED = 401
-export const HTTP_STATUS_NO_CONTENT = 204
-export const HTTP_STATUS_OK = 200
+export enum HttpStatus {
+    OK = 200,
+    NO_CONTENT = 204,
+    BAD_REQUEST = 400,
+    UNAUTHORIZED = 401,
+    FORBIDDEN = 403,
+    NOT_ALLOWED = 405,
+}

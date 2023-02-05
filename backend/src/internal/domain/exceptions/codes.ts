@@ -1,13 +1,16 @@
-import {InvalidDataTypeError} from "./exceptions";
-
 export enum CodeError {
     Valid,
     Unknown,
     AlreadyExist,
-    AuthNotFound,
-    AuthBadPassword,
-    AuthBadId,
-    DontHaveRefreshCookie,
+    RefreshDontHaveRefreshCookie,
     RefreshCookieTimeout,
-    InvalidDataType
+    InvalidDataType,
+    IdRequired,
+    NotAllowed,
+    Forbidden,
+    UnknownDatabase,
+    RegisterDatabase,
+    LoginNotFound,
+    LoginBadPassword,
+    LoginDatabase
 }

@@ -1,52 +1,27 @@
+-- can be updated only one parameter
 create table public.credentials
 (
     id            uuid primary key default gen_random_uuid(),
-    login         text not null unique,
-    password_hash text not null
+    login         text    not null unique,
+    password_hash text    not null,
+    is_staff      boolean not null default false,
+    is_admin      boolean not null default false,
+    phone         text,
+    email         text    not null unique
 );
 
 create table public.users
 (
-    id          uuid primary key references public.credentials (id),
-    first_name  text        not null,
-    second_name text        not null,
-    date_create timestamptz not null default now(),
-    date_modify timestamptz not null default now(),
-    is_staff    boolean     not null,
-    is_admin    boolean     not null,
-    is_active   boolean     not null,
-    email       text        not null unique,
-    phone       text,
-    avatar_url  text,
-    bio         text
+    id           uuid primary key references public.credentials (id),
+    username     text not null unique,
+    first_name   text not null,
+    second_name  text not null,
+    avatar_url   text,
+    day_of_birth date,
+    gender       text
 );
 
-create table public.quizzes
-(
-    id          serial primary key,
-    title       text not null,
-    description text not null,
-    preview_url text,
-    duration    text,
-    time_start  timestamptz,
-    time_end    timestamptz
-);
-
-create table public.questions
-(
-    id    serial primary key,
-    title text  not null,
-    data  jsonb not null
-);
-
-create table public.quiz_question
-(
-    question_id integer references public.questions (id),
-    quiz_id     integer references public.quizzes (id)
-);
-
-insert into public.credentials(id, login, password_hash)
-values ('259041cc-8fa9-4494-9bb8-e038b882850e', 'test_test', 'test_test');
-insert into public.users(id, first_name, second_name, date_create, date_modify, is_staff, is_admin, is_active, email)
-values ('259041cc-8fa9-4494-9bb8-e038b882850e', 'test_test', 'test_test', default, default, false, false, false,
-        'test_test');
+insert into public.credentials(id, login, password_hash, email)
+values ('c8bc0626-7934-4729-b550-3983d8f49a24', 'test.auth.duplicate', '$2a$10$V70wp9gtvUztqT8r1VsUvetQ8aCsnrjr/Uffg3L0y5OcoNolYrOvq', 'test.auth.duplicate@email.com');
+insert into public.users(id, username, first_name, second_name)
+values ('c8bc0626-7934-4729-b550-3983d8f49a24', 'test.auth.duplicate', 'test.auth.duplicate', 'test.auth.duplicate');

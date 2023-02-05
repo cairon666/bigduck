@@ -37,9 +37,7 @@ export class AuthTokenProvider {
         }
     }
 
-    public async refresh(refreshToken: string): Promise<{
-        accessToken: string
-    } | null> {
+    public async refresh(refreshToken: string): Promise<{ accessToken: string } | null> {
         const res = await this.redis.GET(refreshToken)
 
         if (!res) {

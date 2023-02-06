@@ -21,24 +21,24 @@ export interface Config {
 export function LoadEnv(): Config {
     return {
         POSTGRES: {
-            USER: process.env.POSTGRES_USER || "example",
-            PASSWORD: process.env.POSTGRES_PASSWORD || "example",
-            DATABASE: process.env.POSTGRES_DATABASE || "example",
-            PORT: process.env.POSTGRES_PORT || "5432",
-            HOST: process.env.POSTGRES_HOST || "localhost",
+            USER: process.env.POSTGRES_USER || 'example',
+            PASSWORD: process.env.POSTGRES_PASSWORD || 'example',
+            DATABASE: process.env.POSTGRES_DATABASE || 'example',
+            PORT: process.env.POSTGRES_PORT || '5432',
+            HOST: process.env.POSTGRES_HOST || 'localhost',
         },
         REDIS: {
-            PORT: process.env.REDIS_PORT || "6379",
-            HOST: process.env.REDIS_HOST || "localhost",
-            USER: process.env.REDIS_USER || "default",
-            PASSWORD: process.env.REDIS_PASSWORD || "example",
+            PORT: process.env.REDIS_PORT || '6379',
+            HOST: process.env.REDIS_HOST || 'localhost',
+            USER: process.env.REDIS_USER || 'default',
+            PASSWORD: process.env.REDIS_PASSWORD || 'example',
         },
         APP: {
-            PORT: process.env.APP_PORT || "3000",
+            PORT: process.env.APP_PORT || '3000',
             DEBUG:
-                process.env.APP_DEBUG === "true"
+                process.env.APP_DEBUG === 'true'
                     ? true
-                    : process.env.APP_DEBUG === "false"
+                    : process.env.APP_DEBUG === 'false'
                     ? false
                     : true,
         },

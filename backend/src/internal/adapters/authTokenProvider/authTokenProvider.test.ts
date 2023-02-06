@@ -1,16 +1,16 @@
-import { after, before, describe, it } from "node:test";
-import * as assert from "assert";
-import { AuthTokenProvider } from "./authTokenProvider";
-import { RedisController } from "../../db/redis";
-import { LoadEnv } from "../../config";
+import { after, before, describe, it } from 'node:test';
+import * as assert from 'assert';
+import { AuthTokenProvider } from './authTokenProvider';
+import { RedisController } from '../../db/redis';
+import { LoadEnv } from '../../config';
 
 let authTokenStorage: AuthTokenProvider;
 let redisController: RedisController;
 const testValue = JSON.stringify({
-    some: "test",
+    some: 'test',
 });
 
-describe("auth token storage", async function () {
+describe('auth token storage', async function () {
     before(async () => {
         const config = LoadEnv();
 
@@ -19,12 +19,12 @@ describe("auth token storage", async function () {
         authTokenStorage = new AuthTokenProvider(redisController);
     });
 
-    describe("tests", () => {
+    describe('tests', () => {
         after(async () => {
             await redisController.disconnect();
         });
 
-        it("setNew default", async function () {
+        it('setNew default', async function () {
             const res = await authTokenStorage.setNew(testValue);
             console.log(res);
             if (!res) {
@@ -42,8 +42,8 @@ describe("auth token storage", async function () {
             assert.ok(true);
         });
 
-        it("setNew empty", async function () {
-            const res = await authTokenStorage.setNew(""); // TODO
+        it('setNew empty', async function () {
+            const res = await authTokenStorage.setNew(''); // TODO
             console.log(res);
             if (!res) {
                 assert.ok(false);
@@ -53,7 +53,7 @@ describe("auth token storage", async function () {
             assert.ok(true);
         });
 
-        it("refresh default", async function () {
+        it('refresh default', async function () {
             const res = await authTokenStorage.setNew(testValue);
             console.log(res);
             if (!res) {

@@ -1,19 +1,19 @@
-import { after, before, describe, it } from "node:test";
-import { LoadEnv } from "../../../config";
-import { NewDevLogger } from "../../../../pkg/logger";
-import { NewDataSource } from "../../../db/postgres";
-import { DataSource } from "typeorm";
-import { UserService } from "./user.service";
-import { User } from "../../../db/postgres/user.models";
-import { getUserDTO, updateUserDTO } from "./dto";
-import assert from "assert";
-import { Beda } from "../../../../pkg/beda/Beda";
-import { Exceptions } from "../../exceptions/exceptions";
+import { after, before, describe, it } from 'node:test';
+import { LoadEnv } from '../../../config';
+import { NewDevLogger } from '../../../../pkg/logger';
+import { NewDataSource } from '../../../db/postgres';
+import { DataSource } from 'typeorm';
+import { UserService } from './user.service';
+import { User } from '../../../db/postgres/user.models';
+import { getUserDTO, updateUserDTO } from './dto';
+import assert from 'assert';
+import { Beda } from '../../../../pkg/beda/Beda';
+import { Exceptions } from '../../exceptions/exceptions';
 
 let userService: UserService;
 let postgresClient: DataSource;
 
-describe("auth service", async function () {
+describe('auth service', async function () {
     before(async () => {
         const config = LoadEnv();
         const logger = NewDevLogger();
@@ -26,9 +26,9 @@ describe("auth service", async function () {
         await postgresClient.destroy();
     });
 
-    describe("methods", () => {
-        it("should success getUserDTO", async () => {
-            const dto = new getUserDTO("c8bc0626-7934-4729-b550-3983d8f49a25");
+    describe('methods', () => {
+        it('should success getUserDTO', async () => {
+            const dto = new getUserDTO('c8bc0626-7934-4729-b550-3983d8f49a25');
 
             try {
                 await userService.getUser(dto);
@@ -38,15 +38,15 @@ describe("auth service", async function () {
             }
         });
 
-        it("should success getUpdateDTO", async () => {
+        it('should success getUpdateDTO', async () => {
             const dto = new updateUserDTO(
-                "c8bc0626-7934-4729-b550-3983d8f49a25",
-                "test.users.update",
-                "test.users.update",
-                "test.users.update",
+                'c8bc0626-7934-4729-b550-3983d8f49a25',
+                'test.users.update',
+                'test.users.update',
+                'test.users.update',
                 null,
                 null,
-                null
+                null,
             );
 
             try {
@@ -57,20 +57,20 @@ describe("auth service", async function () {
             }
         });
 
-        it("should fail getUpdateDTO", async () => {
+        it('should fail getUpdateDTO', async () => {
             const dto = new updateUserDTO(
-                "c8bc0626-7934-4729-b550-3983d8f49a25",
-                "test.auth.duplicate",
-                "test.users.update",
-                "test.users.update",
+                'c8bc0626-7934-4729-b550-3983d8f49a25',
+                'test.auth.duplicate',
+                'test.users.update',
+                'test.users.update',
                 null,
                 null,
-                null
+                null,
             );
 
             try {
                 await userService.updateUser(dto);
-                assert.fail("should be error");
+                assert.fail('should be error');
             } catch (e) {
                 if (e instanceof Beda) {
                     if (e.getTitle() === Exceptions.UsernameAlreadyExist) {
@@ -85,16 +85,16 @@ describe("auth service", async function () {
         });
     });
 
-    describe("dto", () => {
-        it("should updateUserDTO success", async () => {
+    describe('dto', () => {
+        it('should updateUserDTO success', async () => {
             const dto = new updateUserDTO(
-                "c8bc0626-7934-4729-b550-3983d8f49a24",
-                "test.auth",
-                "test.auth",
-                "test.auth",
+                'c8bc0626-7934-4729-b550-3983d8f49a24',
+                'test.auth',
+                'test.auth',
+                'test.auth',
                 null,
                 null,
-                null
+                null,
             );
 
             try {
@@ -105,8 +105,8 @@ describe("auth service", async function () {
             }
         });
 
-        it("should getUserDTO success", async () => {
-            const dto = new getUserDTO("c8bc0626-7934-4729-b550-3983d8f49a24");
+        it('should getUserDTO success', async () => {
+            const dto = new getUserDTO('c8bc0626-7934-4729-b550-3983d8f49a24');
 
             try {
                 dto.isValid();

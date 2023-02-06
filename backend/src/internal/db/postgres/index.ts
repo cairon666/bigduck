@@ -1,12 +1,12 @@
-import { Config } from "../../config";
-import { Credential } from "./credential.models";
-import { DataSource } from "typeorm";
-import { User } from "./user.models";
-import { Quizzes } from "./quizzes.models";
+import { Config } from '../../config';
+import { Credential } from './credential.models';
+import { DataSource } from 'typeorm';
+import { User } from './user.models';
+import { Quizzes } from './quizzes.models';
 
 export async function NewDataSource(conf: Config): Promise<DataSource> {
     const AppDataSource = new DataSource({
-        type: "postgres",
+        type: 'postgres',
         host: conf.POSTGRES.HOST,
         port: Number(conf.POSTGRES.PORT),
         username: conf.POSTGRES.USER,

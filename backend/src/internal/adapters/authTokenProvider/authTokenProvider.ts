@@ -1,5 +1,5 @@
-import { RedisController } from "../../db/redis";
-import * as CryptoJS from "crypto-js";
+import { RedisController } from '../../db/redis';
+import * as CryptoJS from 'crypto-js';
 
 const hourInSecond = 60 * 60;
 
@@ -12,12 +12,12 @@ interface TokenRefreshUnit {
 export class AuthTokenProvider {
     private redis: RedisController;
 
-    constructor(redis: RedisController) {
+    public constructor(redis: RedisController) {
         this.redis = redis;
     }
 
     public async setNew(
-        value: string
+        value: string,
     ): Promise<{ access: string; refresh: string }> {
         const accessToken = this.generateHash(value + Date.now());
         const refreshToken = this.generateHash(accessToken);
@@ -40,7 +40,7 @@ export class AuthTokenProvider {
     }
 
     public async refresh(
-        refreshToken: string
+        refreshToken: string,
     ): Promise<{ accessToken: string } | null> {
         const res = await this.redis.GET(refreshToken);
 
@@ -76,11 +76,11 @@ export class AuthTokenProvider {
     }
 
     private generateHash(value: string): string {
-        const privateKey = "12345678";
+        const privateKey = '12345678';
         const hashDigest = CryptoJS.SHA256(value);
         const hmacDigest = Buffer.from(
-            CryptoJS.HmacSHA256(hashDigest, privateKey).toString()
-        ).toString("base64");
+            CryptoJS.HmacSHA256(hashDigest, privateKey).toString(),
+        ).toString('base64');
         return hmacDigest;
     }
 }

@@ -1,5 +1,5 @@
-import { date, number, object, string } from "yup";
-import { Exceptions } from "./exceptions";
+import { date, number, object, string } from 'yup';
+import { Exceptions } from './exceptions';
 
 export const Valid = {
     id_user: string().uuid(Exceptions.IdNotUUID),
@@ -11,8 +11,8 @@ export const Valid = {
     first_name: string().min(4, Exceptions.FirstNameShort),
     second_name: string().min(4, Exceptions.SecondNameShort),
     name: string().min(4, Exceptions.NameShort),
-    avatar_url: string().default("https://domain.domain/default.avatar.url"),
-    intro_url: string().default("https://domain.domain/default.intro.url"),
+    avatar_url: string().default('https://domain.domain/default.avatar.url'),
+    intro_url: string().default('https://domain.domain/default.intro.url'),
     day_of_birth: date(),
     gender: string(),
     phone: string(),

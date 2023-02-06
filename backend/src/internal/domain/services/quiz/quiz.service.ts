@@ -1,6 +1,6 @@
-import { Logger } from "../../../../pkg/logger";
-import { Brackets, QueryFailedError, Repository } from "typeorm";
-import { Quizzes } from "../../../db/postgres/quizzes.models";
+import { Logger } from '../../../../pkg/logger';
+import { Brackets, QueryFailedError, Repository } from 'typeorm';
+import { Quizzes } from '../../../db/postgres/quizzes.models';
 import {
     createQuizDTO,
     createQuizResponseDTO,
@@ -10,30 +10,30 @@ import {
     getQuizzesOrder,
     getQuizzesResponseDTO,
     updateQuizDTO,
-} from "./dto";
-import { Beda } from "../../../../pkg/beda/Beda";
-import { CodeError, Exceptions } from "../../exceptions/exceptions";
-import { PG_UNIQUE_VIOLATION } from "@drdgvhbh/postgres-error-codes";
+} from './dto';
+import { Beda } from '../../../../pkg/beda/Beda';
+import { CodeError, Exceptions } from '../../exceptions/exceptions';
+import { PG_UNIQUE_VIOLATION } from '@drdgvhbh/postgres-error-codes';
 
 export class QuizService {
     private logger: Logger;
     private quizRepo: Repository<Quizzes>;
 
-    static page_size = 10;
+    public static page_size = 10;
 
-    constructor(logger: Logger, quizRepo: Repository<Quizzes>) {
+    public constructor(logger: Logger, quizRepo: Repository<Quizzes>) {
         this.logger = logger;
         this.quizRepo = quizRepo;
     }
 
     public async createQuiz(
-        dto: createQuizDTO
+        dto: createQuizDTO,
     ): Promise<createQuizResponseDTO> {
         dto.isValid();
 
         try {
             const res = await this.quizRepo
-                .createQueryBuilder("quiz")
+                .createQueryBuilder('quiz')
                 .insert()
                 .values({
                     id_owner: dto.id_owner,
@@ -46,7 +46,7 @@ export class QuizService {
                     tts: dto.tts,
                     tte: dto.tte,
                 })
-                .returning("id")
+                .returning('id')
                 .execute();
             return new createQuizResponseDTO(res.raw[0].id);
         } catch (e) {
@@ -56,15 +56,15 @@ export class QuizService {
                 switch (err.code) {
                     case PG_UNIQUE_VIOLATION:
                         switch (err.constraint) {
-                            case "quizzes_name_uniq":
+                            case 'quizzes_name_uniq':
                                 throw new Beda(
                                     Exceptions.NameAlreadyExist,
-                                    CodeError.AlreadyExist
+                                    CodeError.AlreadyExist,
                                 );
                             default:
                                 throw new Beda(
                                     Exceptions.SomeAlreadyExist,
-                                    CodeError.AlreadyExist
+                                    CodeError.AlreadyExist,
                                 );
                         }
                     default:
@@ -76,14 +76,14 @@ export class QuizService {
     }
 
     public async getQuizzes(
-        dto: getQuizzesDTO
+        dto: getQuizzesDTO,
     ): Promise<getQuizzesResponseDTO> {
         dto.isValid();
 
         let query = this.quizRepo
-            .createQueryBuilder("quiz")
+            .createQueryBuilder('quiz')
             .select()
-            .where("id_owner = :id_owner", { id_owner: dto.id_owner })
+            .where('id_owner = :id_owner', { id_owner: dto.id_owner })
             .andWhere(
                 new Brackets((qb) => {
                     (
@@ -92,7 +92,7 @@ export class QuizService {
                         const value = dto.filter[key];
                         qb.orWhere(`${key} ~ :${key}`, { [key]: value });
                     });
-                })
+                }),
             )
             .limit(QuizService.page_size)
             .offset(QuizService.page_size * (dto.page - 1));
@@ -117,7 +117,7 @@ export class QuizService {
                     tts: quiz.tts,
                     tte: quiz.tte,
                 })),
-                count
+                count,
             );
         } catch (e) {
             throw new Beda(Exceptions.Database, CodeError.Database);
@@ -142,7 +142,7 @@ export class QuizService {
 
         try {
             await this.quizRepo
-                .createQueryBuilder("quiz")
+                .createQueryBuilder('quiz')
                 .update()
                 .set({
                     name: dto.set.name,
@@ -153,8 +153,8 @@ export class QuizService {
                     tts: dto.set.tts,
                     tte: dto.set.tte,
                 })
-                .where("id = :id", { id: dto.id_quiz })
-                .andWhere("id_owner = :id_owner", { id_owner: dto.id_owner })
+                .where('id = :id', { id: dto.id_quiz })
+                .andWhere('id_owner = :id_owner', { id_owner: dto.id_owner })
                 .execute();
         } catch (e) {
             throw new Beda(Exceptions.Database, CodeError.Database);

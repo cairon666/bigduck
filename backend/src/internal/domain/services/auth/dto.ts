@@ -1,7 +1,7 @@
-import { Beda } from "../../../../pkg/beda/Beda";
-import { CodeError, Exceptions } from "../../exceptions/exceptions";
-import { boolean, object, ValidationError } from "yup";
-import { Valid } from "../../exceptions/valid";
+import { Beda } from '../../../../pkg/beda/Beda';
+import { CodeError, Exceptions } from '../../exceptions/exceptions';
+import { boolean, object, ValidationError } from 'yup';
+import { Valid } from '../../exceptions/valid';
 
 const registerSchemeDTO = object({
     login: Valid.login.required(Exceptions.LoginRequired),
@@ -19,20 +19,20 @@ const registerSchemeDTO = object({
 });
 
 export class RegisterDTO {
-    login: string;
-    password: string;
-    is_staff: boolean;
-    is_admin: boolean;
-    phone: string | null;
-    email: string;
-    username: string;
-    first_name: string;
-    second_name: string;
-    avatar_url: string | null;
-    day_of_birth: Date | null;
-    gender: string | null;
+    public login: string;
+    public password: string;
+    public is_staff: boolean;
+    public is_admin: boolean;
+    public phone: string | null;
+    public email: string;
+    public username: string;
+    public first_name: string;
+    public second_name: string;
+    public avatar_url: string | null;
+    public day_of_birth: Date | null;
+    public gender: string | null;
 
-    constructor(
+    public constructor(
         login: string,
         password: string,
         is_staff: boolean,
@@ -44,7 +44,7 @@ export class RegisterDTO {
         second_name: string,
         avatar_url: string | null,
         day_of_birth: Date | null,
-        gender: string | null
+        gender: string | null,
     ) {
         this.login = login;
         this.password = password;
@@ -60,7 +60,7 @@ export class RegisterDTO {
         this.gender = gender;
     }
 
-    isValid() {
+    public isValid() {
         try {
             registerSchemeDTO.validateSync(this, { abortEarly: false });
         } catch (e) {
@@ -84,12 +84,12 @@ export class LoginDTO {
     public login: string;
     public password: string;
 
-    constructor(login: string, password: string) {
+    public constructor(login: string, password: string) {
         this.login = login;
         this.password = password;
     }
 
-    isValid() {
+    public isValid() {
         try {
             loginShemeDTO.validateSync(this, { abortEarly: false });
         } catch (e) {
@@ -109,7 +109,7 @@ export class LoginResponseDTO {
     public is_staff: boolean;
     public is_admin: boolean;
 
-    constructor(id: string, is_staff: boolean, is_admin: boolean) {
+    public constructor(id: string, is_staff: boolean, is_admin: boolean) {
         this.id = id;
         this.is_staff = is_staff;
         this.is_admin = is_admin;

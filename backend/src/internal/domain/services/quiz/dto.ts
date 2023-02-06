@@ -1,8 +1,8 @@
-import Duration from "@icholy/duration";
-import { date, object, string, ValidationError } from "yup";
-import { Beda } from "../../../../pkg/beda/Beda";
-import { CodeError, Exceptions } from "../../exceptions/exceptions";
-import { Valid } from "../../exceptions/valid";
+import Duration from '@icholy/duration';
+import { date, object, string, ValidationError } from 'yup';
+import { Beda } from '../../../../pkg/beda/Beda';
+import { CodeError, Exceptions } from '../../exceptions/exceptions';
+import { Valid } from '../../exceptions/valid';
 
 export interface Quiz {
     id: number;
@@ -40,7 +40,7 @@ export class createQuizDTO {
     public tts: Date | null;
     public tte: Date | null;
 
-    constructor(
+    public constructor(
         id_owner: string,
         name: string,
         title: string,
@@ -49,7 +49,7 @@ export class createQuizDTO {
         date_create: Date,
         ttl: Duration | null,
         tts: Date | null,
-        tte: Date | null
+        tte: Date | null,
     ) {
         this.id_owner = id_owner;
         this.name = name;
@@ -62,7 +62,7 @@ export class createQuizDTO {
         this.tte = tte;
     }
 
-    isValid() {
+    public isValid() {
         try {
             createQuizScheme.validateSync(this, { abortEarly: false });
         } catch (e) {
@@ -80,12 +80,12 @@ export class createQuizDTO {
 export class createQuizResponseDTO {
     public id: number;
 
-    constructor(id: number) {
+    public constructor(id: number) {
         this.id = id;
     }
 }
 
-export type OrderType = "DESC" | "ASC";
+export type OrderType = 'DESC' | 'ASC';
 
 export interface getQuizzesFilter {
     name?: string;
@@ -94,7 +94,7 @@ export interface getQuizzesFilter {
 }
 
 export type getQuizzesOrder = Partial<
-    Record<"date_create" | "name" | "title" | "description" | "ttl", OrderType>
+    Record<'date_create' | 'name' | 'title' | 'description' | 'ttl', OrderType>
 >;
 
 const getQuizzesScheme = object({
@@ -108,11 +108,11 @@ export class getQuizzesDTO {
     public filter: getQuizzesFilter;
     public order: getQuizzesOrder;
 
-    constructor(
+    public constructor(
         id_owner: string,
         page: number,
         filter: getQuizzesFilter,
-        order: getQuizzesOrder
+        order: getQuizzesOrder,
     ) {
         this.id_owner = id_owner;
         this.page = page;
@@ -120,7 +120,7 @@ export class getQuizzesDTO {
         this.order = order;
     }
 
-    isValid() {
+    public isValid() {
         try {
             getQuizzesScheme.validateSync(this, { abortEarly: false });
         } catch (e) {
@@ -139,7 +139,7 @@ export class getQuizzesResponseDTO {
     public quizzes: Quiz[];
     public count: number;
 
-    constructor(quizzes: Quiz[], count: number) {
+    public constructor(quizzes: Quiz[], count: number) {
         this.quizzes = quizzes;
         this.count = count;
     }
@@ -154,12 +154,12 @@ export class deleteQuizDTO {
     public id: number;
     public id_owner: string;
 
-    constructor(id: number, id_owner: string) {
+    public constructor(id: number, id_owner: string) {
         this.id = id;
         this.id_owner = id_owner;
     }
 
-    isValid() {
+    public isValid() {
         try {
             deleteQuizScheme.validateSync(this, { abortEarly: false });
         } catch (e) {
@@ -203,13 +203,13 @@ export class updateQuizDTO {
     public id_owner: string;
     public set: updateQuizSet;
 
-    constructor(id_quiz: number, id_owner: string, set: updateQuizSet) {
+    public constructor(id_quiz: number, id_owner: string, set: updateQuizSet) {
         this.id_quiz = id_quiz;
         this.id_owner = id_owner;
         this.set = set;
     }
 
-    isValid() {
+    public isValid() {
         try {
             updateQuizScheme.validateSync(this, { abortEarly: false });
         } catch (e) {

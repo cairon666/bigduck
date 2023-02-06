@@ -1,61 +1,61 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity("credentials")
+@Entity('credentials')
 export class Credential {
     @PrimaryColumn({
-        type: "uuid",
-        name: "id",
+        type: 'uuid',
+        name: 'id',
     })
     public id: string;
 
     @Column({
-        type: "text",
-        name: "login",
+        type: 'text',
+        name: 'login',
     })
     public login: string;
 
     @Column({
-        type: "text",
-        name: "password_hash",
+        type: 'text',
+        name: 'password_hash',
     })
     public password_hash: string;
 
     @Column({
-        type: "boolean",
-        name: "is_staff",
+        type: 'boolean',
+        name: 'is_staff',
         default: false,
     })
     public is_staff: boolean;
 
     @Column({
-        type: "boolean",
-        name: "is_admin",
+        type: 'boolean',
+        name: 'is_admin',
         default: false,
     })
     public is_admin: boolean;
 
     @Column({
-        type: "text",
-        name: "phone",
+        type: 'text',
+        name: 'phone',
         nullable: true,
     })
     public phone: string | null;
 
     @Column({
-        type: "text",
-        name: "email",
+        type: 'text',
+        name: 'email',
         unique: true,
     })
     public email: string;
 
-    constructor(
+    public constructor(
         id: string,
         login: string,
         password_hash: string,
         is_staff: boolean,
         is_admin: boolean,
         phone: string | null,
-        email: string
+        email: string,
     ) {
         this.id = id;
         this.login = login;

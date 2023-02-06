@@ -1,7 +1,7 @@
-import { object, ValidationError } from "yup";
-import { Beda } from "../../../../pkg/beda/Beda";
-import { CodeError, Exceptions } from "../../exceptions/exceptions";
-import { Valid } from "../../exceptions/valid";
+import { object, ValidationError } from 'yup';
+import { Beda } from '../../../../pkg/beda/Beda';
+import { CodeError, Exceptions } from '../../exceptions/exceptions';
+import { Valid } from '../../exceptions/valid';
 
 const updateUserScheme = object({
     username: Valid.username.required(Exceptions.UsernameRequired),
@@ -21,14 +21,14 @@ export class updateUserDTO {
     public day_of_birth: Date | null;
     public gender: string | null;
 
-    constructor(
+    public constructor(
         id: string,
         username: string,
         first_name: string,
         second_name: string,
         avatar_url: string | null,
         day_of_birth: Date | null,
-        gender: string | null
+        gender: string | null,
     ) {
         this.id = id;
         this.username = username;
@@ -39,7 +39,7 @@ export class updateUserDTO {
         this.gender = gender;
     }
 
-    isValid() {
+    public isValid() {
         try {
             updateUserScheme.validateSync(this, { abortEarly: false });
         } catch (e) {
@@ -61,11 +61,11 @@ const getUserScheme = object({
 export class getUserDTO {
     public id: string;
 
-    constructor(id: string) {
+    public constructor(id: string) {
         this.id = id;
     }
 
-    isValid() {
+    public isValid() {
         try {
             getUserScheme.validateSync(this, { abortEarly: false });
         } catch (e) {
@@ -93,7 +93,7 @@ export interface UserResponse {
 export class getUserRequestDTO {
     public user: UserResponse;
 
-    constructor(user: UserResponse) {
+    public constructor(user: UserResponse) {
         this.user = user;
     }
 }

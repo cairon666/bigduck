@@ -1,8 +1,8 @@
-import { Request, Response, Router } from "express";
-import { QuizService } from "../domain/services/quiz/quiz.service";
-import { parseAndSendError, sendJson } from "./utils";
-import { AuthContext } from "./auth.context";
-import { HttpStatus } from "../../pkg/http-status";
+import { Request, Response, Router } from 'express';
+import { QuizService } from '../domain/services/quiz/quiz.service';
+import { parseAndSendError, sendJson } from './utils';
+import { AuthContext } from './auth.context';
+import { HttpStatus } from '../../pkg/http-status';
 import {
     createQuizDTO,
     deleteQuizDTO,
@@ -11,29 +11,29 @@ import {
     getQuizzesOrder,
     updateQuizDTO,
     updateQuizSet,
-} from "../domain/services/quiz/dto";
-import Duration from "@icholy/duration";
+} from '../domain/services/quiz/dto';
+import Duration from '@icholy/duration';
 
 export class QuizRouter {
     private quizService: QuizService;
 
-    constructor(quizService: QuizService) {
+    public constructor(quizService: QuizService) {
         this.quizService = quizService;
     }
 
     public router(): Router {
         const r = Router();
 
-        r.get("/api/v1/user/:id/quizzes", this.getQuizzes.bind(this));
-        r.post("/api/v1/user/:id/quiz", this.createQuiz.bind(this));
+        r.get('/api/v1/user/:id/quizzes', this.getQuizzes.bind(this));
+        r.post('/api/v1/user/:id/quiz', this.createQuiz.bind(this));
         // r.get("/api/v1/user/:id_or_name_owner/quiz/:id_or_name_quiz") TODO
         r.put(
-            "/api/v1/user/:id_owner/quiz/:id_quiz",
-            this.updateQuiz.bind(this)
+            '/api/v1/user/:id_owner/quiz/:id_quiz',
+            this.updateQuiz.bind(this),
         );
         r.delete(
-            "/api/v1/user/:id_owner/quiz/:id_quiz",
-            this.deleteQuiz.bind(this)
+            '/api/v1/user/:id_owner/quiz/:id_quiz',
+            this.deleteQuiz.bind(this),
         );
 
         return r;
@@ -54,7 +54,7 @@ export class QuizRouter {
                 new Date(),
                 req.body.ttl ? new Duration(req.body.ttl) : null,
                 req.body.tts ? new Date(req.body.tts) : null,
-                req.body.tte ? new Date(req.body.tte) : null
+                req.body.tte ? new Date(req.body.tte) : null,
             );
 
             const res = await this.quizService.createQuiz(dto);
@@ -64,7 +64,7 @@ export class QuizRouter {
                 {
                     id: res.id,
                 },
-                HttpStatus.OK
+                HttpStatus.OK,
             );
         } catch (e) {
             parseAndSendError(e, resp);
@@ -72,17 +72,17 @@ export class QuizRouter {
         resp.end();
     }
 
-    possibleFilter: (keyof getQuizzesFilter)[] = [
-        "name",
-        "title",
-        "description",
+    public possibleFilter: (keyof getQuizzesFilter)[] = [
+        'name',
+        'title',
+        'description',
     ];
-    possibleOrder: (keyof getQuizzesOrder)[] = [
-        "date_create",
-        "name",
-        "title",
-        "description",
-        "ttl",
+    public possibleOrder: (keyof getQuizzesOrder)[] = [
+        'date_create',
+        'name',
+        'title',
+        'description',
+        'ttl',
     ];
 
     private async getQuizzes(req: Request, resp: Response) {
@@ -95,7 +95,7 @@ export class QuizRouter {
             //  parse filter props
             this.possibleFilter.forEach((key) => {
                 const value = req.query[key];
-                if (value && typeof value === "string") {
+                if (value && typeof value === 'string') {
                     filter[key] = value;
                 }
             });
@@ -105,17 +105,17 @@ export class QuizRouter {
             const orderObj = req.query.order;
             if (
                 orderObj &&
-                typeof orderObj === "object" &&
+                typeof orderObj === 'object' &&
                 !Array.isArray(orderObj)
             ) {
                 this.possibleOrder.forEach((key) => {
                     const value = orderObj[key];
-                    if (value && typeof value === "string") {
-                        order[key] = value === "DESC" ? "DESC" : "ASC";
+                    if (value && typeof value === 'string') {
+                        order[key] = value === 'DESC' ? 'DESC' : 'ASC';
                     }
                 });
             } else {
-                order["date_create"] = "DESC"; // TODO: date_modify
+                order['date_create'] = 'DESC'; // TODO: date_modify
             }
 
             const dto = new getQuizzesDTO(id, page, filter, order);
@@ -128,7 +128,7 @@ export class QuizRouter {
                     quizzes: res.quizzes,
                     count: res.count,
                 },
-                HttpStatus.OK
+                HttpStatus.OK,
             );
         } catch (e) {
             parseAndSendError(e, resp);
@@ -144,7 +144,7 @@ export class QuizRouter {
             AuthContext.checkAccessIdOrAdmin(req, id_owner);
 
             await this.quizService.deleteQuiz(
-                new deleteQuizDTO(id_quiz, id_owner)
+                new deleteQuizDTO(id_quiz, id_owner),
             );
 
             resp.status(HttpStatus.NO_CONTENT);
@@ -162,17 +162,17 @@ export class QuizRouter {
             AuthContext.checkAccessIdOrAdmin(req, id_owner);
 
             const set: updateQuizSet = {
-                name: req.body.name || "",
-                title: req.body.title || "",
-                description: req.body.description || "",
-                intro_url: req.body.intro_url || "",
+                name: req.body.name || '',
+                title: req.body.title || '',
+                description: req.body.description || '',
+                intro_url: req.body.intro_url || '',
                 ttl: req.body.ttl ? new Duration(req.body.ttl) : null,
                 tts: req.body.tts ? new Date(req.body.tts) : null,
                 tte: req.body.tte ? new Date(req.body.tte) : null,
             };
 
             await this.quizService.updateQuiz(
-                new updateQuizDTO(id_quiz, id_owner, set)
+                new updateQuizDTO(id_quiz, id_owner, set),
             );
 
             resp.status(HttpStatus.NO_CONTENT);

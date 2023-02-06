@@ -1,7 +1,7 @@
-import { Beda } from "../../pkg/beda/Beda";
-import { Response } from "express";
-import { HttpStatus } from "../../pkg/http-status";
-import { CodeError } from "../domain/exceptions/exceptions";
+import { Beda } from '../../pkg/beda/Beda';
+import { Response } from 'express';
+import { HttpStatus } from '../../pkg/http-status';
+import { CodeError } from '../domain/exceptions/exceptions';
 
 export interface AuthStorageUnit {
     id: string;
@@ -9,8 +9,8 @@ export interface AuthStorageUnit {
     is_staff: boolean;
 }
 
-export const NameCookieAccess = "accessToken";
-export const NameCookieRefresh = "refreshToken";
+export const NameCookieAccess = 'accessToken';
+export const NameCookieRefresh = 'refreshToken';
 
 export function parseAndSendError(e: unknown, resp: Response) {
     if (e instanceof Beda) {
@@ -21,18 +21,18 @@ export function parseAndSendError(e: unknown, resp: Response) {
                 details: e.getDesc(),
                 code: e.getCode(),
             },
-            HttpStatus.BAD_REQUEST
+            HttpStatus.BAD_REQUEST,
         );
     } else {
         console.error(e);
         sendError(
             resp,
             {
-                error: "Unknown error",
+                error: 'Unknown error',
                 details: [],
                 code: CodeError.Unknown,
             },
-            HttpStatus.BAD_REQUEST
+            HttpStatus.BAD_REQUEST,
         );
     }
 }

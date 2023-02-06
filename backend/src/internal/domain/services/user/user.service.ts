@@ -1,21 +1,21 @@
-import { QueryFailedError, Repository } from "typeorm";
-import { User } from "../../../db/postgres/user.models";
+import { QueryFailedError, Repository } from 'typeorm';
+import { User } from '../../../db/postgres/user.models';
 import {
     getUserDTO,
     getUserRequestDTO,
     updateUserDTO,
     UserResponse,
-} from "./dto";
-import { Beda } from "../../../../pkg/beda/Beda";
-import { CodeError, Exceptions } from "../../exceptions/exceptions";
-import { PG_UNIQUE_VIOLATION } from "@drdgvhbh/postgres-error-codes";
-import { Logger } from "../../../../pkg/logger";
+} from './dto';
+import { Beda } from '../../../../pkg/beda/Beda';
+import { CodeError, Exceptions } from '../../exceptions/exceptions';
+import { PG_UNIQUE_VIOLATION } from '@drdgvhbh/postgres-error-codes';
+import { Logger } from '../../../../pkg/logger';
 
 export class UserService {
-    logger: Logger;
-    userRepo: Repository<User>;
+    private logger: Logger;
+    private userRepo: Repository<User>;
 
-    constructor(logger: Logger, userRepo: Repository<User>) {
+    public constructor(logger: Logger, userRepo: Repository<User>) {
         this.logger = logger;
         this.userRepo = userRepo;
     }
@@ -25,7 +25,7 @@ export class UserService {
 
         try {
             await this.userRepo
-                .createQueryBuilder("user")
+                .createQueryBuilder('user')
                 .update()
                 .set({
                     username: dto.username,
@@ -35,7 +35,7 @@ export class UserService {
                     day_of_birth: dto.day_of_birth,
                     gender: dto.gender,
                 })
-                .where("id = :id", { id: dto.id })
+                .where('id = :id', { id: dto.id })
                 .execute();
         } catch (e) {
             if (e instanceof QueryFailedError) {
@@ -43,15 +43,15 @@ export class UserService {
                 switch (err.code) {
                     case PG_UNIQUE_VIOLATION:
                         switch (err.constraint) {
-                            case "users_username_uniq":
+                            case 'users_username_uniq':
                                 throw new Beda(
                                     Exceptions.UsernameAlreadyExist,
-                                    CodeError.AlreadyExist
+                                    CodeError.AlreadyExist,
                                 );
                             default:
                                 throw new Beda(
                                     Exceptions.SomeAlreadyExist,
-                                    CodeError.AlreadyExist
+                                    CodeError.AlreadyExist,
                                 );
                         }
                     default:

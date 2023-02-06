@@ -1,19 +1,19 @@
-import { EntityManager, QueryFailedError } from "typeorm";
-import { Credential } from "../../../db/postgres/credential.models";
-import { User } from "../../../db/postgres/user.models";
-import { LoginDTO, LoginResponseDTO, RegisterDTO } from "./dto";
-import { CodeError, Exceptions } from "../../exceptions/exceptions";
-import { v4 as uuidv4 } from "uuid";
-import { Beda } from "../../../../pkg/beda/Beda";
-import { Logger } from "../../../../pkg/logger";
-import { compareSync, genSaltSync, hashSync } from "bcryptjs";
-import { PG_UNIQUE_VIOLATION } from "@drdgvhbh/postgres-error-codes";
+import { EntityManager, QueryFailedError } from 'typeorm';
+import { Credential } from '../../../db/postgres/credential.models';
+import { User } from '../../../db/postgres/user.models';
+import { LoginDTO, LoginResponseDTO, RegisterDTO } from './dto';
+import { CodeError, Exceptions } from '../../exceptions/exceptions';
+import { v4 as uuidv4 } from 'uuid';
+import { Beda } from '../../../../pkg/beda/Beda';
+import { Logger } from '../../../../pkg/logger';
+import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
+import { PG_UNIQUE_VIOLATION } from '@drdgvhbh/postgres-error-codes';
 
 export class AuthService {
     private managerStorage: EntityManager;
     private logger: Logger;
 
-    constructor(logger: Logger, managerStorage: EntityManager) {
+    public constructor(logger: Logger, managerStorage: EntityManager) {
         this.managerStorage = managerStorage;
         this.logger = logger;
     }
@@ -32,7 +32,7 @@ export class AuthService {
             dto.is_staff,
             dto.is_admin,
             dto.phone,
-            dto.email
+            dto.email,
         );
         const user = new User(
             uuid,
@@ -41,7 +41,7 @@ export class AuthService {
             dto.second_name,
             dto.avatar_url,
             dto.day_of_birth,
-            dto.gender
+            dto.gender,
         );
 
         try {
@@ -55,25 +55,25 @@ export class AuthService {
                 switch (err.code) {
                     case PG_UNIQUE_VIOLATION:
                         switch (err.constraint) {
-                            case "users_username_uniq":
+                            case 'users_username_uniq':
                                 throw new Beda(
                                     Exceptions.UsernameAlreadyExist,
-                                    CodeError.AlreadyExist
+                                    CodeError.AlreadyExist,
                                 );
-                            case "credentials_login_uniq":
+                            case 'credentials_login_uniq':
                                 throw new Beda(
                                     Exceptions.LoginAlreadyExist,
-                                    CodeError.AlreadyExist
+                                    CodeError.AlreadyExist,
                                 );
-                            case "credentials_email_uniq":
+                            case 'credentials_email_uniq':
                                 throw new Beda(
                                     Exceptions.EmailAlreadyExist,
-                                    CodeError.AlreadyExist
+                                    CodeError.AlreadyExist,
                                 );
                             default:
                                 throw new Beda(
                                     Exceptions.SomeAlreadyExist,
-                                    CodeError.AlreadyExist
+                                    CodeError.AlreadyExist,
                                 );
                         }
                     default:

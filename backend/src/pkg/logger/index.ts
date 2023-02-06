@@ -3,12 +3,12 @@ import {
     format,
     Logger as WinstonLogger,
     transports,
-} from "winston";
+} from 'winston';
 
 export class Logger {
     private l: WinstonLogger;
 
-    constructor(l: WinstonLogger) {
+    public constructor(l: WinstonLogger) {
         this.l = l;
     }
 
@@ -32,15 +32,15 @@ export class Logger {
 export function NewDevLogger(): Logger {
     return new Logger(
         createLogger({
-            level: "info",
+            level: 'info',
             format: format.json(),
-            defaultMeta: { service: "backend" },
+            defaultMeta: { service: 'backend' },
             transports: [
                 new transports.Console({
                     format: format.json(),
-                    level: "debug",
+                    level: 'debug',
                 }),
             ],
-        })
+        }),
     );
 }

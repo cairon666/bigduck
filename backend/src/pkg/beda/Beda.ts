@@ -3,7 +3,7 @@ export class Beda extends Error {
     private readonly code: number;
     private readonly details: string[];
 
-    constructor(title: string, code: number) {
+    public constructor(title: string, code: number) {
         super(title);
 
         // https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/useonlythebuiltinerror.russian.md
@@ -16,23 +16,23 @@ export class Beda extends Error {
         Error.captureStackTrace(this);
     }
 
-    addDesc(detail: string) {
+    public addDesc(detail: string) {
         this.details.push(detail);
     }
 
-    getTitle(): string {
+    public getTitle(): string {
         return this.title;
     }
 
-    getDesc(): string[] {
+    public getDesc(): string[] {
         return this.details;
     }
 
-    getCode(): number {
+    public getCode(): number {
         return this.code;
     }
 
-    isEmpty(): boolean {
+    public isEmpty(): boolean {
         return !this.details.length;
     }
 }

@@ -1,63 +1,63 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
-import { Credential } from "./credential.models";
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Credential } from './credential.models';
 
-@Entity("users")
+@Entity('users')
 export class User {
     @PrimaryColumn({
-        type: "uuid",
-        name: "id",
+        type: 'uuid',
+        name: 'id',
     })
     @OneToMany(() => Credential, (credential) => credential.id)
-    id: string;
+    public id: string;
 
     @Column({
-        type: "text",
-        name: "username",
+        type: 'text',
+        name: 'username',
         unique: true,
     })
-    username: string;
+    public username: string;
 
     @Column({
-        type: "text",
-        name: "first_name",
+        type: 'text',
+        name: 'first_name',
     })
-    first_name: string;
+    public first_name: string;
 
     @Column({
-        type: "text",
-        name: "second_name",
+        type: 'text',
+        name: 'second_name',
     })
-    second_name: string;
+    public second_name: string;
 
     @Column({
-        type: "text",
-        name: "avatar_url",
+        type: 'text',
+        name: 'avatar_url',
         nullable: true,
     })
-    avatar_url: string | null;
+    public avatar_url: string | null;
 
     @Column({
-        type: "date",
-        name: "day_of_birth",
+        type: 'date',
+        name: 'day_of_birth',
         nullable: true,
     })
-    day_of_birth: Date | null;
+    public day_of_birth: Date | null;
 
     @Column({
-        type: "text",
-        name: "gender",
+        type: 'text',
+        name: 'gender',
         nullable: true,
     })
-    gender: string | null;
+    public gender: string | null;
 
-    constructor(
+    public constructor(
         id: string,
         username: string,
         first_name: string,
         second_name: string,
         avatar_url: string | null,
         day_of_birth: Date | null,
-        gender: string | null
+        gender: string | null,
     ) {
         this.id = id;
         this.username = username;

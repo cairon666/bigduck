@@ -41,7 +41,7 @@ create table public.quizzes
     ttl         text, -- https://github.com/icholy/Duration.js
     tts         timestamptz,
     tte         timestamptz
---  is_visible  boolean TODO
+--  is_show  boolean default true TODO
 );
 
 
@@ -51,16 +51,19 @@ create table public.quiz_attachments
     quiz_owner integer references public.quizzes (id),
     url        text not null,
     name       text not null,
+    is_show    boolean default true,
     size       text not null
 );
 
 create table public.quiz_questions
 (
     id         serial primary key,
-    quiz_owner integer references public.quizzes (id),
+    id_user_owner integer references public.credentials (id),
+    id_quiz_owner integer references public.quizzes (id),
     title      text          not null,
     type       question_type not null,
     data       jsonb         not null
+    date_modify timestamptz default now()
 );
 
 

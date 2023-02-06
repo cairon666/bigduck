@@ -1,18 +1,18 @@
-import { after, before, describe, it } from "node:test";
-import { NewDataSource } from "../../../db/postgres";
-import { AuthService } from "./auth.service";
-import { LoadEnv } from "../../../config";
-import { DataSource } from "typeorm";
-import { NewDevLogger } from "../../../../pkg/logger";
-import { LoginDTO, RegisterDTO } from "./dto";
-import assert from "assert";
-import { Beda } from "../../../../pkg/beda/Beda";
-import { Exceptions } from "../../exceptions/exceptions";
+import { after, before, describe, it } from 'node:test';
+import { NewDataSource } from '../../../db/postgres';
+import { AuthService } from './auth.service';
+import { LoadEnv } from '../../../config';
+import { DataSource } from 'typeorm';
+import { NewDevLogger } from '../../../../pkg/logger';
+import { LoginDTO, RegisterDTO } from './dto';
+import assert from 'assert';
+import { Beda } from '../../../../pkg/beda/Beda';
+import { Exceptions } from '../../exceptions/exceptions';
 
 let authService: AuthService;
 let postgresClient: DataSource;
 
-describe("auth service", async function () {
+describe('auth service', async function () {
     before(async () => {
         const config = LoadEnv();
         const logger = NewDevLogger();
@@ -25,21 +25,21 @@ describe("auth service", async function () {
         await postgresClient.destroy();
     });
 
-    describe("methods", () => {
-        it("should success register and login", async () => {
+    describe('methods', () => {
+        it('should success register and login', async () => {
             const regDTO = new RegisterDTO(
-                "test.auth",
-                "test.auth",
+                'test.auth',
+                'test.auth',
                 false,
                 false,
                 null,
-                "test.auth@email.com",
-                "test.auth",
-                "test.auth",
-                "test.auth",
+                'test.auth@email.com',
+                'test.auth',
+                'test.auth',
+                'test.auth',
                 null,
                 null,
-                null
+                null,
             );
 
             try {
@@ -49,7 +49,7 @@ describe("auth service", async function () {
                 return;
             }
 
-            const loginDTO = new LoginDTO("test.auth", "test.auth");
+            const loginDTO = new LoginDTO('test.auth', 'test.auth');
 
             try {
                 await authService.Login(loginDTO);
@@ -59,8 +59,8 @@ describe("auth service", async function () {
             }
         });
 
-        it("should success login", async () => {
-            const loginDTO = new LoginDTO("test.auth.duplicate", "super_test1");
+        it('should success login', async () => {
+            const loginDTO = new LoginDTO('test.auth.duplicate', 'super_test1');
 
             try {
                 await authService.Login(loginDTO);
@@ -70,10 +70,10 @@ describe("auth service", async function () {
             }
         });
 
-        it("should bad password login", async () => {
+        it('should bad password login', async () => {
             const loginDTO = new LoginDTO(
-                "test.auth.duplicate",
-                "test.auth.duplicate"
+                'test.auth.duplicate',
+                'test.auth.duplicate',
             );
 
             try {
@@ -91,75 +91,75 @@ describe("auth service", async function () {
             }
         });
 
-        it("should error duplicate register", async () => {
+        it('should error duplicate register', async () => {
             const regDTO = new RegisterDTO(
-                "test.auth.duplicate",
-                "test.auth.duplicate",
+                'test.auth.duplicate',
+                'test.auth.duplicate',
                 false,
                 false,
                 null,
-                "test.auth.duplicate@email.com",
-                "test.auth.duplicate",
-                "test.auth.duplicate",
-                "test.auth.duplicate",
+                'test.auth.duplicate@email.com',
+                'test.auth.duplicate',
+                'test.auth.duplicate',
+                'test.auth.duplicate',
                 null,
                 null,
-                null
+                null,
             );
 
             try {
                 await authService.Register(regDTO);
-                assert.fail("should error");
+                assert.fail('should error');
             } catch (e) {
                 assert.ok(true);
                 return;
             }
         });
 
-        it("should error duplicate email", async () => {
+        it('should error duplicate email', async () => {
             const regDTO = new RegisterDTO(
-                "test.auth.duplicate1",
-                "test.auth.duplicate",
+                'test.auth.duplicate1',
+                'test.auth.duplicate',
                 false,
                 false,
                 null,
-                "test.auth.duplicate@email.com",
-                "test.auth.duplicate",
-                "test.auth.duplicate",
-                "test.auth.duplicate",
+                'test.auth.duplicate@email.com',
+                'test.auth.duplicate',
+                'test.auth.duplicate',
+                'test.auth.duplicate',
                 null,
                 null,
-                null
+                null,
             );
 
             try {
                 await authService.Register(regDTO);
-                assert.fail("should error");
+                assert.fail('should error');
             } catch (e) {
                 assert.ok(true);
                 return;
             }
         });
 
-        it("should error duplicate username", async () => {
+        it('should error duplicate username', async () => {
             const regDTO = new RegisterDTO(
-                "test.auth.duplicate1",
-                "test.auth.duplicate",
+                'test.auth.duplicate1',
+                'test.auth.duplicate',
                 false,
                 false,
                 null,
-                "test.auth.duplicate@email.com2",
-                "test.auth.duplicate",
-                "test.auth.duplicate",
-                "test.auth.duplicate",
+                'test.auth.duplicate@email.com2',
+                'test.auth.duplicate',
+                'test.auth.duplicate',
+                'test.auth.duplicate',
                 null,
                 null,
-                null
+                null,
             );
 
             try {
                 await authService.Register(regDTO);
-                assert.fail("should error");
+                assert.fail('should error');
             } catch (e) {
                 assert.ok(true);
                 return;
@@ -167,22 +167,22 @@ describe("auth service", async function () {
         });
     });
 
-    describe("dto", () => {
-        it("should success RegisterDTO valid", () => {
+    describe('dto', () => {
+        it('should success RegisterDTO valid', () => {
             try {
                 const dto = new RegisterDTO(
-                    "test.auth",
-                    "test.auth",
+                    'test.auth',
+                    'test.auth',
                     false,
                     false,
                     null,
-                    "test.auth@email.com",
-                    "test.auth",
-                    "test.auth",
-                    "test.auth",
+                    'test.auth@email.com',
+                    'test.auth',
+                    'test.auth',
+                    'test.auth',
                     null,
                     null,
-                    null
+                    null,
                 );
                 dto.isValid();
             } catch (e) {
@@ -190,43 +190,43 @@ describe("auth service", async function () {
             }
         });
 
-        it("should success LoginDTO valid", () => {
+        it('should success LoginDTO valid', () => {
             try {
-                const dto = new LoginDTO("test.auth", "test.auth");
+                const dto = new LoginDTO('test.auth', 'test.auth');
                 dto.isValid();
             } catch (e) {
                 assert.fail((e as Error).message);
             }
         });
 
-        it("should invalid loginDTO error", () => {
+        it('should invalid loginDTO error', () => {
             try {
-                const dto = new LoginDTO("", "");
+                const dto = new LoginDTO('', '');
                 dto.isValid();
-                assert.fail("should error");
+                assert.fail('should error');
             } catch (e) {
                 assert.ok(true);
             }
         });
 
-        it("should invalid registerDTO error", () => {
+        it('should invalid registerDTO error', () => {
             try {
                 const dto = new RegisterDTO(
-                    "",
-                    "",
+                    '',
+                    '',
                     false,
                     false,
                     null,
-                    "",
-                    "",
-                    "",
-                    "",
+                    '',
+                    '',
+                    '',
+                    '',
                     null,
                     null,
-                    null
+                    null,
                 );
                 dto.isValid();
-                assert.fail("should error");
+                assert.fail('should error');
             } catch (e) {
                 assert.ok(true);
             }

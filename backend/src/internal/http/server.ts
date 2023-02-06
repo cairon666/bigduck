@@ -10,16 +10,22 @@ import {UserRouter} from "./user.router";
 import cookieParser from "cookie-parser";
 import {AuthStorageUnit, NameCookieAccess} from "./utils";
 import {AuthContext} from "./auth.context";
+import {QuizService} from "../domain/services/quiz/quiz.service";
+import {QuizRouter} from "./quiz.router";
 
 export class HTTPServer {
-    private authService: AuthService
-    private authTokenProvider: AuthTokenProvider
     private config: Config
     private logger: Logger
+
+    private authService: AuthService
+    private authTokenProvider: AuthTokenProvider
     private userService: UserService
+    private quizService: QuizService
 
     private authRouter: AuthRouter
     private userRouter: UserRouter
+    private quizRouter: QuizRouter
+
     public app: Application
 
     constructor(
@@ -27,16 +33,19 @@ export class HTTPServer {
         logger: Logger,
         AuthTokenProvider: AuthTokenProvider,
         authService: AuthService,
-        userService: UserService
+        userService: UserService,
+        quizService: QuizService
     ) {
         this.config = conf
         this.logger = logger
         this.authService = authService
         this.authTokenProvider = AuthTokenProvider
         this.userService = userService
+        this.quizService = quizService
 
         this.userRouter = new UserRouter(this.userService)
         this.authRouter = new AuthRouter(this.authTokenProvider, this.authService)
+        this.quizRouter = new QuizRouter(this.quizService)
 
         this.app = express()
     }
@@ -46,6 +55,7 @@ export class HTTPServer {
         this.app.use("", this.authCookieMiddleware.bind(this))
         this.app.use("", this.userRouter.router())
         this.app.use("", this.authRouter.router())
+        this.app.use("", this.quizRouter.router())
     }
 
     public run(): http.Server {

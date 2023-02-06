@@ -2,6 +2,7 @@ import {Config} from "../../config";
 import {Credential} from "./credential.models";
 import {DataSource} from "typeorm";
 import {User} from "./user.models";
+import {Quizzes} from "./quizzes.models";
 
 export async function NewDataSource(conf: Config): Promise<DataSource> {
     const AppDataSource = new DataSource({
@@ -15,6 +16,7 @@ export async function NewDataSource(conf: Config): Promise<DataSource> {
         entities: [
             Credential,
             User,
+            Quizzes
         ],
         subscribers: [],
         migrations: [],

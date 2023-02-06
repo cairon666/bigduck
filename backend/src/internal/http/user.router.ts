@@ -1,6 +1,6 @@
 import {json, Request, Response, Router} from "express";
 import {UserService} from "../domain/services/user/user.service";
-import {AuthStorageUnit, parseAndSendError, sendJson} from "./utils";
+import {parseAndSendError, sendJson} from "./utils";
 import {AuthContext} from "./auth.context";
 import {HttpStatus} from "../../pkg/http-status";
 import {getUserDTO, updateUserDTO} from "../domain/services/user/dto";
@@ -16,8 +16,10 @@ export class UserRouter {
         const r = Router()
 
         r.use("/api/v1/user/*", json())
-        r.post("/api/v1/user/:id", this.postUserHandler.bind(this))
+        r.put("/api/v1/user/:id", this.postUserHandler.bind(this))
         r.get("/api/v1/user/:id", this.getUserHandler.bind(this))
+        // r.delete("/api/v1/user/:id") TODO
+        // r.get("/api/v1/users?page=1&....") TODO
 
         return r
     }
@@ -26,12 +28,7 @@ export class UserRouter {
         try {
             const id = req.params.id
 
-            const authUnit: AuthStorageUnit | undefined = AuthContext.get(req)?.unit
-            if (!authUnit || (authUnit.id !== id && !authUnit.is_admin)) {
-                resp.status(HttpStatus.FORBIDDEN)
-                resp.end()
-                return
-            }
+            AuthContext.checkAccessIdOrAdmin(req, id)
 
             const dto: updateUserDTO = new updateUserDTO(
                 id,
@@ -58,7 +55,7 @@ export class UserRouter {
 
             const res = await this.userService.getUser(new getUserDTO(id))
 
-            sendJson(resp,{
+            sendJson(resp, {
                 user: res.user,
             }, HttpStatus.OK)
         } catch (e) {

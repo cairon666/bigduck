@@ -1,22 +1,16 @@
-import {date, object, string, ValidationError} from "yup";
+import {object, ValidationError} from "yup";
 import {Beda} from "../../../../pkg/beda/Beda";
 import {CodeError, Exceptions} from "../../exceptions/exceptions";
+import {Valid} from "../../exceptions/valid";
 
 const updateUserScheme = object({
-    username: string()
-        .required(Exceptions.UsernameRequired)
-        .min(4, Exceptions.UsernameShort),
-    first_name: string()
-        .required(Exceptions.FirstNameRequired)
-        .min(4, Exceptions.FirstNameShort),
-    second_name: string()
-        .required(Exceptions.SecondNameRequired)
-        .min(4, Exceptions.SecondNameShort),
-    avatar_url: string().nullable(),
-    day_of_birth: date().nullable(),
-    gender: string().nullable(),
+    username: Valid.username.required(Exceptions.UsernameRequired),
+    first_name: Valid.first_name.required(Exceptions.FirstNameRequired),
+    second_name: Valid.second_name.required(Exceptions.SecondNameRequired),
+    avatar_url: Valid.avatar_url.nullable(),
+    day_of_birth: Valid.day_of_birth.nullable(),
+    gender: Valid.gender.nullable(),
 })
-
 
 export class updateUserDTO {
     public id: string
@@ -61,9 +55,7 @@ export class updateUserDTO {
 }
 
 const getUserScheme = object({
-    id: string()
-        .uuid(Exceptions.IdNotUUID)
-        .required(Exceptions.IdRequired)
+    id: Valid.id_user.required(Exceptions.IdRequired)
 })
 
 export class getUserDTO {

@@ -63,9 +63,6 @@ export class UserService {
             })
         } catch (e) {
             console.error(e)
-            if (e instanceof QueryFailedError) {
-                throw new Beda(Exceptions.Database, CodeError.Database)
-            }
             throw new Beda(Exceptions.Database, CodeError.Database)
         }
 

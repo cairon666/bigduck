@@ -84,14 +84,16 @@ export class AuthRouter {
 
             resp.setHeader("Set-Cookie", [
                 serialize("accessToken", res.accessToken, {
-                    path: "/",
+                    path: "/api",
                     maxAge: 60 * 60,
+                    // sameSite: "strict",
                     // secure: true,
                     // httpOnly: true,
                 }),
                 serialize("refreshToken", req.cookies.refreshToken, {
-                    path: "/",
+                    path: "/api",
                     maxAge: 1000 * 60 * 15,
+                    // sameSite: "strict",
                     // secure: true,
                     // httpOnly: true,
                 })])

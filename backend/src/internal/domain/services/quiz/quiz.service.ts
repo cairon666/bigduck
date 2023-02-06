@@ -1,34 +1,35 @@
-import {Logger} from "../../../../pkg/logger";
-import {Brackets, QueryFailedError, Repository} from "typeorm";
-import {Quizzes} from "../../../db/postgres/quizzes.models";
+import { Logger } from "../../../../pkg/logger";
+import { Brackets, QueryFailedError, Repository } from "typeorm";
+import { Quizzes } from "../../../db/postgres/quizzes.models";
 import {
     createQuizDTO,
-    createQuizResponseDTO, deleteQuizDTO,
+    createQuizResponseDTO,
+    deleteQuizDTO,
     getQuizzesDTO,
     getQuizzesFilter,
     getQuizzesOrder,
-    getQuizzesResponseDTO, updateQuizDTO
+    getQuizzesResponseDTO,
+    updateQuizDTO,
 } from "./dto";
-import {Beda} from "../../../../pkg/beda/Beda";
-import {CodeError, Exceptions} from "../../exceptions/exceptions";
-import {PG_UNIQUE_VIOLATION} from "@drdgvhbh/postgres-error-codes";
+import { Beda } from "../../../../pkg/beda/Beda";
+import { CodeError, Exceptions } from "../../exceptions/exceptions";
+import { PG_UNIQUE_VIOLATION } from "@drdgvhbh/postgres-error-codes";
 
 export class QuizService {
-    private logger: Logger
-    private quizRepo: Repository<Quizzes>
+    private logger: Logger;
+    private quizRepo: Repository<Quizzes>;
 
-    static page_size = 10
+    static page_size = 10;
 
-    constructor(
-        logger: Logger,
-        quizRepo: Repository<Quizzes>
-    ) {
-        this.logger = logger
-        this.quizRepo = quizRepo
+    constructor(logger: Logger, quizRepo: Repository<Quizzes>) {
+        this.logger = logger;
+        this.quizRepo = quizRepo;
     }
 
-    public async createQuiz(dto: createQuizDTO): Promise<createQuizResponseDTO> {
-        dto.isValid()
+    public async createQuiz(
+        dto: createQuizDTO
+    ): Promise<createQuizResponseDTO> {
+        dto.isValid();
 
         try {
             const res = await this.quizRepo
@@ -46,56 +47,63 @@ export class QuizService {
                     tte: dto.tte,
                 })
                 .returning("id")
-                .execute()
-            return new createQuizResponseDTO(res.raw[0].id)
+                .execute();
+            return new createQuizResponseDTO(res.raw[0].id);
         } catch (e) {
-            console.log(e)
+            console.log(e);
             if (e instanceof QueryFailedError) {
-                const err: any = e
+                const err: any = e;
                 switch (err.code) {
                     case PG_UNIQUE_VIOLATION:
                         switch (err.constraint) {
                             case "quizzes_name_uniq":
-                                throw new Beda(Exceptions.NameAlreadyExist, CodeError.AlreadyExist)
+                                throw new Beda(
+                                    Exceptions.NameAlreadyExist,
+                                    CodeError.AlreadyExist
+                                );
                             default:
-                                throw new Beda(Exceptions.SomeAlreadyExist, CodeError.AlreadyExist)
+                                throw new Beda(
+                                    Exceptions.SomeAlreadyExist,
+                                    CodeError.AlreadyExist
+                                );
                         }
                     default:
-                        throw new Beda(Exceptions.Database, CodeError.Database)
+                        throw new Beda(Exceptions.Database, CodeError.Database);
                 }
             }
-            throw new Beda(Exceptions.Database, CodeError.Database)
+            throw new Beda(Exceptions.Database, CodeError.Database);
         }
-
-
     }
 
-    public async getQuizzes(dto: getQuizzesDTO): Promise<getQuizzesResponseDTO> {
-        dto.isValid()
+    public async getQuizzes(
+        dto: getQuizzesDTO
+    ): Promise<getQuizzesResponseDTO> {
+        dto.isValid();
 
         let query = this.quizRepo
             .createQueryBuilder("quiz")
             .select()
-            .where("id_owner = :id_owner", {id_owner: dto.id_owner})
+            .where("id_owner = :id_owner", { id_owner: dto.id_owner })
             .andWhere(
                 new Brackets((qb) => {
-                    (Object.keys(dto.filter) as (keyof getQuizzesFilter)[])
-                        .forEach((key) => {
-                            const value = dto.filter[key]
-                            qb.orWhere(`${key} ~ :${key}`, {[key]: value})
-                        })
+                    (
+                        Object.keys(dto.filter) as (keyof getQuizzesFilter)[]
+                    ).forEach((key) => {
+                        const value = dto.filter[key];
+                        qb.orWhere(`${key} ~ :${key}`, { [key]: value });
+                    });
                 })
             )
             .limit(QuizService.page_size)
             .offset(QuizService.page_size * (dto.page - 1));
 
         (Object.keys(dto.order) as (keyof getQuizzesOrder)[]).forEach((key) => {
-            const value = dto.order[key]
-            query = query.addOrderBy(key, value)
-        })
+            const value = dto.order[key];
+            query = query.addOrderBy(key, value);
+        });
 
         try {
-            const [quizzes, count] = await query.getManyAndCount()
+            const [quizzes, count] = await query.getManyAndCount();
             return new getQuizzesResponseDTO(
                 quizzes.map((quiz) => ({
                     id: quiz.id,
@@ -110,27 +118,27 @@ export class QuizService {
                     tte: quiz.tte,
                 })),
                 count
-            )
+            );
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database)
+            throw new Beda(Exceptions.Database, CodeError.Database);
         }
     }
 
     public async deleteQuiz(dto: deleteQuizDTO): Promise<void> {
-        dto.isValid()
+        dto.isValid();
 
         try {
             await this.quizRepo.delete({
                 id: dto.id,
-                id_owner: dto.id_owner
-            })
+                id_owner: dto.id_owner,
+            });
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database)
+            throw new Beda(Exceptions.Database, CodeError.Database);
         }
     }
 
     public async updateQuiz(dto: updateQuizDTO): Promise<void> {
-        dto.isValid()
+        dto.isValid();
 
         try {
             await this.quizRepo
@@ -143,15 +151,15 @@ export class QuizService {
                     intro_url: dto.set.intro_url,
                     ttl: dto.set.ttl ? dto.set.ttl.toString() : null,
                     tts: dto.set.tts,
-                    tte: dto.set.tte
+                    tte: dto.set.tte,
                 })
-                .where("id = :id", {id: dto.id_quiz})
-                .andWhere("id_owner = :id_owner", {id_owner: dto.id_owner})
-                .execute()
+                .where("id = :id", { id: dto.id_quiz })
+                .andWhere("id_owner = :id_owner", { id_owner: dto.id_owner })
+                .execute();
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database)
+            throw new Beda(Exceptions.Database, CodeError.Database);
         }
 
-        return
+        return;
     }
 }

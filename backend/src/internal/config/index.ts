@@ -1,21 +1,21 @@
 export interface Config {
     POSTGRES: {
-        PASSWORD: string
-        USER: string
-        DATABASE: string
-        PORT: string
-        HOST: string
-    }
+        PASSWORD: string;
+        USER: string;
+        DATABASE: string;
+        PORT: string;
+        HOST: string;
+    };
     REDIS: {
-        HOST: string
-        PORT: string
-        USER: string
-        PASSWORD: string
-    }
+        HOST: string;
+        PORT: string;
+        USER: string;
+        PASSWORD: string;
+    };
     APP: {
-        PORT: string,
-        DEBUG: boolean
-    }
+        PORT: string;
+        DEBUG: boolean;
+    };
 }
 
 export function LoadEnv(): Config {
@@ -35,8 +35,12 @@ export function LoadEnv(): Config {
         },
         APP: {
             PORT: process.env.APP_PORT || "3000",
-            DEBUG: process.env.APP_DEBUG === "true" ? true : process.env.APP_DEBUG === "false" ? false : true
-        }
-    }
+            DEBUG:
+                process.env.APP_DEBUG === "true"
+                    ? true
+                    : process.env.APP_DEBUG === "false"
+                    ? false
+                    : true,
+        },
+    };
 }
-

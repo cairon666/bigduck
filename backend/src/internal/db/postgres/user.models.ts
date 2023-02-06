@@ -1,54 +1,54 @@
-import {Column, Entity, OneToMany, PrimaryColumn} from "typeorm";
-import {Credential} from "./credential.models";
+import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
+import { Credential } from "./credential.models";
 
 @Entity("users")
 export class User {
     @PrimaryColumn({
         type: "uuid",
-        name: "id"
+        name: "id",
     })
     @OneToMany(() => Credential, (credential) => credential.id)
-    id: string
+    id: string;
 
     @Column({
         type: "text",
         name: "username",
         unique: true,
     })
-    username: string
+    username: string;
 
     @Column({
         type: "text",
         name: "first_name",
     })
-    first_name: string
+    first_name: string;
 
     @Column({
         type: "text",
         name: "second_name",
     })
-    second_name: string
+    second_name: string;
 
     @Column({
         type: "text",
         name: "avatar_url",
-        nullable: true
+        nullable: true,
     })
-    avatar_url: string | null
+    avatar_url: string | null;
 
     @Column({
         type: "date",
         name: "day_of_birth",
-        nullable: true
+        nullable: true,
     })
-    day_of_birth: Date | null
+    day_of_birth: Date | null;
 
     @Column({
         type: "text",
         name: "gender",
-        nullable: true
+        nullable: true,
     })
-    gender: string | null
+    gender: string | null;
 
     constructor(
         id: string,
@@ -57,14 +57,14 @@ export class User {
         second_name: string,
         avatar_url: string | null,
         day_of_birth: Date | null,
-        gender: string | null,
+        gender: string | null
     ) {
-        this.id = id
-        this.username = username
-        this.first_name = first_name
-        this.second_name = second_name
-        this.avatar_url = avatar_url
-        this.day_of_birth = day_of_birth
-        this.gender = gender
+        this.id = id;
+        this.username = username;
+        this.first_name = first_name;
+        this.second_name = second_name;
+        this.avatar_url = avatar_url;
+        this.day_of_birth = day_of_birth;
+        this.gender = gender;
     }
 }

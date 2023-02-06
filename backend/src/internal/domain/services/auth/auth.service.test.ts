@@ -1,32 +1,32 @@
-import {after, before, describe, it} from "node:test";
-import {NewDataSource} from "../../../db/postgres";
-import {AuthService} from "./auth.service";
-import {LoadEnv} from "../../../config";
-import {DataSource} from "typeorm";
-import {NewDevLogger} from "../../../../pkg/logger";
-import {LoginDTO, RegisterDTO} from "./dto";
+import { after, before, describe, it } from "node:test";
+import { NewDataSource } from "../../../db/postgres";
+import { AuthService } from "./auth.service";
+import { LoadEnv } from "../../../config";
+import { DataSource } from "typeorm";
+import { NewDevLogger } from "../../../../pkg/logger";
+import { LoginDTO, RegisterDTO } from "./dto";
 import assert from "assert";
-import {Beda} from "../../../../pkg/beda/Beda";
-import {Exceptions} from "../../exceptions/exceptions";
+import { Beda } from "../../../../pkg/beda/Beda";
+import { Exceptions } from "../../exceptions/exceptions";
 
-let authService: AuthService
-let postgresClient: DataSource
+let authService: AuthService;
+let postgresClient: DataSource;
 
-describe('auth service', async function () {
+describe("auth service", async function () {
     before(async () => {
-        const config = LoadEnv()
-        const logger = NewDevLogger()
-        config.APP.DEBUG = false
-        postgresClient = await NewDataSource(config)
-        const managerStorage = await postgresClient.manager
-        authService = new AuthService(logger, managerStorage)
-    })
+        const config = LoadEnv();
+        const logger = NewDevLogger();
+        config.APP.DEBUG = false;
+        postgresClient = await NewDataSource(config);
+        const managerStorage = await postgresClient.manager;
+        authService = new AuthService(logger, managerStorage);
+    });
     after(async () => {
-        await postgresClient.destroy()
-    })
+        await postgresClient.destroy();
+    });
 
-    describe('methods', () => {
-        it('should success register and login', async () => {
+    describe("methods", () => {
+        it("should success register and login", async () => {
             const regDTO = new RegisterDTO(
                 "test.auth",
                 "test.auth",
@@ -39,66 +39,59 @@ describe('auth service', async function () {
                 "test.auth",
                 null,
                 null,
-                null,
-            )
+                null
+            );
 
             try {
-                await authService.Register(regDTO)
+                await authService.Register(regDTO);
             } catch (e) {
-                assert.fail(e as Error)
-                return
+                assert.fail((e as Error).message);
+                return;
             }
 
-            const loginDTO = new LoginDTO(
-                "test.auth",
-                "test.auth"
-            )
+            const loginDTO = new LoginDTO("test.auth", "test.auth");
 
             try {
-                await authService.Login(loginDTO)
+                await authService.Login(loginDTO);
             } catch (e) {
-                assert.fail(e as Error)
-                return
+                assert.fail((e as Error).message);
+                return;
             }
         });
 
-        it('should success login', async () => {
-            const loginDTO = new LoginDTO(
-                "test.auth.duplicate",
-                "super_test1"
-            )
+        it("should success login", async () => {
+            const loginDTO = new LoginDTO("test.auth.duplicate", "super_test1");
 
             try {
-                await authService.Login(loginDTO)
-                assert.ok(true)
+                await authService.Login(loginDTO);
+                assert.ok(true);
             } catch (e) {
-                assert.fail(e as Error)
+                assert.fail((e as Error).message);
             }
         });
 
-        it('should bad password login', async () => {
+        it("should bad password login", async () => {
             const loginDTO = new LoginDTO(
                 "test.auth.duplicate",
                 "test.auth.duplicate"
-            )
+            );
 
             try {
-                await authService.Login(loginDTO)
-
+                await authService.Login(loginDTO);
             } catch (e) {
                 if (e instanceof Beda) {
                     if (e.getTitle() === Exceptions.BadPassword) {
-                        assert.ok(true)
+                        assert.ok(true);
                     } else {
-                        assert.fail("should error validate")
+                        assert.fail(e.getTitle());
                     }
                 } else {
-                    assert.fail("should error catch")
+                    assert.fail((e as Error).message);
                 }
             }
         });
 
-        it('should error duplicate register', async () => {
+        it("should error duplicate register", async () => {
             const regDTO = new RegisterDTO(
                 "test.auth.duplicate",
                 "test.auth.duplicate",
@@ -111,19 +104,19 @@ describe('auth service', async function () {
                 "test.auth.duplicate",
                 null,
                 null,
-                null,
-            )
+                null
+            );
 
             try {
-                await authService.Register(regDTO)
-                assert.fail("should error")
+                await authService.Register(regDTO);
+                assert.fail("should error");
             } catch (e) {
-                assert.ok(true)
-                return
+                assert.ok(true);
+                return;
             }
         });
 
-        it('should error duplicate email', async () => {
+        it("should error duplicate email", async () => {
             const regDTO = new RegisterDTO(
                 "test.auth.duplicate1",
                 "test.auth.duplicate",
@@ -136,19 +129,19 @@ describe('auth service', async function () {
                 "test.auth.duplicate",
                 null,
                 null,
-                null,
-            )
+                null
+            );
 
             try {
-                await authService.Register(regDTO)
-                assert.fail("should error")
+                await authService.Register(regDTO);
+                assert.fail("should error");
             } catch (e) {
-                assert.ok(true)
-                return
+                assert.ok(true);
+                return;
             }
         });
 
-        it('should error duplicate username', async () => {
+        it("should error duplicate username", async () => {
             const regDTO = new RegisterDTO(
                 "test.auth.duplicate1",
                 "test.auth.duplicate",
@@ -161,20 +154,20 @@ describe('auth service', async function () {
                 "test.auth.duplicate",
                 null,
                 null,
-                null,
-            )
+                null
+            );
 
             try {
-                await authService.Register(regDTO)
-                assert.fail("should error")
+                await authService.Register(regDTO);
+                assert.fail("should error");
             } catch (e) {
-                assert.ok(true)
-                return
+                assert.ok(true);
+                return;
             }
         });
     });
 
-    describe('dto', () => {
+    describe("dto", () => {
         it("should success RegisterDTO valid", () => {
             try {
                 const dto = new RegisterDTO(
@@ -189,38 +182,32 @@ describe('auth service', async function () {
                     "test.auth",
                     null,
                     null,
-                    null,
-                )
-                dto.isValid()
+                    null
+                );
+                dto.isValid();
             } catch (e) {
-                assert.fail(e as Error)
+                assert.fail((e as Error).message);
             }
-        })
+        });
 
         it("should success LoginDTO valid", () => {
             try {
-                const dto = new LoginDTO(
-                    "test.auth",
-                    "test.auth"
-                )
-                dto.isValid()
+                const dto = new LoginDTO("test.auth", "test.auth");
+                dto.isValid();
             } catch (e) {
-                assert.fail(e as Error)
+                assert.fail((e as Error).message);
             }
-        })
+        });
 
         it("should invalid loginDTO error", () => {
             try {
-                const dto = new LoginDTO(
-                    "",
-                    ""
-                )
-                dto.isValid()
-                assert.fail("should erro")
+                const dto = new LoginDTO("", "");
+                dto.isValid();
+                assert.fail("should error");
             } catch (e) {
-                assert.ok(true)
+                assert.ok(true);
             }
-        })
+        });
 
         it("should invalid registerDTO error", () => {
             try {
@@ -236,13 +223,13 @@ describe('auth service', async function () {
                     "",
                     null,
                     null,
-                    null,
-                )
-                dto.isValid()
-                assert.fail("should error")
+                    null
+                );
+                dto.isValid();
+                assert.fail("should error");
             } catch (e) {
-                assert.ok(true)
+                assert.ok(true);
             }
-        })
+        });
     });
 });

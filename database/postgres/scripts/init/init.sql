@@ -40,7 +40,7 @@ create table public.quizzes
 --  date_modify timestamptz default now(), TODO
     ttl         text, -- https://github.com/icholy/Duration.js
     tts         timestamptz,
-    tte         timestamptz,
+    tte         timestamptz
 --  is_visible  boolean TODO
 );
 

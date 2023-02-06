@@ -1,7 +1,7 @@
-import {object, ValidationError} from "yup";
-import {Beda} from "../../../../pkg/beda/Beda";
-import {CodeError, Exceptions} from "../../exceptions/exceptions";
-import {Valid} from "../../exceptions/valid";
+import { object, ValidationError } from "yup";
+import { Beda } from "../../../../pkg/beda/Beda";
+import { CodeError, Exceptions } from "../../exceptions/exceptions";
+import { Valid } from "../../exceptions/valid";
 
 const updateUserScheme = object({
     username: Valid.username.required(Exceptions.UsernameRequired),
@@ -10,16 +10,16 @@ const updateUserScheme = object({
     avatar_url: Valid.avatar_url.nullable(),
     day_of_birth: Valid.day_of_birth.nullable(),
     gender: Valid.gender.nullable(),
-})
+});
 
 export class updateUserDTO {
-    public id: string
-    public username: string
-    public first_name: string
-    public second_name: string
-    public avatar_url: string | null
-    public day_of_birth: Date | null
-    public gender: string | null
+    public id: string;
+    public username: string;
+    public first_name: string;
+    public second_name: string;
+    public avatar_url: string | null;
+    public day_of_birth: Date | null;
+    public gender: string | null;
 
     constructor(
         id: string,
@@ -28,74 +28,72 @@ export class updateUserDTO {
         second_name: string,
         avatar_url: string | null,
         day_of_birth: Date | null,
-        gender: string | null,
+        gender: string | null
     ) {
-        this.id = id
-        this.username = username
-        this.first_name = first_name
-        this.second_name = second_name
-        this.avatar_url = avatar_url
-        this.day_of_birth = day_of_birth
-        this.gender = gender
+        this.id = id;
+        this.username = username;
+        this.first_name = first_name;
+        this.second_name = second_name;
+        this.avatar_url = avatar_url;
+        this.day_of_birth = day_of_birth;
+        this.gender = gender;
     }
 
     isValid() {
         try {
-            updateUserScheme.validateSync(this, {abortEarly: false})
+            updateUserScheme.validateSync(this, { abortEarly: false });
         } catch (e) {
-            const err = new Beda(Exceptions.Validate, CodeError.Valid)
+            const err = new Beda(Exceptions.Validate, CodeError.Valid);
             if (e instanceof ValidationError) {
                 e.errors.forEach((error) => {
-                    err.addDesc(error)
-                })
+                    err.addDesc(error);
+                });
             }
-            throw err
+            throw err;
         }
     }
 }
 
 const getUserScheme = object({
-    id: Valid.id_user.required(Exceptions.IdRequired)
-})
+    id: Valid.id_user.required(Exceptions.IdRequired),
+});
 
 export class getUserDTO {
-    public id: string
+    public id: string;
 
-    constructor(
-        id: string
-    ) {
-        this.id = id
+    constructor(id: string) {
+        this.id = id;
     }
 
     isValid() {
         try {
-            getUserScheme.validateSync(this, {abortEarly: false})
+            getUserScheme.validateSync(this, { abortEarly: false });
         } catch (e) {
-            const err = new Beda(Exceptions.Validate, CodeError.Valid)
+            const err = new Beda(Exceptions.Validate, CodeError.Valid);
             if (e instanceof ValidationError) {
                 e.errors.forEach((error) => {
-                    err.addDesc(error)
-                })
+                    err.addDesc(error);
+                });
             }
-            throw err
+            throw err;
         }
     }
 }
 
 export interface UserResponse {
-    id: string
-    username: string
-    first_name: string
-    second_name: string
-    avatar_url: string | null
-    day_of_birth: Date | null
-    gender: string | null
+    id: string;
+    username: string;
+    first_name: string;
+    second_name: string;
+    avatar_url: string | null;
+    day_of_birth: Date | null;
+    gender: string | null;
 }
 
 export class getUserRequestDTO {
-    public user: UserResponse
+    public user: UserResponse;
 
     constructor(user: UserResponse) {
-        this.user = user
+        this.user = user;
     }
 }

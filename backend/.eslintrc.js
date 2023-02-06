@@ -9,7 +9,8 @@ module.exports = {
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:security/recommended",
-        "plugin:node/recommended"
+        "plugin:node/recommended",
+        "prettier"
     ],
     "overrides": [],
     "parser": "@typescript-eslint/parser",

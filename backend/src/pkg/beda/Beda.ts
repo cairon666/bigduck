@@ -1,38 +1,38 @@
 export class Beda extends Error {
-    private readonly title: string
-    private readonly code: number
-    private readonly details: string[]
+    private readonly title: string;
+    private readonly code: number;
+    private readonly details: string[];
 
     constructor(title: string, code: number) {
-        super(title)
+        super(title);
 
         // https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/useonlythebuiltinerror.russian.md
         Object.setPrototypeOf(this, new.target.prototype); // восстанавливаем цепочку прототипов
 
-        this.title = title
-        this.code = code
-        this.details = []
+        this.title = title;
+        this.code = code;
+        this.details = [];
 
         Error.captureStackTrace(this);
     }
 
     addDesc(detail: string) {
-        this.details.push(detail)
+        this.details.push(detail);
     }
 
     getTitle(): string {
-        return this.title
+        return this.title;
     }
 
     getDesc(): string[] {
-        return this.details
+        return this.details;
     }
 
     getCode(): number {
-        return this.code
+        return this.code;
     }
 
     isEmpty(): boolean {
-        return !this.details.length
+        return !this.details.length;
     }
 }

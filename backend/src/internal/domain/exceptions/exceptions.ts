@@ -1,4 +1,4 @@
-export const NotAllowedError = "NotAllowedError"
+export const NotAllowedError = "NotAllowedError";
 
 export enum Exceptions {
     Validate = "validate error",
@@ -36,7 +36,6 @@ export enum Exceptions {
     PageMin = "page is positive",
     PageRequired = "page is required",
     AccessForbidden = "access forbidden",
-
 }
 
 export enum CodeError {

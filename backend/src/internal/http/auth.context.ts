@@ -1,15 +1,15 @@
-import {AuthStorageUnit} from "./utils";
-import {Request} from "express";
-import {Beda} from "../../pkg/beda/Beda";
-import {CodeError, Exceptions} from "../domain/exceptions/exceptions";
+import { AuthStorageUnit } from "./utils";
+import { Request } from "express";
+import { Beda } from "../../pkg/beda/Beda";
+import { CodeError, Exceptions } from "../domain/exceptions/exceptions";
 
 export class AuthContext {
     static _bindings = new WeakMap<Request, AuthContext>();
 
-    unit: AuthStorageUnit
+    unit: AuthStorageUnit;
 
     constructor(unit: AuthStorageUnit) {
-        this.unit = unit
+        this.unit = unit;
     }
 
     static bind(req: Request, unit: AuthStorageUnit): void {
@@ -23,11 +23,11 @@ export class AuthContext {
 
     // return AuthStorageUnit if access success and throw error if not
     static checkAccessIdOrAdmin(req: Request, id: string): AuthStorageUnit {
-        const authUnit = AuthContext.get(req)?.unit
+        const authUnit = AuthContext.get(req)?.unit;
 
         if (authUnit && (authUnit.id === id || authUnit.is_admin)) {
-            return authUnit
+            return authUnit;
         }
-        throw new Beda(Exceptions.AccessForbidden, CodeError.Forbidden)
+        throw new Beda(Exceptions.AccessForbidden, CodeError.Forbidden);
     }
 }

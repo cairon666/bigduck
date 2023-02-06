@@ -1,6 +1,5 @@
-import {date, number, object, string} from "yup";
-import {Exceptions} from "./exceptions";
-
+import { date, number, object, string } from "yup";
+import { Exceptions } from "./exceptions";
 
 export const Valid = {
     id_user: string().uuid(Exceptions.IdNotUUID),
@@ -21,5 +20,4 @@ export const Valid = {
     date_create: date(),
     ttl: object(),
     page: number().min(1, Exceptions.PageMin),
-
-}
+};

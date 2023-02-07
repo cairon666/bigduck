@@ -30,18 +30,20 @@ create table public.users
 create table public.quizzes
 (
     id          serial primary key,
-    id_owner    uuid not null references public.credentials (id),
-    name        text not null
+    id_owner    uuid    not null references public.credentials (id),
+    name        text    not null
         constraint quizzes_name_uniq unique,
-    title       text not null,
-    description text not null,
-    intro_url   text not null,
-    date_create timestamptz default now(),
---  date_modify timestamptz default now(), TODO
+    title       text    not null,
+    description text    not null,
+    intro_url   text    not null,
+    date_create timestamptz      default now(),
+    date_modify timestamptz      default now(),
     ttl         text, -- https://github.com/icholy/Duration.js
     tts         timestamptz,
-    tte         timestamptz
---  is_show  boolean default true TODO
+    tte         timestamptz,
+    is_show     boolean not null default true,
+    is_strict   boolean not null default false,
+    is_random   boolean not null default false
 );
 
 create table public.quiz_questions

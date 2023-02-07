@@ -1,31 +1,57 @@
 version: "3"
 
 services:
-  database.redis:
-    image: redis:7
+  database_redis:
+    image: redis:7-alpine
     restart: always
     ports:
       - 6379:6379
     volumes:
-      - ../database/redis/data:/data
+      - redis_data:/data
       - ../database/redis/redis.conf:/etc/redis/redis.conf
     command: [ "redis-server", "/etc/redis/redis.conf" ]
-  database.postgres:
-    image: postgres:15
+    networks:
+      - redis
+  database_postgres:
+    image: postgres:15-alpine
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
-      POSTGRES_USER: example
-      POSTGRES_DB: example
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: root
       PGDATA: /var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - '5432:5432'
+    networks:
+      - postgres
     volumes:
-      - ../database/postgres/data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ../database/postgres/scripts/init:/docker-entrypoint-initdb.d
+  database_pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'admin@admin.admin'
+      PGADMIN_DEFAULT_PASSWORD: 'admin'
+      PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: 'False'
+      GUNICORN_ACCESS_LOGFILE: '/dev/null'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    logging:
+      driver: none
+    restart: unless-stopped
+    networks:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
+  redis:
+    driver: bridge
 
 volumes:
-  db:
-    driver: local
-  cache:
-    driver: local
+  pgadmin_data:
+  postgres_data:
+  redis_data:

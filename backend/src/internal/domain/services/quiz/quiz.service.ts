@@ -36,15 +36,8 @@ export class QuizService {
                 .createQueryBuilder('quiz')
                 .insert()
                 .values({
+                    ...dto.quiz,
                     id_owner: dto.id_owner,
-                    name: dto.name,
-                    title: dto.title,
-                    description: dto.description,
-                    intro_url: dto.intro_url,
-                    date_create: dto.date_create,
-                    ttl: dto.ttl ? dto.ttl.toString : null,
-                    tts: dto.tts,
-                    tte: dto.tte,
                 })
                 .returning('id')
                 .execute();
@@ -138,6 +131,10 @@ export class QuizService {
                     ttl: dto.set.ttl ? dto.set.ttl.toString() : null,
                     tts: dto.set.tts,
                     tte: dto.set.tte,
+                    is_show: dto.set.is_show,
+                    is_strict: dto.set.is_strict,
+                    is_random: dto.set.is_random,
+                    date_modify: new Date(),
                 })
                 .where('id = :id', {id: dto.id_quiz})
                 .andWhere('id_owner = :id_owner', {id_owner: dto.id_owner})

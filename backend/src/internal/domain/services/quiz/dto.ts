@@ -16,9 +16,13 @@ export interface Quiz {
     description: string;
     intro_url: string;
     date_create: Date;
+    date_modify: Date;
     ttl: string | null;
     tts: Date | null;
     tte: Date | null;
+    is_show: boolean,
+    is_strict: boolean,
+    is_random: boolean,
 }
 
 export function QuizDBtoQuiz(quiz: Quizzes): Quiz {
@@ -30,43 +34,28 @@ export function QuizDBtoQuiz(quiz: Quizzes): Quiz {
         description: quiz.description,
         intro_url: quiz.intro_url,
         date_create: quiz.date_create,
+        date_modify: quiz.date_modify,
         ttl: quiz.ttl,
         tts: quiz.tts,
         tte: quiz.tte,
+        is_show: quiz.is_show,
+        is_strict: quiz.is_strict,
+        is_random: quiz.is_random,
     }
 }
 
+export type QuizCreate = Omit<Quiz, "date_create" | "date_modify" | "id" | "id_owner">
+
 export class createQuizDTO {
     public id_owner: string;
-    public name: string;
-    public title: string;
-    public description: string;
-    public intro_url: string;
-    public date_create: Date;
-    public ttl: Duration | null;
-    public tts: Date | null;
-    public tte: Date | null;
+    public quiz: QuizCreate
 
     public constructor(
         id_owner: string,
-        name: string,
-        title: string,
-        description: string,
-        intro_url: string,
-        date_create: Date,
-        ttl: Duration | null,
-        tts: Date | null,
-        tte: Date | null,
+        quiz: QuizCreate
     ) {
         this.id_owner = id_owner;
-        this.name = name;
-        this.title = title;
-        this.description = description;
-        this.intro_url = intro_url;
-        this.date_create = date_create;
-        this.ttl = ttl;
-        this.tts = tts;
-        this.tte = tte;
+        this.quiz = quiz
     }
 
     public isValid() {
@@ -86,9 +75,12 @@ export interface getQuizzesFilter {
     name?: string;
     title?: string;
     description?: string;
+    is_show?: boolean,
+    is_strict?: boolean,
+    is_random?: boolean,
 }
 
-export type getQuizzesOrder = getOrder<'date_create' | 'name' | 'title' | 'description' | 'ttl'>
+export type getQuizzesOrder = getOrder<'date_modify' | 'name' | 'title' | 'description' | 'ttl'>
 
 export class getQuizzesDTO {
     public id_owner: string;
@@ -145,6 +137,9 @@ export interface updateQuizSet {
     ttl: Duration | null;
     tts: Date | null;
     tte: Date | null;
+    is_show: boolean,
+    is_strict: boolean,
+    is_random: boolean,
 }
 
 export class updateQuizDTO {

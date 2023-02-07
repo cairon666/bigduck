@@ -56,6 +56,12 @@ export class Quizzes {
     public date_create: Date;
 
     @Column({
+        name: 'date_modify',
+        type: 'timestamptz',
+    })
+    public date_modify: Date;
+
+    @Column({
         name: 'ttl',
         type: 'text',
         nullable: true,
@@ -76,6 +82,24 @@ export class Quizzes {
     })
     public tte: Date | null;
 
+    @Column({
+        name: 'is_show',
+        type: 'boolean',
+    })
+    public is_show: boolean
+
+    @Column({
+        name: 'is_strict',
+        type: 'boolean',
+    })
+    public is_strict: boolean
+
+    @Column({
+        name: 'is_random',
+        type: 'boolean',
+    })
+    public is_random: boolean
+
     public constructor(
         id: number,
         id_owner: string,
@@ -84,9 +108,13 @@ export class Quizzes {
         description: string,
         intro_url: string,
         date_create: Date,
+        date_modify: Date,
         ttl: string | null,
         tts: Date | null,
         tte: Date | null,
+        is_show: boolean,
+        is_strict: boolean,
+        is_random: boolean,
     ) {
         this.id = id;
         this.id_owner = id_owner;
@@ -95,8 +123,12 @@ export class Quizzes {
         this.description = description;
         this.intro_url = intro_url;
         this.date_create = date_create;
+        this.date_modify = date_modify;
         this.ttl = ttl;
         this.tts = tts;
         this.tte = tte;
+        this.is_show = is_show
+        this.is_strict = is_strict
+        this.is_random = is_random
     }
 }

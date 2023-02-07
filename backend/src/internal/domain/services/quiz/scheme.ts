@@ -1,17 +1,21 @@
-import { date, object, string } from 'yup';
+import {boolean, date, object, string} from 'yup';
 import { Valid } from '../../exceptions/valid';
 import { Exceptions } from '../../exceptions/exceptions';
 
 export const createQuizScheme = object({
     id_owner: Valid.id_user.required(Exceptions.IdOwnerRequired),
-    name: Valid.name.required(Exceptions.NameRequired),
-    title: Valid.title.required(Exceptions.TitleRequired),
-    description: string(),
-    intro_url: Valid.intro_url,
-    date_create: Valid.date_create.default(new Date()),
-    ttl: Valid.ttl.nullable(),
-    tts: date().nullable(),
-    tte: date().nullable(),
+    quiz: object({
+        name: Valid.name.required(Exceptions.NameRequired),
+        title: Valid.title.required(Exceptions.TitleRequired),
+        description: string(),
+        intro_url: Valid.intro_url,
+        ttl: Valid.ttl.nullable(),
+        tts: date().nullable(),
+        tte: date().nullable(),
+        is_show: boolean(),
+        is_strict: boolean(),
+        is_random: boolean(),
+    })
 });
 
 export const getQuizzesScheme = object({
@@ -36,6 +40,9 @@ export const updateQuizScheme = object({
         ttl: Valid.ttl.nullable(),
         tts: date().nullable(),
         tte: date().nullable(),
+        is_show: boolean(),
+        is_strict: boolean(),
+        is_random: boolean(),
     }),
 });
 

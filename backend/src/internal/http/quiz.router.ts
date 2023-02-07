@@ -8,11 +8,12 @@ import {
     deleteQuizDTO, getQuizDTO,
     getQuizzesDTO,
     getQuizzesFilter,
-    getQuizzesOrder,
+    getQuizzesOrder, QuizCreate,
     updateQuizDTO,
     updateQuizSet,
 } from '../domain/services/quiz/dto';
 import Duration from '@icholy/duration';
+import {StringToBool} from "../../pkg/utils/bool";
 
 export class QuizRouter {
     private quizService: QuizService;
@@ -67,19 +68,20 @@ export class QuizRouter {
 
             AuthContext.checkAccessIdOrAdmin(req, id);
 
-            const dto = new createQuizDTO(
-                id,
-                req.body.name,
-                req.body.title,
-                req.body.description,
-                req.body.intro_url,
-                new Date(),
-                req.body.ttl ? new Duration(req.body.ttl) : null,
-                req.body.tts ? new Date(req.body.tts) : null,
-                req.body.tte ? new Date(req.body.tte) : null,
-            );
+            const quiz: QuizCreate = {
+                name: req.body.name,
+                title: req.body.title,
+                description: req.body.description,
+                intro_url: req.body.intro_url,
+                ttl: req.body.ttl,
+                tts: req.body.tts,
+                tte: req.body.tte,
+                is_show: req.body.is_show,
+                is_strict: req.body.is_strict,
+                is_random: req.body.is_random,
+            }
 
-            const res = await this.quizService.createQuiz(dto);
+            const res = await this.quizService.createQuiz(new createQuizDTO(id, quiz));
 
             sendJson(
                 resp,
@@ -98,9 +100,12 @@ export class QuizRouter {
         'name',
         'title',
         'description',
+        'is_show',
+        'is_strict',
+        'is_random'
     ];
     public possibleOrder: (keyof getQuizzesOrder)[] = [
-        'date_create',
+        'date_modify',
         'name',
         'title',
         'description',
@@ -118,7 +123,19 @@ export class QuizRouter {
             this.possibleFilter.forEach((key) => {
                 const value = req.query[key];
                 if (value && typeof value === 'string') {
-                    filter[key] = value;
+                    switch (key) {
+                        case "description":
+                        case "name":
+                        case "title":
+                            filter[key] = value
+                            break
+                        case "is_show":
+                        case "is_strict":
+                        case "is_random":
+                            filter[key] = StringToBool(value)
+                    }
+
+
                 }
             });
 
@@ -137,7 +154,7 @@ export class QuizRouter {
                     }
                 });
             } else {
-                order['date_create'] = 'DESC'; // TODO: date_modify
+                order['date_modify'] = 'DESC';
             }
 
             const dto = new getQuizzesDTO(id, page, filter, order);
@@ -191,6 +208,9 @@ export class QuizRouter {
                 ttl: req.body.ttl ? new Duration(req.body.ttl) : null,
                 tts: req.body.tts ? new Date(req.body.tts) : null,
                 tte: req.body.tte ? new Date(req.body.tte) : null,
+                is_show: req.body.is_show,
+                is_strict: req.body.is_strict,
+                is_random: req.body.is_random,
             };
 
             await this.quizService.updateQuiz(

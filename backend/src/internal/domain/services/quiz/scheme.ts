@@ -24,6 +24,7 @@ export const deleteQuizScheme = object({
     id_owner: Valid.id_user.required(Exceptions.IdOwnerRequired),
 });
 
+
 export const updateQuizScheme = object({
     id_quiz: Valid.id_quiz.required(Exceptions.IdQuizRequired),
     id_owner: Valid.id_user.required(Exceptions.IdOwnerRequired),
@@ -36,4 +37,9 @@ export const updateQuizScheme = object({
         tts: date().nullable(),
         tte: date().nullable(),
     }),
+});
+
+export const getQuizScheme = object({
+    id_user: Valid.id_user.required(Exceptions.IdUserRequired),
+    id_quiz: Valid.id_quiz.required(Exceptions.IdQuizRequired),
 });

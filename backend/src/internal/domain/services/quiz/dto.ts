@@ -1,11 +1,12 @@
 import Duration from '@icholy/duration';
-import {getOrder, isValid, OrderType} from '../utils';
+import {getOrder, isValid} from '../utils';
 import {
     createQuizScheme,
-    deleteQuizScheme,
+    deleteQuizScheme, getQuizScheme,
     getQuizzesScheme,
     updateQuizScheme,
 } from './scheme';
+import {Quizzes} from "../../../db/postgres/quizzes.models";
 
 export interface Quiz {
     id: number;
@@ -18,6 +19,21 @@ export interface Quiz {
     ttl: string | null;
     tts: Date | null;
     tte: Date | null;
+}
+
+export function QuizDBtoQuiz(quiz: Quizzes): Quiz {
+    return {
+        id: quiz.id,
+        id_owner: quiz.id_owner,
+        name: quiz.name,
+        title: quiz.title,
+        description: quiz.description,
+        intro_url: quiz.intro_url,
+        date_create: quiz.date_create,
+        ttl: quiz.ttl,
+        tts: quiz.tts,
+        tte: quiz.tte,
+    }
 }
 
 export class createQuizDTO {
@@ -144,5 +160,31 @@ export class updateQuizDTO {
 
     public isValid() {
         isValid(updateQuizScheme, this);
+    }
+}
+
+
+export class getQuizDTO {
+    public id_user: string
+    public id_quiz: number
+
+    public constructor(
+        id_user: string,
+        id_quiz: number,
+    ) {
+        this.id_user = id_user
+        this.id_quiz = id_quiz
+    }
+
+    public isValid() {
+        isValid(getQuizScheme, this);
+    }
+}
+
+export class getQuizResponse {
+    public quiz: Quiz
+
+    public constructor(quiz: Quiz) {
+        this.quiz = quiz
     }
 }

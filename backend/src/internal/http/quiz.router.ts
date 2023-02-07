@@ -1,11 +1,11 @@
-import { Request, Response, Router } from 'express';
-import { QuizService } from '../domain/services/quiz/quiz.service';
-import { parseAndSendError, sendJson } from './utils';
-import { AuthContext } from './auth.context';
-import { HttpStatus } from '../../pkg/http-status';
+import {Request, Response, Router} from 'express';
+import {QuizService} from '../domain/services/quiz/quiz.service';
+import {parseAndSendError, sendJson} from './utils';
+import {AuthContext} from './auth.context';
+import {HttpStatus} from '../../pkg/http-status';
 import {
     createQuizDTO,
-    deleteQuizDTO,
+    deleteQuizDTO, getQuizDTO,
     getQuizzesDTO,
     getQuizzesFilter,
     getQuizzesOrder,
@@ -24,9 +24,9 @@ export class QuizRouter {
     public router(): Router {
         const r = Router();
 
-        r.get('/api/v1/user/:id/quizzes', this.getQuizzes.bind(this));
+        r.get('/api/v1/user/:id/quiz', this.getQuizzes.bind(this));
         r.post('/api/v1/user/:id/quiz', this.createQuiz.bind(this));
-        // r.get("/api/v1/user/:id_or_name_owner/quiz/:id_or_name_quiz") TODO
+        r.get("/api/v1/user/:id_user/quiz/:id_quiz", this.getQuiz.bind(this))
         r.put(
             '/api/v1/user/:id_owner/quiz/:id_quiz',
             this.updateQuiz.bind(this),
@@ -37,6 +37,28 @@ export class QuizRouter {
         );
 
         return r;
+    }
+
+    private async getQuiz(req: Request, resp: Response) {
+        try {
+            const id_user = req.params.id_user;
+            const id_quiz = Number(req.params.id_quiz);
+
+            AuthContext.checkAccessIdOrAdmin(req, id_user);
+
+            const res = await this.quizService.getQuiz(new getQuizDTO(id_user, id_quiz))
+
+            sendJson(
+                resp,
+                {
+                    quiz: res.quiz
+                },
+                HttpStatus.OK,
+            );
+        } catch (e) {
+            parseAndSendError(e, resp);
+        }
+        resp.end();
     }
 
     private async createQuiz(req: Request, resp: Response) {

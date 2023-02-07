@@ -1,19 +1,19 @@
-import { Logger } from '../../../../pkg/logger';
-import { Brackets, QueryFailedError, Repository } from 'typeorm';
-import { Quizzes } from '../../../db/postgres/quizzes.models';
+import {Logger} from '../../../../pkg/logger';
+import {Brackets, QueryFailedError, Repository} from 'typeorm';
+import {Quizzes} from '../../../db/postgres/quizzes.models';
 import {
     createQuizDTO,
     createQuizResponseDTO,
-    deleteQuizDTO,
+    deleteQuizDTO, getQuizDTO, getQuizResponse,
     getQuizzesDTO,
     getQuizzesFilter,
     getQuizzesOrder,
-    getQuizzesResponseDTO,
+    getQuizzesResponseDTO, QuizDBtoQuiz,
     updateQuizDTO,
 } from './dto';
-import { Beda } from '../../../../pkg/beda/Beda';
-import { CodeError, Exceptions } from '../../exceptions/exceptions';
-import { PG_UNIQUE_VIOLATION } from '@drdgvhbh/postgres-error-codes';
+import {Beda} from '../../../../pkg/beda/Beda';
+import {CodeError, Exceptions} from '../../exceptions/exceptions';
+import {PG_UNIQUE_VIOLATION} from '@drdgvhbh/postgres-error-codes';
 
 export class QuizService {
     private logger: Logger;
@@ -83,14 +83,14 @@ export class QuizService {
         let query = this.quizRepo
             .createQueryBuilder('quiz')
             .select()
-            .where('id_owner = :id_owner', { id_owner: dto.id_owner })
+            .where('id_owner = :id_owner', {id_owner: dto.id_owner})
             .andWhere(
                 new Brackets((qb) => {
                     (
                         Object.keys(dto.filter) as (keyof getQuizzesFilter)[]
                     ).forEach((key) => {
                         const value = dto.filter[key];
-                        qb.orWhere(`${key} ~ :${key}`, { [key]: value });
+                        qb.orWhere(`${key} ~ :${key}`, {[key]: value});
                     });
                 }),
             )
@@ -104,21 +104,7 @@ export class QuizService {
 
         try {
             const [quizzes, count] = await query.getManyAndCount();
-            return new getQuizzesResponseDTO(
-                quizzes.map((quiz) => ({
-                    id: quiz.id,
-                    id_owner: quiz.id_owner,
-                    name: quiz.name,
-                    title: quiz.title,
-                    description: quiz.description,
-                    intro_url: quiz.intro_url,
-                    date_create: quiz.date_create,
-                    ttl: quiz.ttl,
-                    tts: quiz.tts,
-                    tte: quiz.tte,
-                })),
-                count,
-            );
+            return new getQuizzesResponseDTO(quizzes.map(QuizDBtoQuiz), count);
         } catch (e) {
             throw new Beda(Exceptions.Database, CodeError.Database);
         }
@@ -153,13 +139,35 @@ export class QuizService {
                     tts: dto.set.tts,
                     tte: dto.set.tte,
                 })
-                .where('id = :id', { id: dto.id_quiz })
-                .andWhere('id_owner = :id_owner', { id_owner: dto.id_owner })
+                .where('id = :id', {id: dto.id_quiz})
+                .andWhere('id_owner = :id_owner', {id_owner: dto.id_owner})
                 .execute();
         } catch (e) {
             throw new Beda(Exceptions.Database, CodeError.Database);
         }
+    }
 
-        return;
+    public async getQuiz(dto: getQuizDTO): Promise<getQuizResponse> {
+        dto.isValid()
+
+        let res: Quizzes | null
+        try {
+            res = await this.quizRepo
+                .createQueryBuilder('quiz')
+                .select()
+                .where({
+                    id: dto.id_quiz,
+                    id_owner: dto.id_user,
+                })
+                .getOne()
+        } catch (e) {
+            throw new Beda(Exceptions.Database, CodeError.Database);
+        }
+
+        if (!res) {
+            throw new Beda(Exceptions.NotFound, CodeError.NotFound);
+        }
+
+        return new getQuizResponse(QuizDBtoQuiz(res))
     }
 }

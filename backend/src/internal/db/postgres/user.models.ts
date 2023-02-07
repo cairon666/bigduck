@@ -50,6 +50,18 @@ export class User {
     })
     public gender: string | null;
 
+    @Column({
+        type: 'timestamptz',
+        name: 'date_create',
+    })
+    public date_create: Date
+
+    @Column({
+        type: 'timestamptz',
+        name: 'date_modify',
+    })
+    public date_modify: Date
+
     public constructor(
         id: string,
         username: string,
@@ -58,6 +70,8 @@ export class User {
         avatar_url: string | null,
         day_of_birth: Date | null,
         gender: string | null,
+        date_create: Date,
+        date_modify: Date,
     ) {
         this.id = id;
         this.username = username;
@@ -66,5 +80,7 @@ export class User {
         this.avatar_url = avatar_url;
         this.day_of_birth = day_of_birth;
         this.gender = gender;
+        this.date_create = date_create;
+        this.date_modify = date_modify;
     }
 }

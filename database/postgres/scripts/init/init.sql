@@ -4,14 +4,14 @@ create type question_type as enum('choose_one','choose_many', 'input');
 -- can be updated only one parameter
 create table public.credentials
 (
-    id            uuid primary key default gen_random_uuid(),
-    login         text    not null
+    id            uuid primary key     default gen_random_uuid(),
+    login         text        not null
         constraint credentials_login_uniq unique,
-    password_hash text    not null,
-    is_staff      boolean not null default false,
-    is_admin      boolean not null default false,
+    password_hash text        not null,
+    is_staff      boolean     not null default false,
+    is_admin      boolean     not null default false,
     phone         text,
-    email         text    not null
+    email         text        not null
         constraint credentials_email_uniq unique
 );
 
@@ -24,7 +24,9 @@ create table public.users
     second_name  text not null,
     avatar_url   text,
     day_of_birth date,
-    gender       gender
+    gender       gender,
+    date_create   timestamptz not null default now(),
+    date_modify   timestamptz not null default now()
 );
 
 create table public.quizzes

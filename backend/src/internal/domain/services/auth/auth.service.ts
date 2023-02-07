@@ -42,6 +42,8 @@ export class AuthService {
             dto.avatar_url,
             dto.day_of_birth,
             dto.gender,
+            new Date(),
+            new Date(),
         );
 
         try {

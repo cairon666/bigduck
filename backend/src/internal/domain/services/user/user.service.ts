@@ -34,6 +34,7 @@ export class UserService {
                     avatar_url: dto.avatar_url,
                     day_of_birth: dto.day_of_birth,
                     gender: dto.gender,
+                    date_modify: new Date(),
                 })
                 .where('id = :id', { id: dto.id })
                 .execute();

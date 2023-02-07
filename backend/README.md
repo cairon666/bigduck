@@ -12,7 +12,7 @@
 - - is_strict   
 - - is_random
 - ⚪ add white list for quiz
-- ⚪ add fields for user ------------------
+- 🟢 add fields for user
 - - date_modify
 - - date_create
 - ⚪ add attachments for quiz

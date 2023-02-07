@@ -1,8 +1,11 @@
 import Duration from '@icholy/duration';
-import { date, object, string, ValidationError } from 'yup';
-import { Beda } from '../../../../pkg/beda/Beda';
-import { CodeError, Exceptions } from '../../exceptions/exceptions';
-import { Valid } from '../../exceptions/valid';
+import {getOrder, isValid, OrderType} from '../utils';
+import {
+    createQuizScheme,
+    deleteQuizScheme,
+    getQuizzesScheme,
+    updateQuizScheme,
+} from './scheme';
 
 export interface Quiz {
     id: number;
@@ -16,18 +19,6 @@ export interface Quiz {
     tts: Date | null;
     tte: Date | null;
 }
-
-const createQuizScheme = object({
-    id_owner: Valid.id_user.required(Exceptions.IdOwnerRequired),
-    name: Valid.name.required(Exceptions.NameRequired),
-    title: Valid.title.required(Exceptions.TitleRequired),
-    description: string(),
-    intro_url: Valid.intro_url,
-    date_create: Valid.date_create.default(new Date()),
-    ttl: Valid.ttl.nullable(),
-    tts: date().nullable(),
-    tte: date().nullable(),
-});
 
 export class createQuizDTO {
     public id_owner: string;
@@ -63,17 +54,7 @@ export class createQuizDTO {
     }
 
     public isValid() {
-        try {
-            createQuizScheme.validateSync(this, { abortEarly: false });
-        } catch (e) {
-            const err = new Beda(Exceptions.Validate, CodeError.Valid);
-            if (e instanceof ValidationError) {
-                e.errors.forEach((error) => {
-                    err.addDesc(error);
-                });
-            }
-            throw err;
-        }
+        isValid(createQuizScheme, this);
     }
 }
 
@@ -85,22 +66,13 @@ export class createQuizResponseDTO {
     }
 }
 
-export type OrderType = 'DESC' | 'ASC';
-
 export interface getQuizzesFilter {
     name?: string;
     title?: string;
     description?: string;
 }
 
-export type getQuizzesOrder = Partial<
-    Record<'date_create' | 'name' | 'title' | 'description' | 'ttl', OrderType>
->;
-
-const getQuizzesScheme = object({
-    id_owner: Valid.id_user.required(Exceptions.IdOwnerRequired),
-    page: Valid.page.required(Exceptions.PageRequired),
-});
+export type getQuizzesOrder = getOrder<'date_create' | 'name' | 'title' | 'description' | 'ttl'>
 
 export class getQuizzesDTO {
     public id_owner: string;
@@ -121,17 +93,7 @@ export class getQuizzesDTO {
     }
 
     public isValid() {
-        try {
-            getQuizzesScheme.validateSync(this, { abortEarly: false });
-        } catch (e) {
-            const err = new Beda(Exceptions.Validate, CodeError.Valid);
-            if (e instanceof ValidationError) {
-                e.errors.forEach((error) => {
-                    err.addDesc(error);
-                });
-            }
-            throw err;
-        }
+        isValid(getQuizzesScheme, this);
     }
 }
 
@@ -145,11 +107,6 @@ export class getQuizzesResponseDTO {
     }
 }
 
-const deleteQuizScheme = object({
-    id: Valid.id_quiz.required(Exceptions.IdRequired),
-    id_owner: Valid.id_user.required(Exceptions.IdOwnerRequired),
-});
-
 export class deleteQuizDTO {
     public id: number;
     public id_owner: string;
@@ -160,17 +117,7 @@ export class deleteQuizDTO {
     }
 
     public isValid() {
-        try {
-            deleteQuizScheme.validateSync(this, { abortEarly: false });
-        } catch (e) {
-            const err = new Beda(Exceptions.Validate, CodeError.Valid);
-            if (e instanceof ValidationError) {
-                e.errors.forEach((error) => {
-                    err.addDesc(error);
-                });
-            }
-            throw err;
-        }
+        isValid(deleteQuizScheme, this);
     }
 }
 
@@ -184,20 +131,6 @@ export interface updateQuizSet {
     tte: Date | null;
 }
 
-const updateQuizScheme = object({
-    id_quiz: Valid.id_quiz.required(Exceptions.IdQuizRequired),
-    id_owner: Valid.id_user.required(Exceptions.IdOwnerRequired),
-    set: object({
-        name: Valid.name.required(Exceptions.NameRequired),
-        title: Valid.title.required(Exceptions.TitleRequired),
-        description: string(),
-        intro_url: Valid.intro_url,
-        ttl: Valid.ttl.nullable(),
-        tts: date().nullable(),
-        tte: date().nullable(),
-    }),
-});
-
 export class updateQuizDTO {
     public id_quiz: number;
     public id_owner: string;
@@ -210,16 +143,6 @@ export class updateQuizDTO {
     }
 
     public isValid() {
-        try {
-            updateQuizScheme.validateSync(this, { abortEarly: false });
-        } catch (e) {
-            const err = new Beda(Exceptions.Validate, CodeError.Valid);
-            if (e instanceof ValidationError) {
-                e.errors.forEach((error) => {
-                    err.addDesc(error);
-                });
-            }
-            throw err;
-        }
+        isValid(updateQuizScheme, this);
     }
 }

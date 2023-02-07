@@ -1,22 +1,8 @@
-import { Beda } from '../../../../pkg/beda/Beda';
-import { CodeError, Exceptions } from '../../exceptions/exceptions';
+import { Exceptions } from '../../exceptions/exceptions';
 import { boolean, object, ValidationError } from 'yup';
 import { Valid } from '../../exceptions/valid';
-
-const registerSchemeDTO = object({
-    login: Valid.login.required(Exceptions.LoginRequired),
-    password: Valid.password.required(Exceptions.PasswordRequired),
-    is_staff: boolean().default(false),
-    is_admin: boolean().default(false),
-    phone: Valid.phone.nullable(),
-    email: Valid.email.required(Exceptions.EmailRequired),
-    username: Valid.username.required(Exceptions.UsernameRequired),
-    first_name: Valid.first_name.required(Exceptions.FirstNameRequired),
-    second_name: Valid.second_name.required(Exceptions.SecondNameRequired),
-    avatar_url: Valid.avatar_url.nullable(),
-    day_of_birth: Valid.day_of_birth.nullable(),
-    gender: Valid.gender.nullable(),
-});
+import { isValid } from '../utils';
+import { loginSchemeDTO, registerSchemeDTO } from './scheme';
 
 export class RegisterDTO {
     public login: string;
@@ -61,24 +47,9 @@ export class RegisterDTO {
     }
 
     public isValid() {
-        try {
-            registerSchemeDTO.validateSync(this, { abortEarly: false });
-        } catch (e) {
-            const err = new Beda(Exceptions.Validate, CodeError.Valid);
-            if (e instanceof ValidationError) {
-                e.errors.forEach((error) => {
-                    err.addDesc(error);
-                });
-            }
-            throw err;
-        }
+        isValid(registerSchemeDTO, this);
     }
 }
-
-const loginShemeDTO = object({
-    login: Valid.login.required(Exceptions.LoginRequired),
-    password: Valid.password.required(Exceptions.PasswordRequired),
-});
 
 export class LoginDTO {
     public login: string;
@@ -90,17 +61,7 @@ export class LoginDTO {
     }
 
     public isValid() {
-        try {
-            loginShemeDTO.validateSync(this, { abortEarly: false });
-        } catch (e) {
-            const err = new Beda(Exceptions.Validate, CodeError.Valid);
-            if (e instanceof ValidationError) {
-                e.errors.forEach((error) => {
-                    err.addDesc(error);
-                });
-            }
-            throw err;
-        }
+        isValid(loginSchemeDTO, this);
     }
 }
 

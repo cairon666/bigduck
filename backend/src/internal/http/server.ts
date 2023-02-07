@@ -12,20 +12,27 @@ import { AuthStorageUnit, NameCookieAccess } from './utils';
 import { AuthContext } from './auth.context';
 import { QuizService } from '../domain/services/quiz/quiz.service';
 import { QuizRouter } from './quiz.router';
+import { QuestionRouter } from './question.router';
+import { QuestionService } from '../domain/services/question/question.service';
 
 export class HTTPServer {
     private config: Config;
     private logger: Logger;
 
+    // service
     private authService: AuthService;
     private authTokenProvider: AuthTokenProvider;
     private userService: UserService;
     private quizService: QuizService;
+    private questionService: QuestionService;
 
+    // routes
     private authRouter: AuthRouter;
     private userRouter: UserRouter;
     private quizRouter: QuizRouter;
+    private questionRouter: QuestionRouter;
 
+    // public app for tests
     public app: Application;
 
     public constructor(
@@ -35,20 +42,26 @@ export class HTTPServer {
         authService: AuthService,
         userService: UserService,
         quizService: QuizService,
+        questionService: QuestionService,
     ) {
         this.config = conf;
         this.logger = logger;
+
+        // service
         this.authService = authService;
         this.authTokenProvider = AuthTokenProvider;
         this.userService = userService;
         this.quizService = quizService;
+        this.questionService = questionService;
 
+        // routes
         this.userRouter = new UserRouter(this.userService);
         this.authRouter = new AuthRouter(
             this.authTokenProvider,
             this.authService,
         );
         this.quizRouter = new QuizRouter(this.quizService);
+        this.questionRouter = new QuestionRouter(this.questionService);
 
         this.app = express();
     }
@@ -59,6 +72,7 @@ export class HTTPServer {
         this.app.use('', this.userRouter.router());
         this.app.use('', this.authRouter.router());
         this.app.use('', this.quizRouter.router());
+        this.app.use('', this.questionRouter.router());
     }
 
     public run(): http.Server {

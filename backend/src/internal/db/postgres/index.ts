@@ -3,6 +3,7 @@ import { Credential } from './credential.models';
 import { DataSource } from 'typeorm';
 import { User } from './user.models';
 import { Quizzes } from './quizzes.models';
+import { Question } from './questions.models';
 
 export async function NewDataSource(conf: Config): Promise<DataSource> {
     const AppDataSource = new DataSource({
@@ -13,11 +14,12 @@ export async function NewDataSource(conf: Config): Promise<DataSource> {
         password: conf.POSTGRES.PASSWORD,
         database: conf.POSTGRES.DATABASE,
         logging: conf.APP.DEBUG,
-        entities: [Credential, User, Quizzes],
+        entities: [Credential, User, Quizzes, Question],
         subscribers: [],
         migrations: [],
-        poolSize: 20,
+        poolSize: 5,
     });
 
     return await AppDataSource.initialize();
 }
+

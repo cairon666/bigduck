@@ -4,6 +4,7 @@ import { Exceptions } from './exceptions';
 export const Valid = {
     id_user: string().uuid(Exceptions.IdNotUUID),
     id_quiz: number().positive(Exceptions.IdQuizMin),
+    id_question: number().positive(Exceptions.IdQuestionMin),
     login: string().min(4, Exceptions.LoginShort),
     password: string().min(4, Exceptions.PasswordShort),
     email: string().email(Exceptions.EmailInvalid),

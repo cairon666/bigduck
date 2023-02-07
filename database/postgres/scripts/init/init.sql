@@ -1,5 +1,5 @@
 create type gender as enum('male', 'female');
-create type question_type as enum('default');
+create type question_type as enum('choose_one','choose_many', 'input');
 
 -- can be updated only one parameter
 create table public.credentials
@@ -30,7 +30,7 @@ create table public.users
 create table public.quizzes
 (
     id          serial primary key,
-    id_owner    uuid references public.credentials (id),
+    id_owner    uuid not null references public.credentials (id),
     name        text not null
         constraint quizzes_name_uniq unique,
     title       text not null,
@@ -44,26 +44,16 @@ create table public.quizzes
 --  is_show  boolean default true TODO
 );
 
-
-create table public.quiz_attachments
-(
-    id         serial primary key,
-    quiz_owner integer references public.quizzes (id),
-    url        text not null,
-    name       text not null,
-    is_show    boolean default true,
-    size       text not null
-);
-
 create table public.quiz_questions
 (
-    id         serial primary key,
-    id_user_owner integer references public.credentials (id),
-    id_quiz_owner integer references public.quizzes (id),
-    title      text          not null,
-    type       question_type not null,
-    data       jsonb         not null
-    date_modify timestamptz default now()
+    id            serial primary key,
+    id_user_owner uuid          not null references public.credentials (id),
+    id_quiz_owner integer       not null references public.quizzes (id),
+    title         text          not null,
+    type          question_type not null,
+    data          jsonb         not null,
+    date_modify   timestamptz   not null default now(),
+    is_show       boolean       not null default true
 );
 
 

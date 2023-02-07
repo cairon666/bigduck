@@ -1,16 +1,5 @@
-import { object, ValidationError } from 'yup';
-import { Beda } from '../../../../pkg/beda/Beda';
-import { CodeError, Exceptions } from '../../exceptions/exceptions';
-import { Valid } from '../../exceptions/valid';
-
-const updateUserScheme = object({
-    username: Valid.username.required(Exceptions.UsernameRequired),
-    first_name: Valid.first_name.required(Exceptions.FirstNameRequired),
-    second_name: Valid.second_name.required(Exceptions.SecondNameRequired),
-    avatar_url: Valid.avatar_url.nullable(),
-    day_of_birth: Valid.day_of_birth.nullable(),
-    gender: Valid.gender.nullable(),
-});
+import { isValid } from '../utils';
+import { getUserScheme, updateUserScheme } from './scheme';
 
 export class updateUserDTO {
     public id: string;
@@ -40,23 +29,9 @@ export class updateUserDTO {
     }
 
     public isValid() {
-        try {
-            updateUserScheme.validateSync(this, { abortEarly: false });
-        } catch (e) {
-            const err = new Beda(Exceptions.Validate, CodeError.Valid);
-            if (e instanceof ValidationError) {
-                e.errors.forEach((error) => {
-                    err.addDesc(error);
-                });
-            }
-            throw err;
-        }
+        isValid(updateUserScheme, this);
     }
 }
-
-const getUserScheme = object({
-    id: Valid.id_user.required(Exceptions.IdRequired),
-});
 
 export class getUserDTO {
     public id: string;
@@ -66,17 +41,7 @@ export class getUserDTO {
     }
 
     public isValid() {
-        try {
-            getUserScheme.validateSync(this, { abortEarly: false });
-        } catch (e) {
-            const err = new Beda(Exceptions.Validate, CodeError.Valid);
-            if (e instanceof ValidationError) {
-                e.errors.forEach((error) => {
-                    err.addDesc(error);
-                });
-            }
-            throw err;
-        }
+        isValid(getUserScheme, this);
     }
 }
 

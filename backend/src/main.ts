@@ -9,6 +9,8 @@ import { NewDevLogger } from './pkg/logger';
 import { UserService } from './internal/domain/services/user/user.service';
 import { QuizService } from './internal/domain/services/quiz/quiz.service';
 import { Quizzes } from './internal/db/postgres/quizzes.models';
+import { Question } from './internal/db/postgres/questions.models';
+import { QuestionService } from './internal/domain/services/question/question.service';
 
 async function bootstrap() {
     const config = LoadEnv();
@@ -36,6 +38,10 @@ async function bootstrap() {
     const quizStorage = await postgresClient.getRepository(Quizzes);
     const quizService = new QuizService(logger, quizStorage);
 
+    logger.info({ msg: 'create question service' });
+    const questionStorage = await postgresClient.getRepository(Question);
+    const questionService = new QuestionService(logger, questionStorage);
+
     logger.info({ msg: 'create http server' });
     const server = new HTTPServer(
         config,
@@ -44,6 +50,7 @@ async function bootstrap() {
         authService,
         userService,
         quizService,
+        questionService,
     );
 
     server.setup();

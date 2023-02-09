@@ -30,7 +30,7 @@ export function LoadEnv(): Config {
         REDIS: {
             PORT: process.env.REDIS_PORT || '6379',
             HOST: process.env.REDIS_HOST || 'localhost',
-            USER: process.env.REDIS_USER || 'default',
+            USER: process.env.REDIS_USER || 'admin',
             PASSWORD: process.env.REDIS_PASSWORD || 'admin',
         },
         APP: {
@@ -38,9 +38,7 @@ export function LoadEnv(): Config {
             DEBUG:
                 process.env.APP_DEBUG === 'true'
                     ? true
-                    : process.env.APP_DEBUG === 'false'
-                    ? false
-                    : true,
+                    : process.env.APP_DEBUG !== 'false',
         },
     };
 }

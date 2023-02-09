@@ -1,7 +1,7 @@
-import { Beda } from '../../pkg/beda/Beda';
-import { Response } from 'express';
-import { HttpStatus } from '../../pkg/http-status';
-import { CodeError } from '../domain/exceptions/exceptions';
+import {Beda} from '../../pkg/beda/Beda';
+import {Response} from 'express';
+import {HttpStatus} from '../../pkg/http-status';
+import {CodeError} from '../domain/exceptions/exceptions';
 
 export interface AuthStorageUnit {
     id: string;
@@ -44,11 +44,9 @@ export interface Error {
 }
 
 export function sendError(resp: Response, err: Error, status: number) {
-    resp.status(status);
-    resp.json(err);
+    sendJson(resp, err, status)
 }
 
 export function sendJson(resp: Response, data: object, status: number) {
-    resp.status(status);
-    resp.json(data);
+    resp.status(status).json(data).end();
 }

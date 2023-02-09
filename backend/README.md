@@ -7,22 +7,16 @@
 - ⚪ add handler that delete user by id(delete anywhere info about user)
 - ⚪ add handler that gives list of users for admins
 - 🟢 add fields for quiz
-- - date_modify
-- - is_show 
-- - is_strict   
-- - is_random
 - ⚪ add white list for quiz
 - 🟢 add fields for user
-- - date_modify
-- - date_create
-- ⚪ add attachments for quiz
-- ⚪ add statistics for quiz
+- ⚪ add attachments for quiz ----------------------
+- ⚪ add statistics for quiz ----------------------
 - 🟢 add questions for quiz 
 - ⚫ add handler that gives quiz by username and quizname
 - 🟢 add handler that gives quiz
 - ⚫ add jwt
 - 🟢 move scheme to one file
-- ⚪ create validate for scheme create question
+- ⚪ create validate for scheme create question ----------------------
 
 ## tests
 

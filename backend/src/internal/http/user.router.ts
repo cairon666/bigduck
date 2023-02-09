@@ -22,8 +22,8 @@ export class UserRouter {
         options: FastifyPluginOptions,
         done: () => void,
     ) {
-        instance.put('/api/v1/user/:id', this.putUserHandler);
-        instance.get('/api/v1/user/:id', this.getUserHandler.bind(this));
+        instance.put('/api/v1/user/:id_user', this.putUserHandler.bind(this));
+        instance.get('/api/v1/user/:id_user', this.getUserHandler.bind(this));
 
         // r.delete("/api/v1/user/:id") TODO
         // r.get("/api/v1/users?page=1&....") TODO
@@ -34,7 +34,7 @@ export class UserRouter {
     private async putUserHandler(
         req: FastifyRequest<{
             Params: {
-                id: string;
+                id_user: string;
             };
             Body: {
                 username?: string;
@@ -47,7 +47,7 @@ export class UserRouter {
         }>,
         reply: FastifyReply,
     ) {
-        const id = req.params.id;
+        const id = req.params.id_user;
 
         AuthContext.checkAccessIdOrAdmin(req, id);
 
@@ -68,12 +68,12 @@ export class UserRouter {
     private async getUserHandler(
         req: FastifyRequest<{
             Params: {
-                id: string;
+                id_user: string;
             };
         }>,
         reply: FastifyReply,
     ) {
-        const id = req.params.id;
+        const id = req.params.id_user;
 
         const res = await this.userService.getUser(new getUserDTO(id));
 

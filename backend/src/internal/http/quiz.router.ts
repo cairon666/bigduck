@@ -1,6 +1,5 @@
-import { Request, Response, Router } from 'express';
 import { QuizService } from '../domain/services/quiz/quiz.service';
-import { parseAndSendError, sendJson } from './utils';
+import { sendJson } from './utils';
 import { AuthContext } from './auth.context';
 import { HttpStatus } from '../../pkg/http-status';
 import {
@@ -22,7 +21,6 @@ import {
     FastifyReply,
     FastifyRequest,
 } from 'fastify';
-import { string } from 'yup';
 
 export class QuizRouter {
     private quizService: QuizService;
@@ -51,7 +49,7 @@ export class QuizRouter {
             this.deleteQuiz.bind(this),
         );
 
-        done()
+        done();
     }
 
     private async getQuiz(
@@ -113,7 +111,7 @@ export class QuizRouter {
             ttl: req.body.ttl || null,
             tts: req.body.tts || null,
             tte: req.body.tte || null,
-            is_show: req.body.is_show || false,
+            is_show: req.body.is_show || true,
             is_strict: req.body.is_strict || false,
             is_random: req.body.is_random || false,
         };
@@ -152,18 +150,6 @@ export class QuizRouter {
             Params: {
                 id_user: string;
             };
-            Body: {
-                name?: string;
-                title?: string;
-                description?: string;
-                intro_url?: string;
-                ttl?: string;
-                tts?: Date;
-                tte?: Date;
-                is_show?: boolean;
-                is_strict?: boolean;
-                is_random?: boolean;
-            };
             Querystring: {
                 page?: string;
                 description?: string;
@@ -186,12 +172,11 @@ export class QuizRouter {
         const id = req.params.id_user;
         const page = req.query.page ? Number(req.query.page) : 1;
 
-        const filter: getQuizzesFilter = {};
-
         //  parse filter props
+        const filter: getQuizzesFilter = {};
         this.possibleFilter.forEach((key) => {
             const value = req.query[key];
-            if (value && typeof value === 'string') {
+            if (value) {
                 switch (key) {
                     case 'description':
                     case 'name':
@@ -208,15 +193,11 @@ export class QuizRouter {
 
         // parse order props
         const order: getQuizzesOrder = {};
-        const orderObj = req.query.order;
-        if (
-            orderObj &&
-            typeof orderObj === 'object' &&
-            !Array.isArray(orderObj)
-        ) {
+        const queryOrder = req.query.order;
+        if (queryOrder) {
             this.possibleOrder.forEach((key) => {
-                const value = orderObj[key];
-                if (value && typeof value === 'string') {
+                const value = queryOrder[key];
+                if (value) {
                     order[key] = value === 'DESC' ? 'DESC' : 'ASC';
                 }
             });
@@ -224,9 +205,9 @@ export class QuizRouter {
             order['date_modify'] = 'DESC';
         }
 
-        const dto = new getQuizzesDTO(id, page, filter, order);
-
-        const res = await this.quizService.getQuizzes(dto);
+        const res = await this.quizService.getQuizzes(
+            new getQuizzesDTO(id, page, filter, order),
+        );
 
         sendJson(
             reply,
@@ -291,7 +272,7 @@ export class QuizRouter {
             ttl: req.body.ttl || null,
             tts: req.body.tts || null,
             tte: req.body.tte || null,
-            is_show: req.body.is_show || false,
+            is_show: req.body.is_show || true,
             is_strict: req.body.is_strict || false,
             is_random: req.body.is_random || false,
         };

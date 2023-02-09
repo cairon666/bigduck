@@ -1,7 +1,6 @@
-import {Request, Response, Router} from 'express';
-import {QuestionService} from '../domain/services/question/question.service';
-import {AuthContext} from './auth.context';
-import {parseAndSendError, sendJson} from './utils';
+import { QuestionService } from '../domain/services/question/question.service';
+import { AuthContext } from './auth.context';
+import { sendJson } from './utils';
 import {
     createQuestionDTO,
     QuestionCreate,
@@ -13,11 +12,13 @@ import {
     getListOfQuestionsOrder,
     getListOfQuestionsDTO,
 } from '../domain/services/question/dto';
-import {HttpStatus} from '../../pkg/http-status';
-import {FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest} from "fastify";
-import {string} from "yup";
-import {QuestionType} from "../db/postgres/questions.models";
-
+import { HttpStatus } from '../../pkg/http-status';
+import {
+    FastifyInstance,
+    FastifyPluginOptions,
+    FastifyReply,
+    FastifyRequest,
+} from 'fastify';
 export class QuestionRouter {
     private questionService: QuestionService;
 
@@ -51,7 +52,7 @@ export class QuestionRouter {
             this.deleteQuestion.bind(this),
         );
 
-        done()
+        done();
     }
 
     public possibleFilter: (keyof getListOfQuestionsFilter)[] = [
@@ -73,17 +74,17 @@ export class QuestionRouter {
                 id_quiz: string;
             };
             Querystring: {
-                page: string
-                title?: string
-                type?: string
-                data?: string
-                is_show?: string
+                page: string;
+                title?: string;
+                type?: string;
+                data?: string;
+                is_show?: string;
                 order?: {
-                    date_modify?: string
-                    title?: string
-                    is_show?: string
-                }
-            }
+                    date_modify?: string;
+                    title?: string;
+                    is_show?: string;
+                };
+            };
         }>,
         reply: FastifyReply,
     ) {
@@ -123,13 +124,7 @@ export class QuestionRouter {
         }
 
         const res = await this.questionService.getListOfQuestions(
-            new getListOfQuestionsDTO(
-                page,
-                id_user,
-                id_quiz,
-                filter,
-                order,
-            ),
+            new getListOfQuestionsDTO(page, id_user, id_quiz, filter, order),
         );
 
         sendJson(
@@ -140,7 +135,6 @@ export class QuestionRouter {
             },
             HttpStatus.OK,
         );
-
     }
 
     private async createQuestion(
@@ -150,11 +144,11 @@ export class QuestionRouter {
                 id_quiz: string;
             };
             Body: {
-                title?: string
-                type?: any // TODO
-                data?: any  // TODO
-                is_show?: boolean
-            }
+                title?: string;
+                type?: any; // TODO
+                data?: any; // TODO
+                is_show?: boolean;
+            };
         }>,
         reply: FastifyReply,
     ) {
@@ -165,7 +159,7 @@ export class QuestionRouter {
 
         console.log(req.body);
         const question: QuestionCreate = {
-            title: req.body.title || "",
+            title: req.body.title || '',
             type: req.body.type,
             data: req.body.data,
             is_show: req.body.is_show || false,
@@ -189,7 +183,7 @@ export class QuestionRouter {
             Params: {
                 id_user: string;
                 id_quiz: string;
-                id_question: string
+                id_question: string;
             };
         }>,
         reply: FastifyReply,
@@ -218,14 +212,14 @@ export class QuestionRouter {
             Params: {
                 id_user: string;
                 id_quiz: string;
-                id_question: string
+                id_question: string;
             };
             Body: {
-                title?: string
-                type?: any // TODO
-                data?: any  // TODO
-                is_show?: boolean
-            }
+                title?: string;
+                type?: any; // TODO
+                data?: any; // TODO
+                is_show?: boolean;
+            };
         }>,
         reply: FastifyReply,
     ) {
@@ -233,7 +227,7 @@ export class QuestionRouter {
         const id_quiz = Number(req.params.id_quiz);
         const id_question = Number(req.params.id_question);
         const question: QuestionUpdate = {
-            title: req.body.title || "",
+            title: req.body.title || '',
             type: req.body.type,
             data: req.body.data,
             is_show: req.body.is_show || false,
@@ -245,7 +239,7 @@ export class QuestionRouter {
             new updateQuestionDTO(id_user, id_quiz, id_question, question),
         );
 
-        reply.status(HttpStatus.NO_CONTENT).send()
+        reply.status(HttpStatus.NO_CONTENT).send();
     }
 
     private async deleteQuestion(
@@ -253,7 +247,7 @@ export class QuestionRouter {
             Params: {
                 id_user: string;
                 id_quiz: string;
-                id_question: string
+                id_question: string;
             };
         }>,
         reply: FastifyReply,

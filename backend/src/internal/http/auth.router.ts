@@ -6,7 +6,6 @@ import {
     AuthStorageUnit,
     NameCookieAccess,
     NameCookieRefresh,
-    parseAndSendError,
     sendJson,
 } from './utils';
 import { CodeError, Exceptions } from '../domain/exceptions/exceptions';

@@ -1,13 +1,18 @@
 import * as path from 'path';
-import {MD5} from 'crypto-js';
-import {sendJson} from './utils';
-import {HttpStatus} from '../../pkg/http-status';
+import { MD5 } from 'crypto-js';
+import { sendJson } from './utils';
+import { HttpStatus } from '../../pkg/http-status';
 import * as zlib from 'zlib';
-import {readFileSync} from 'fs';
-import {FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest} from "fastify";
-import multer from "fastify-multer";
-import {File, FileFilterCallback} from "fastify-multer/lib/interfaces";
-import sharp from "sharp";
+import { readFileSync } from 'fs';
+import {
+    FastifyInstance,
+    FastifyPluginOptions,
+    FastifyReply,
+    FastifyRequest,
+} from 'fastify';
+import multer from 'fastify-multer';
+import { File, FileFilterCallback } from 'fastify-multer/lib/interfaces';
+import sharp from 'sharp';
 
 export class AttachmentRouter {
     public router(
@@ -15,11 +20,11 @@ export class AttachmentRouter {
         options: FastifyPluginOptions,
         done: () => void,
     ) {
-        instance.register(multer.contentParser)
+        instance.register(multer.contentParser);
         instance.post(
             '/api/v1/attachment/upload/img',
             {
-                preHandler: this.upload.array("image")
+                preHandler: this.upload.array('image'),
             },
             this.uploadImage.bind(this),
         );
@@ -27,15 +32,19 @@ export class AttachmentRouter {
             '/api/v1/attachment/img/:filepath',
             this.getByFilepath.bind(this),
         );
-        done()
+        done();
     }
 
     private maxSizeImage = 5 * 1000 * 1000;
 
     private upload = multer({
         storage: multer.memoryStorage(),
-        limits: {fileSize: this.maxSizeImage},
-        fileFilter: (req: FastifyRequest, file: File, cb: FileFilterCallback) => {
+        limits: { fileSize: this.maxSizeImage },
+        fileFilter: (
+            req: FastifyRequest,
+            file: File,
+            cb: FileFilterCallback,
+        ) => {
             const filetypes = /jpeg|jpg|png|webp/;
             const mimetype = filetypes.test(file.mimetype);
 
@@ -50,19 +59,16 @@ export class AttachmentRouter {
             cb(
                 new Error(
                     'File upload only supports the following filetypes - ' +
-                    filetypes,
+                        filetypes,
                 ),
             );
         },
     });
 
-    private async uploadImage(
-        req: FastifyRequest,
-        reply: FastifyReply,
-    ) {
+    private async uploadImage(req: FastifyRequest, reply: FastifyReply) {
         const answ = [];
         //@ts-ignore
-        const files: File[] | undefined = req.files
+        const files: File[] | undefined = req.files;
 
         if (files) {
             for (let i = 0; i < files.length; i++) {
@@ -93,10 +99,11 @@ export class AttachmentRouter {
     private async getByFilepath(
         req: FastifyRequest<{
             Params: {
-                filepath: string
-            }
+                filepath: string;
+            };
         }>,
-        reply: FastifyReply,) {
+        reply: FastifyReply,
+    ) {
         const filepath = path.resolve(
             process.cwd(),
             'upload',
@@ -107,13 +114,11 @@ export class AttachmentRouter {
         const file = readFileSync(filepath);
         const gzip = zlib.gzipSync(file);
 
-
         reply
             .header('Content-Length', gzip.length)
             .header('Content-Encoding', 'gzip')
-            .header('Connection', 'close')
+            .header('Connection', 'close');
 
-
-        reply.type( 'image/' + path.extname(filepath).slice(1)).send(gzip)
+        reply.type('image/' + path.extname(filepath).slice(1)).send(gzip);
     }
 }

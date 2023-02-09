@@ -1,19 +1,28 @@
-import {Request, Response, Router} from 'express';
-import {QuizService} from '../domain/services/quiz/quiz.service';
-import {parseAndSendError, sendJson} from './utils';
-import {AuthContext} from './auth.context';
-import {HttpStatus} from '../../pkg/http-status';
+import { Request, Response, Router } from 'express';
+import { QuizService } from '../domain/services/quiz/quiz.service';
+import { parseAndSendError, sendJson } from './utils';
+import { AuthContext } from './auth.context';
+import { HttpStatus } from '../../pkg/http-status';
 import {
     createQuizDTO,
-    deleteQuizDTO, getQuizDTO,
+    deleteQuizDTO,
+    getQuizDTO,
     getQuizzesDTO,
     getQuizzesFilter,
-    getQuizzesOrder, QuizCreate,
+    getQuizzesOrder,
+    QuizCreate,
     updateQuizDTO,
     updateQuizSet,
 } from '../domain/services/quiz/dto';
 import Duration from '@icholy/duration';
-import {StringToBool} from "../../pkg/utils/bool";
+import { StringToBool } from '../../pkg/utils/bool';
+import {
+    FastifyInstance,
+    FastifyPluginOptions,
+    FastifyReply,
+    FastifyRequest,
+} from 'fastify';
+import { string } from 'yup';
 
 export class QuizRouter {
     private quizService: QuizService;
@@ -22,78 +31,104 @@ export class QuizRouter {
         this.quizService = quizService;
     }
 
-    public router(): Router {
-        const r = Router();
-
-        r.get('/api/v1/user/:id/quiz', this.getQuizzes.bind(this));
-        r.post('/api/v1/user/:id/quiz', this.createQuiz.bind(this));
-        r.get("/api/v1/user/:id_user/quiz/:id_quiz", this.getQuiz.bind(this))
-        r.put(
-            '/api/v1/user/:id_owner/quiz/:id_quiz',
+    public router(
+        instance: FastifyInstance,
+        options: FastifyPluginOptions,
+        done: () => void,
+    ) {
+        instance.get('/api/v1/user/:id_user/quiz', this.getQuizzes.bind(this));
+        instance.post('/api/v1/user/:id_user/quiz', this.createQuiz.bind(this));
+        instance.get(
+            '/api/v1/user/:id_user/quiz/:id_quiz',
+            this.getQuiz.bind(this),
+        );
+        instance.put(
+            '/api/v1/user/:id_user/quiz/:id_quiz',
             this.updateQuiz.bind(this),
         );
-        r.delete(
-            '/api/v1/user/:id_owner/quiz/:id_quiz',
+        instance.delete(
+            '/api/v1/user/:id_user/quiz/:id_quiz',
             this.deleteQuiz.bind(this),
         );
 
-        return r;
+        done()
     }
 
-    private async getQuiz(req: Request, resp: Response) {
-        try {
-            const id_user = req.params.id_user;
-            const id_quiz = Number(req.params.id_quiz);
+    private async getQuiz(
+        req: FastifyRequest<{
+            Params: {
+                id_user: string;
+                id_quiz: string;
+            };
+        }>,
+        reply: FastifyReply,
+    ) {
+        const id_user = req.params.id_user;
+        const id_quiz = Number(req.params.id_quiz);
 
-            AuthContext.checkAccessIdOrAdmin(req, id_user);
+        AuthContext.checkAccessIdOrAdmin(req, id_user);
 
-            const res = await this.quizService.getQuiz(new getQuizDTO(id_user, id_quiz))
+        const res = await this.quizService.getQuiz(
+            new getQuizDTO(id_user, id_quiz),
+        );
 
-            sendJson(
-                resp,
-                {
-                    quiz: res.quiz
-                },
-                HttpStatus.OK,
-            );
-        } catch (e) {
-            parseAndSendError(e, resp);
-        }
-        resp.end();
+        sendJson(
+            reply,
+            {
+                quiz: res.quiz,
+            },
+            HttpStatus.OK,
+        );
     }
 
-    private async createQuiz(req: Request, resp: Response) {
-        try {
-            const id = req.params.id;
+    private async createQuiz(
+        req: FastifyRequest<{
+            Params: {
+                id_user: string;
+            };
+            Body: {
+                name?: string;
+                title?: string;
+                description?: string;
+                intro_url?: string;
+                ttl?: string;
+                tts?: Date;
+                tte?: Date;
+                is_show?: boolean;
+                is_strict?: boolean;
+                is_random?: boolean;
+            };
+        }>,
+        reply: FastifyReply,
+    ) {
+        const id = req.params.id_user;
 
-            AuthContext.checkAccessIdOrAdmin(req, id);
+        AuthContext.checkAccessIdOrAdmin(req, id);
 
-            const quiz: QuizCreate = {
-                name: req.body.name,
-                title: req.body.title,
-                description: req.body.description,
-                intro_url: req.body.intro_url,
-                ttl: req.body.ttl,
-                tts: req.body.tts,
-                tte: req.body.tte,
-                is_show: req.body.is_show,
-                is_strict: req.body.is_strict,
-                is_random: req.body.is_random,
-            }
+        const quiz: QuizCreate = {
+            name: req.body.name || '',
+            title: req.body.title || '',
+            description: req.body.description || '',
+            intro_url: req.body.intro_url || '',
+            ttl: req.body.ttl || null,
+            tts: req.body.tts || null,
+            tte: req.body.tte || null,
+            is_show: req.body.is_show || false,
+            is_strict: req.body.is_strict || false,
+            is_random: req.body.is_random || false,
+        };
 
-            const res = await this.quizService.createQuiz(new createQuizDTO(id, quiz));
+        const res = await this.quizService.createQuiz(
+            new createQuizDTO(id, quiz),
+        );
 
-            sendJson(
-                resp,
-                {
-                    id: res.id,
-                },
-                HttpStatus.OK,
-            );
-        } catch (e) {
-            parseAndSendError(e, resp);
-        }
-        resp.end();
+        sendJson(
+            reply,
+            {
+                id: res.id,
+            },
+            HttpStatus.OK,
+        );
     }
 
     public possibleFilter: (keyof getQuizzesFilter)[] = [
@@ -102,7 +137,7 @@ export class QuizRouter {
         'description',
         'is_show',
         'is_strict',
-        'is_random'
+        'is_random',
     ];
     public possibleOrder: (keyof getQuizzesOrder)[] = [
         'date_modify',
@@ -112,115 +147,159 @@ export class QuizRouter {
         'ttl',
     ];
 
-    private async getQuizzes(req: Request, resp: Response) {
-        try {
-            const id = req.params.id;
-            const page = req.query.page ? Number(req.query.page) : 1;
+    private async getQuizzes(
+        req: FastifyRequest<{
+            Params: {
+                id_user: string;
+            };
+            Body: {
+                name?: string;
+                title?: string;
+                description?: string;
+                intro_url?: string;
+                ttl?: string;
+                tts?: Date;
+                tte?: Date;
+                is_show?: boolean;
+                is_strict?: boolean;
+                is_random?: boolean;
+            };
+            Querystring: {
+                page?: string;
+                description?: string;
+                name?: string;
+                title?: string;
+                is_show?: string;
+                is_strict?: string;
+                is_random?: string;
+                order?: {
+                    date_modify?: string;
+                    name?: string;
+                    title?: string;
+                    description?: string;
+                    ttl?: string;
+                };
+            };
+        }>,
+        reply: FastifyReply,
+    ) {
+        const id = req.params.id_user;
+        const page = req.query.page ? Number(req.query.page) : 1;
 
-            const filter: getQuizzesFilter = {};
+        const filter: getQuizzesFilter = {};
 
-            //  parse filter props
-            this.possibleFilter.forEach((key) => {
-                const value = req.query[key];
+        //  parse filter props
+        this.possibleFilter.forEach((key) => {
+            const value = req.query[key];
+            if (value && typeof value === 'string') {
+                switch (key) {
+                    case 'description':
+                    case 'name':
+                    case 'title':
+                        filter[key] = value;
+                        break;
+                    case 'is_show':
+                    case 'is_strict':
+                    case 'is_random':
+                        filter[key] = StringToBool(value);
+                }
+            }
+        });
+
+        // parse order props
+        const order: getQuizzesOrder = {};
+        const orderObj = req.query.order;
+        if (
+            orderObj &&
+            typeof orderObj === 'object' &&
+            !Array.isArray(orderObj)
+        ) {
+            this.possibleOrder.forEach((key) => {
+                const value = orderObj[key];
                 if (value && typeof value === 'string') {
-                    switch (key) {
-                        case "description":
-                        case "name":
-                        case "title":
-                            filter[key] = value
-                            break
-                        case "is_show":
-                        case "is_strict":
-                        case "is_random":
-                            filter[key] = StringToBool(value)
-                    }
-
-
+                    order[key] = value === 'DESC' ? 'DESC' : 'ASC';
                 }
             });
-
-            // parse order props
-            const order: getQuizzesOrder = {};
-            const orderObj = req.query.order;
-            if (
-                orderObj &&
-                typeof orderObj === 'object' &&
-                !Array.isArray(orderObj)
-            ) {
-                this.possibleOrder.forEach((key) => {
-                    const value = orderObj[key];
-                    if (value && typeof value === 'string') {
-                        order[key] = value === 'DESC' ? 'DESC' : 'ASC';
-                    }
-                });
-            } else {
-                order['date_modify'] = 'DESC';
-            }
-
-            const dto = new getQuizzesDTO(id, page, filter, order);
-
-            const res = await this.quizService.getQuizzes(dto);
-
-            sendJson(
-                resp,
-                {
-                    quizzes: res.quizzes,
-                    count: res.count,
-                },
-                HttpStatus.OK,
-            );
-        } catch (e) {
-            parseAndSendError(e, resp);
+        } else {
+            order['date_modify'] = 'DESC';
         }
-        resp.end();
+
+        const dto = new getQuizzesDTO(id, page, filter, order);
+
+        const res = await this.quizService.getQuizzes(dto);
+
+        sendJson(
+            reply,
+            {
+                quizzes: res.quizzes,
+                count: res.count,
+            },
+            HttpStatus.OK,
+        );
     }
 
-    private async deleteQuiz(req: Request, resp: Response) {
-        try {
-            const id_owner = req.params.id_owner;
-            const id_quiz = Number(req.params.id_quiz);
-
-            AuthContext.checkAccessIdOrAdmin(req, id_owner);
-
-            await this.quizService.deleteQuiz(
-                new deleteQuizDTO(id_quiz, id_owner),
-            );
-
-            resp.status(HttpStatus.NO_CONTENT);
-        } catch (e) {
-            parseAndSendError(e, resp);
-        }
-        resp.end();
-    }
-
-    private async updateQuiz(req: Request, resp: Response) {
-        try {
-            const id_owner = req.params.id_owner;
-            const id_quiz = Number(req.params.id_quiz);
-
-            AuthContext.checkAccessIdOrAdmin(req, id_owner);
-
-            const set: updateQuizSet = {
-                name: req.body.name || '',
-                title: req.body.title || '',
-                description: req.body.description || '',
-                intro_url: req.body.intro_url || '',
-                ttl: req.body.ttl ? new Duration(req.body.ttl) : null,
-                tts: req.body.tts ? new Date(req.body.tts) : null,
-                tte: req.body.tte ? new Date(req.body.tte) : null,
-                is_show: req.body.is_show,
-                is_strict: req.body.is_strict,
-                is_random: req.body.is_random,
+    private async deleteQuiz(
+        req: FastifyRequest<{
+            Params: {
+                id_user: string;
+                id_quiz: string;
             };
+        }>,
+        reply: FastifyReply,
+    ) {
+        const id_owner = req.params.id_user;
+        const id_quiz = Number(req.params.id_quiz);
 
-            await this.quizService.updateQuiz(
-                new updateQuizDTO(id_quiz, id_owner, set),
-            );
+        AuthContext.checkAccessIdOrAdmin(req, id_owner);
 
-            resp.status(HttpStatus.NO_CONTENT);
-        } catch (e) {
-            parseAndSendError(e, resp);
-        }
-        resp.end();
+        await this.quizService.deleteQuiz(new deleteQuizDTO(id_quiz, id_owner));
+
+        reply.status(HttpStatus.NO_CONTENT).send();
+    }
+
+    private async updateQuiz(
+        req: FastifyRequest<{
+            Params: {
+                id_user: string;
+                id_quiz: string;
+            };
+            Body: {
+                name?: string;
+                title?: string;
+                description?: string;
+                intro_url?: string;
+                ttl?: Duration;
+                tts?: Date;
+                tte?: Date;
+                is_show?: boolean;
+                is_strict?: boolean;
+                is_random?: boolean;
+            };
+        }>,
+        reply: FastifyReply,
+    ) {
+        const id_owner = req.params.id_user;
+        const id_quiz = Number(req.params.id_quiz);
+
+        AuthContext.checkAccessIdOrAdmin(req, id_owner);
+
+        const set: updateQuizSet = {
+            name: req.body.name || '',
+            title: req.body.title || '',
+            description: req.body.description || '',
+            intro_url: req.body.intro_url || '',
+            ttl: req.body.ttl || null,
+            tts: req.body.tts || null,
+            tte: req.body.tte || null,
+            is_show: req.body.is_show || false,
+            is_strict: req.body.is_strict || false,
+            is_random: req.body.is_random || false,
+        };
+
+        await this.quizService.updateQuiz(
+            new updateQuizDTO(id_quiz, id_owner, set),
+        );
+
+        reply.status(HttpStatus.NO_CONTENT).send();
     }
 }

@@ -1,10 +1,10 @@
-import {BaseSchema, ValidationError} from 'yup';
-import {Beda} from '../../../pkg/beda/Beda';
-import {CodeError, Exceptions} from '../exceptions/exceptions';
+import { BaseSchema, ValidationError } from 'yup';
+import { Beda } from '../../../pkg/beda/Beda';
+import { CodeError, Exceptions } from '../exceptions/exceptions';
 
 export function isValid(scheme: BaseSchema, obj: unknown) {
     try {
-        scheme.validateSync(obj, {abortEarly: false});
+        scheme.validateSync(obj, { abortEarly: false });
     } catch (e) {
         const err = new Beda(Exceptions.Validate, CodeError.Valid);
         console.log(e);
@@ -18,4 +18,6 @@ export function isValid(scheme: BaseSchema, obj: unknown) {
 }
 
 export type OrderType = 'DESC' | 'ASC';
-export type getOrder<T extends string | number | symbol> = Partial<Record<T, OrderType>>
+export type getOrder<T extends string | number | symbol> = Partial<
+    Record<T, OrderType>
+>;

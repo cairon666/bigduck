@@ -9,14 +9,20 @@ declare module 'typeorm' {
     }
 }
 
-SelectQueryBuilder.prototype.whereExists = function (query: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
+SelectQueryBuilder.prototype.whereExists = function (
+    query: SelectQueryBuilder<any>,
+): SelectQueryBuilder<any> {
     return this.where(`EXISTS (${query.getQuery()})`, query.getParameters());
 };
 
-SelectQueryBuilder.prototype.andWhereExists = function (query: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
+SelectQueryBuilder.prototype.andWhereExists = function (
+    query: SelectQueryBuilder<any>,
+): SelectQueryBuilder<any> {
     return this.andWhere(`EXISTS (${query.getQuery()})`, query.getParameters());
 };
 
-SelectQueryBuilder.prototype.orWhereExists = function (query: SelectQueryBuilder<any>): SelectQueryBuilder<any> {
+SelectQueryBuilder.prototype.orWhereExists = function (
+    query: SelectQueryBuilder<any>,
+): SelectQueryBuilder<any> {
     return this.orWhere(`EXISTS (${query.getQuery()})`, query.getParameters());
 };

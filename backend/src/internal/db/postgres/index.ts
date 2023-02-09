@@ -22,4 +22,3 @@ export async function NewDataSource(conf: Config): Promise<DataSource> {
 
     return await AppDataSource.initialize();
 }
-

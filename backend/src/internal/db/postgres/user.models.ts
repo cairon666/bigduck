@@ -54,13 +54,13 @@ export class User {
         type: 'timestamptz',
         name: 'date_create',
     })
-    public date_create: Date
+    public date_create: Date;
 
     @Column({
         type: 'timestamptz',
         name: 'date_modify',
     })
-    public date_modify: Date
+    public date_modify: Date;
 
     public constructor(
         id: string,

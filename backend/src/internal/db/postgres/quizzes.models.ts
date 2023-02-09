@@ -86,19 +86,19 @@ export class Quizzes {
         name: 'is_show',
         type: 'boolean',
     })
-    public is_show: boolean
+    public is_show: boolean;
 
     @Column({
         name: 'is_strict',
         type: 'boolean',
     })
-    public is_strict: boolean
+    public is_strict: boolean;
 
     @Column({
         name: 'is_random',
         type: 'boolean',
     })
-    public is_random: boolean
+    public is_random: boolean;
 
     public constructor(
         id: number,
@@ -127,8 +127,8 @@ export class Quizzes {
         this.ttl = ttl;
         this.tts = tts;
         this.tte = tte;
-        this.is_show = is_show
-        this.is_strict = is_strict
-        this.is_random = is_random
+        this.is_show = is_show;
+        this.is_strict = is_strict;
+        this.is_random = is_random;
     }
 }

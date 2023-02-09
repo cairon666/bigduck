@@ -1,7 +1,8 @@
-import {Beda} from '../../pkg/beda/Beda';
-import {Response} from 'express';
-import {HttpStatus} from '../../pkg/http-status';
-import {CodeError} from '../domain/exceptions/exceptions';
+import { Beda } from '../../pkg/beda/Beda';
+import { Response } from 'express';
+import { HttpStatus } from '../../pkg/http-status';
+import { CodeError } from '../domain/exceptions/exceptions';
+import { FastifyReply } from 'fastify';
 
 export interface AuthStorageUnit {
     id: string;
@@ -12,10 +13,10 @@ export interface AuthStorageUnit {
 export const NameCookieAccess = 'accessToken';
 export const NameCookieRefresh = 'refreshToken';
 
-export function parseAndSendError(e: unknown, resp: Response) {
+export function parseAndSendError(e: unknown, reply: FastifyReply) {
     if (e instanceof Beda) {
         sendError(
-            resp,
+            reply,
             {
                 error: e.getTitle(),
                 details: e.getDesc(),
@@ -26,7 +27,7 @@ export function parseAndSendError(e: unknown, resp: Response) {
     } else {
         console.error(e);
         sendError(
-            resp,
+            reply,
             {
                 error: 'Unknown error',
                 details: [],
@@ -43,10 +44,10 @@ export interface Error {
     code: number;
 }
 
-export function sendError(resp: Response, err: Error, status: number) {
-    sendJson(resp, err, status)
+export function sendError(resp: FastifyReply, err: Error, status: number) {
+    sendJson(resp, err, status);
 }
 
-export function sendJson(resp: Response, data: object, status: number) {
-    resp.status(status).json(data).end();
+export function sendJson(reply: FastifyReply, data: object, status: number) {
+    reply.status(status).send(data);
 }

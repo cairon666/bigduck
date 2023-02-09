@@ -1,6 +1,6 @@
-import {boolean, object, string} from 'yup';
-import {Valid} from '../../exceptions/valid';
-import {Exceptions} from '../../exceptions/exceptions';
+import { boolean, object, string } from 'yup';
+import { Valid } from '../../exceptions/valid';
+import { Exceptions } from '../../exceptions/exceptions';
 
 const question = object({
     title: Valid.title.required(Exceptions.TitleRequired),
@@ -8,7 +8,7 @@ const question = object({
     data: object().required('data required'),
     is_show: boolean(),
 }).test('type_data', 'type_data error', function (value) {
-    const {path, createError} = this;
+    const { path, createError } = this;
     const type = value?.type;
 
     if (type && typeof value.data === 'object') {
@@ -23,12 +23,12 @@ const question = object({
                 return true;
             }
             default:
-                return createError({path, message: 'some error'});
+                return createError({ path, message: 'some error' });
         }
     }
 
-    return createError({path, message: 'some error'});
-})
+    return createError({ path, message: 'some error' });
+});
 
 export const createQuestionScheme = object({
     id_user: Valid.id_user.required(Exceptions.IdUserRequired),

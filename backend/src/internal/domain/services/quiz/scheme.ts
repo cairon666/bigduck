@@ -1,4 +1,4 @@
-import {boolean, date, object, string} from 'yup';
+import { boolean, date, object, string } from 'yup';
 import { Valid } from '../../exceptions/valid';
 import { Exceptions } from '../../exceptions/exceptions';
 
@@ -15,7 +15,7 @@ export const createQuizScheme = object({
         is_show: boolean(),
         is_strict: boolean(),
         is_random: boolean(),
-    })
+    }),
 });
 
 export const getQuizzesScheme = object({
@@ -27,7 +27,6 @@ export const deleteQuizScheme = object({
     id: Valid.id_quiz.required(Exceptions.IdRequired),
     id_owner: Valid.id_user.required(Exceptions.IdOwnerRequired),
 });
-
 
 export const updateQuizScheme = object({
     id_quiz: Valid.id_quiz.required(Exceptions.IdQuizRequired),

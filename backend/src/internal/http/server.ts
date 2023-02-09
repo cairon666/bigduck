@@ -73,6 +73,7 @@ export class HTTPServer {
         this.attachmentRouter = new AttachmentRouter();
 
         this.app = Fastify({
+            logger: true,
             querystringParser: (str) => qs.parse(str),
         });
     }
@@ -97,6 +98,7 @@ export class HTTPServer {
         this.app.ready(() => {
             this.app.listen(
                 {
+                    host: this.config.APP.HOST,
                     port: Number(this.config.APP.PORT),
                 },
                 (err, address) => {
@@ -104,7 +106,6 @@ export class HTTPServer {
                         throw err;
                     }
 
-                    console.log(this.app.printRoutes());
                     this.logger.info({
                         msg: `Server start on ${address}!`,
                     });

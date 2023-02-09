@@ -10,15 +10,15 @@
 - ⚪ add white list for quiz
 - 🟢 add fields for user
 - 🟢 add attachments
-- ⚪ add statistics for quiz ----------------------
+- ⚪ add statistics for quiz 
 - 🟢 add questions for quiz 
 - ⚫ add handler that gives quiz by username and quizname
 - 🟢 add handler that gives quiz
 - ⚫ add jwt
 - 🟢 move scheme to one file
-- ⚪ create validate for scheme create question ----------------------
+- ⚪ create validate for scheme create question
 - 🟢 add swagger
-- ⚪ fill swagger
+- 🟢 fill swagger
 
 ## tests
 

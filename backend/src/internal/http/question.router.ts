@@ -19,6 +19,7 @@ import {
     FastifyReply,
     FastifyRequest,
 } from 'fastify';
+import { QuestionData, QuestionType } from '../db/postgres/questions.models';
 export class QuestionRouter {
     private questionService: QuestionService;
 
@@ -145,8 +146,8 @@ export class QuestionRouter {
             };
             Body: {
                 title?: string;
-                type?: any; // TODO
-                data?: any; // TODO
+                type?: string;
+                data?: object;
                 is_show?: boolean;
             };
         }>,
@@ -157,11 +158,10 @@ export class QuestionRouter {
 
         AuthContext.checkAccessIdOrAdmin(req, id_user);
 
-        console.log(req.body);
         const question: QuestionCreate = {
             title: req.body.title || '',
-            type: req.body.type,
-            data: req.body.data,
+            type: (req.body.type || '') as QuestionType,
+            data: (req.body.data || {}) as QuestionData,
             is_show: req.body.is_show || false,
         };
 
@@ -216,8 +216,8 @@ export class QuestionRouter {
             };
             Body: {
                 title?: string;
-                type?: any; // TODO
-                data?: any; // TODO
+                type?: string;
+                data?: object;
                 is_show?: boolean;
             };
         }>,
@@ -226,10 +226,11 @@ export class QuestionRouter {
         const id_user = req.params.id_user;
         const id_quiz = Number(req.params.id_quiz);
         const id_question = Number(req.params.id_question);
+
         const question: QuestionUpdate = {
             title: req.body.title || '',
-            type: req.body.type,
-            data: req.body.data,
+            type: (req.body.type || '') as QuestionType,
+            data: (req.body.data || {}) as QuestionData,
             is_show: req.body.is_show || false,
         };
 

@@ -12,22 +12,28 @@ const question = object({
     const type = value?.type;
 
     if (type && typeof value.data === 'object') {
+        if (typeof value.data.title !== 'string') {
+            return createError({ path, message: Exceptions.TypeDataUnknown });
+        }
+
+        if (typeof value.data.description !== 'string') {
+            return createError({ path, message: Exceptions.TypeDataUnknown });
+        }
+
         switch (type) {
-            case 'choose_one': {
+            case 'choose_many': {
                 return true;
             }
-            case 'choose_many': {
+            case 'choose_one': {
                 return true;
             }
             case 'input': {
                 return true;
             }
-            default:
-                return createError({ path, message: 'some error' });
         }
     }
 
-    return createError({ path, message: 'some error' });
+    return createError({ path, message: Exceptions.TypeDataUnknown });
 });
 
 export const createQuestionScheme = object({

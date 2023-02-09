@@ -5,13 +5,11 @@ services:
     image: redis:7-alpine
     restart: always
     ports:
-      - 6379:6379
+      - '6379:6379'
     volumes:
       - redis_data:/data
       - ../database/redis/redis.conf:/etc/redis/redis.conf
     command: [ "redis-server", "/etc/redis/redis.conf" ]
-    networks:
-      - redis
   database_postgres:
     image: postgres:15-alpine
     restart: always
@@ -22,13 +20,10 @@ services:
       PGDATA: /var/lib/postgresql/data
     ports:
       - '5432:5432'
-    networks:
-      - postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ../database/postgres/scripts/init:/docker-entrypoint-initdb.d
   database_pgadmin:
-    container_name: pgadmin_container
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: 'admin@admin.admin'
@@ -42,16 +37,33 @@ services:
     logging:
       driver: none
     restart: unless-stopped
-    networks:
-      - postgres
-
-networks:
-  postgres:
-    driver: bridge
-  redis:
-    driver: bridge
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - database_postgres
+      - database_redis
+    environment:
+      - REDIS_HOST=database_redis
+      - POSTGRES_HOST=database_postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../backend:/usr/src/app
+      - node_modules:/home/node/app/node_modules
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "3001:8080"
+    volumes:
+      - ../backend/swagger:/usr/share/nginx/html/doc
+    environment:
+      API_URL: doc/swagger.yaml
 
 volumes:
   pgadmin_data:
   postgres_data:
   redis_data:
+  node_modules:

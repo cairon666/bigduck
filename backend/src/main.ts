@@ -11,6 +11,8 @@ import { QuizService } from './internal/domain/services/quiz/quiz.service';
 import { Quizzes } from './internal/db/postgres/quizzes.models';
 import { Question } from './internal/db/postgres/questions.models';
 import { QuestionService } from './internal/domain/services/question/question.service';
+import cluster from 'cluster';
+import * as os from 'os';
 
 async function bootstrap() {
     const config = LoadEnv();
@@ -57,4 +59,29 @@ async function bootstrap() {
     server.run();
 }
 
-bootstrap();
+if (process.env.NODE_ENV === 'development') {
+    bootstrap();
+
+
+} else {
+    const numCPUs = os.cpus().length >= 5 ? 5 : os.cpus().length;
+
+    if (cluster.isMaster) {
+        for (let i = 0; i < numCPUs; i++) {
+            cluster.fork();
+        }
+
+        cluster.on('online', function(worker) {
+            console.log('Worker ' + worker.process.pid + ' is online');
+        });
+
+        cluster.on('exit', function(worker, code, signal) {
+            console.log('Worker ' + worker.process.pid + ' died with code: ' + code + ', and signal: ' + signal);
+            console.log('Starting a new worker');
+            cluster.fork();
+        });
+    } else {
+        // @ts-ignore
+        bootstrap();
+    }
+}

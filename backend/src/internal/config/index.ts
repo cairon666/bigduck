@@ -14,6 +14,7 @@ export interface Config {
     };
     APP: {
         PORT: string;
+        HOST: string
         DEBUG: boolean;
     };
 }
@@ -35,6 +36,7 @@ export function LoadEnv(): Config {
         },
         APP: {
             PORT: process.env.APP_PORT || '3000',
+            HOST: process.env.APP_HOST || '0.0.0.0',
             DEBUG:
                 process.env.APP_DEBUG === 'true'
                     ? true

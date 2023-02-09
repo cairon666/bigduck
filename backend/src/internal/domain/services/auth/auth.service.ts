@@ -22,7 +22,6 @@ export class AuthService {
         dto.isValid();
 
         const hash_password = hashSync(dto.password, genSaltSync(10));
-        console.log(hash_password);
         const uuid = uuidv4();
 
         const credential = new Credential(

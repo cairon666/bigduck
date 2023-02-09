@@ -20,5 +20,5 @@ export function sendError(resp: FastifyReply, err: Error, status: number) {
 }
 
 export function sendJson(reply: FastifyReply, data: object, status: number) {
-    reply.status(status).send(data);
+    reply.status(status).type('application/json').send(data);
 }

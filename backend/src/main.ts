@@ -61,8 +61,6 @@ async function bootstrap() {
 
 if (process.env.NODE_ENV === 'development') {
     bootstrap();
-
-
 } else {
     const numCPUs = os.cpus().length >= 5 ? 5 : os.cpus().length;
 
@@ -71,12 +69,19 @@ if (process.env.NODE_ENV === 'development') {
             cluster.fork();
         }
 
-        cluster.on('online', function(worker) {
+        cluster.on('online', function (worker) {
             console.log('Worker ' + worker.process.pid + ' is online');
         });
 
-        cluster.on('exit', function(worker, code, signal) {
-            console.log('Worker ' + worker.process.pid + ' died with code: ' + code + ', and signal: ' + signal);
+        cluster.on('exit', function (worker, code, signal) {
+            console.log(
+                'Worker ' +
+                    worker.process.pid +
+                    ' died with code: ' +
+                    code +
+                    ', and signal: ' +
+                    signal,
+            );
             console.log('Starting a new worker');
             cluster.fork();
         });

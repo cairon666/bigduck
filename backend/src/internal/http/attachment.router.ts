@@ -3,7 +3,6 @@ import { MD5 } from 'crypto-js';
 import { sendJson } from './utils';
 import { HttpStatus } from '../../pkg/http-status';
 import * as zlib from 'zlib';
-import { readFileSync } from 'fs';
 import {
     FastifyInstance,
     FastifyPluginOptions,
@@ -13,8 +12,17 @@ import {
 import multer from 'fastify-multer';
 import { File, FileFilterCallback } from 'fastify-multer/lib/interfaces';
 import sharp from 'sharp';
+import * as fs from 'fs';
 
 export class AttachmentRouter {
+    public pathUpload = path.join(process.cwd(), 'upload');
+
+    public constructor() {
+        fs.promises.mkdir(path.join(this.pathUpload, 'img'), {
+            recursive: true,
+        });
+    }
+
     public router(
         instance: FastifyInstance,
         options: FastifyPluginOptions,
@@ -32,6 +40,7 @@ export class AttachmentRouter {
             '/api/v1/attachment/img/:filepath',
             this.getByFilepath.bind(this),
         );
+
         done();
     }
 
@@ -104,14 +113,14 @@ export class AttachmentRouter {
         }>,
         reply: FastifyReply,
     ) {
-        const filepath = path.resolve(
+        const filepath = path.join(
             process.cwd(),
             'upload',
             'img',
             req.params.filepath,
         );
 
-        const file = readFileSync(filepath);
+        const file = fs.readFileSync(filepath);
         const gzip = zlib.gzipSync(file);
 
         reply

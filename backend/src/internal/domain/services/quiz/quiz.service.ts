@@ -46,7 +46,6 @@ export class QuizService {
                 .execute();
             return new createQuizResponseDTO(res.raw[0].id);
         } catch (e) {
-            console.log(e);
             if (e instanceof QueryFailedError) {
                 const err: any = e;
                 switch (err.code) {

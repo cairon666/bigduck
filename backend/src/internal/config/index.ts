@@ -14,7 +14,7 @@ export interface Config {
     };
     APP: {
         PORT: string;
-        HOST: string
+        HOST: string;
         DEBUG: boolean;
     };
 }

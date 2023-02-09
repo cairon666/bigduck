@@ -79,12 +79,24 @@ export class HTTPServer {
     }
 
     public setup() {
+        this.app.setErrorHandler(this.errorHandler);
         this.app.register(fastifyCookie, {
             secret: 'backend',
             hook: 'onRequest',
         });
+        this.app.addHook('preHandler', (req, res, done) => {
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Methods', '*');
+            res.header('Access-Control-Allow-Headers', '*');
+
+            done();
+        });
         this.app.addHook('onRequest', this.authCookieMiddleware.bind(this));
-        this.app.setErrorHandler(this.errorHandler);
+        this.app.setNotFoundHandler(async (_, reply) => {
+            reply.status(HttpStatus.NOT_FOUND).send();
+        });
+
+        // routes
         this.app.register(this.authRouter.router.bind(this.authRouter));
         this.app.register(this.userRouter.router.bind(this.userRouter));
         this.app.register(this.quizRouter.router.bind(this.quizRouter));
@@ -116,7 +128,7 @@ export class HTTPServer {
 
     private async authCookieMiddleware(
         req: FastifyRequest,
-        reply: FastifyReply,
+        // reply: FastifyReply,
     ) {
         if (req.cookies[NameCookieAccess]) {
             const access_token = req.cookies[NameCookieAccess];
@@ -129,16 +141,14 @@ export class HTTPServer {
             const authUnit: AuthStorageUnit = JSON.parse(res);
             console.log(authUnit);
             AuthContext.bind(req, authUnit);
-            console.log(res);
         }
     }
 
     private async errorHandler(
         e: unknown,
-        req: FastifyRequest,
+        _: FastifyRequest,
         reply: FastifyReply,
     ) {
-        console.log(e);
         if (e instanceof Beda) {
             sendError(
                 reply,

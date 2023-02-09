@@ -7,7 +7,6 @@ export function isValid(scheme: BaseSchema, obj: unknown) {
         scheme.validateSync(obj, { abortEarly: false });
     } catch (e) {
         const err = new Beda(Exceptions.Validate, CodeError.Valid);
-        console.log(e);
         if (e instanceof ValidationError) {
             e.errors.forEach((error) => {
                 err.addDesc(error);

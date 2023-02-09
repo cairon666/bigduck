@@ -1,5 +1,3 @@
-export const NotAllowedError = 'NotAllowedError';
-
 export const Exceptions = {
     Validate: 'validate error',
     LoginRequired: 'login is required',
@@ -15,7 +13,7 @@ export const Exceptions = {
     UsernameRequired: 'username is required',
     IdOwnerRequired: 'id_owner is required',
     UsernameShort: 'username is short',
-    IdNotUUID: 'id is uuid',
+    IdUserNotUUID: 'id_user is uuid',
     IdRequired: 'id is required',
     IdUserRequired: 'id_user is required',
     IdQuizRequired: 'id_quiz is required',
@@ -41,11 +39,13 @@ export const Exceptions = {
     AccessForbidden: 'access forbidden',
     TypeDataUnknown: 'type is unknown',
     DataInputIsEmpty: 'data',
+    PasswordInvalid: 'password is invalid', // must contain at least 8 characters, one uppercase, one number and one special case character
+    LoginInvalid: 'login is invalid', // must ends with a letter or digit, must starts with a letter, chars according to the pattern present inside the char class
 };
 
 export enum CodeError {
+    Unknown = 1,
     Valid,
-    Unknown,
     AlreadyExist,
     DontHaveRefreshCookie,
     CookieTimeout,

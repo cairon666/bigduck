@@ -37,7 +37,7 @@ export class AuthRouter {
         instance.post('/api/v1/auth/login', this.loginHandler.bind(this));
         instance.post('/api/v1/auth/register', this.registerHandler.bind(this));
         instance.post('/api/v1/auth/refresh', this.refreshHandler.bind(this));
-        // userRoute.post("/api/v1/auth/refresh/check", this.refreshHandler.bind(this)) TODO
+        // userRoute.post("/api/v1/auth/check", this.refreshHandler.bind(this)) TODO
 
         done();
     }
@@ -51,7 +51,6 @@ export class AuthRouter {
         }>,
         reply: FastifyReply,
     ) {
-        console.log(req.body);
         const dto = new LoginDTO(req.body.login || '', req.body.password || '');
 
         const authRes = await this.authService.Login(dto);
@@ -67,15 +66,15 @@ export class AuthRouter {
 
         reply
             .setCookie(NameCookieAccess, tokens.access, {
-                path: '/',
-                maxAge: 60 * 60,
-                // secure: true,
-                // httpOnly: true,
+                path: '/api/v1',
+                maxAge: 1000 * 60 * 24 * 30,
+                secure: true,
+                httpOnly: true,
             })
             .setCookie(NameCookieRefresh, tokens.refresh, {
-                path: '/',
-                // secure: true,
-                // httpOnly: true,
+                path: '/api/v1',
+                secure: true,
+                httpOnly: true,
             });
 
         sendJson(reply, { id: authRes.id }, HttpStatus.OK);
@@ -105,15 +104,15 @@ export class AuthRouter {
 
         reply
             .setCookie(NameCookieAccess, res.accessToken, {
-                path: '/',
-                maxAge: 60 * 60,
-                // secure: true,
-                // httpOnly: true,
+                path: '/api/v1',
+                maxAge: 1000 * 60 * 24 * 30,
+                secure: true,
+                httpOnly: true,
             })
             .setCookie(NameCookieRefresh, refreshToken, {
-                path: '/',
-                // secure: true,
-                // httpOnly: true,
+                path: '/api/v1',
+                secure: true,
+                httpOnly: true,
             });
 
         reply.status(HttpStatus.NO_CONTENT).send();

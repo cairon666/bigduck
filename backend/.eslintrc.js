@@ -150,6 +150,8 @@ module.exports = {
         'wrap-iife': 'off',
         'wrap-regex': 'off',
         'yield-star-spacing': 'off',
+
+        "security/detect-object-injection": ["off"],
     },
     ignorePatterns: ['node_modules', 'build'],
 };

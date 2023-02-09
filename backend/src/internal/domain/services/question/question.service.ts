@@ -98,7 +98,7 @@ export class QuestionService {
         dto.isValid();
 
         try {
-            const res = await this.questionRepo
+            await this.questionRepo
                 .createQueryBuilder('q')
                 .update()
                 .set({
@@ -114,7 +114,6 @@ export class QuestionService {
                     id_user_owner: dto.id_user,
                 })
                 .execute();
-            console.log(res);
         } catch (e) {
             throw new Beda(Exceptions.Database, CodeError.Database);
         }

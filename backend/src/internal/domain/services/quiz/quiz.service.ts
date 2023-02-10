@@ -17,6 +17,8 @@ import {
 import { Beda } from '../../../../pkg/beda/Beda';
 import { CodeError, Exceptions } from '../../exceptions/exceptions';
 import { PG_UNIQUE_VIOLATION } from '@drdgvhbh/postgres-error-codes';
+import {DatabaseCodes} from "../../exceptions/database";
+import {bedaDatabase, unknownBedaDatabase} from "../utils";
 
 export class QuizService {
     private logger: Logger;
@@ -33,7 +35,6 @@ export class QuizService {
         dto: createQuizDTO,
     ): Promise<createQuizResponseDTO> {
         dto.isValid();
-
         try {
             const res = await this.quizRepo
                 .createQueryBuilder('quiz')
@@ -46,28 +47,30 @@ export class QuizService {
                 .execute();
             return new createQuizResponseDTO(res.raw[0].id);
         } catch (e) {
-            if (e instanceof QueryFailedError) {
-                const err: any = e;
-                switch (err.code) {
-                    case PG_UNIQUE_VIOLATION:
-                        switch (err.constraint) {
-                            case 'quizzes_name_uniq':
-                                throw new Beda(
-                                    Exceptions.NameAlreadyExist,
-                                    CodeError.AlreadyExist,
-                                );
-                            default:
-                                throw new Beda(
-                                    Exceptions.SomeAlreadyExist,
-                                    CodeError.AlreadyExist,
-                                );
-                        }
-                    default:
-                        throw new Beda(Exceptions.Database, CodeError.Database);
-                }
-            }
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw this.parseCreateQuizError(e)
         }
+    }
+
+    private parseCreateQuizError(e: unknown): Beda {
+        const beda = new Beda(Exceptions.Database, CodeError.Database)
+        if (e instanceof QueryFailedError) {
+            const err: any = e;
+            switch (err.code) {
+                case PG_UNIQUE_VIOLATION: {
+                    switch (err.constraint) {
+                        case 'quizzes_name_uniq':
+                            beda.addDesc(DatabaseCodes.NameAlreadyExist)
+                            break
+                        default:
+                            beda.addDesc(DatabaseCodes.SomeAlreadyExist)
+                    }
+                    break
+                }
+                default:
+                    beda.addDesc(DatabaseCodes.Unknown)
+            }
+        }
+        return  beda
     }
 
     public async getQuizzes(
@@ -101,7 +104,7 @@ export class QuizService {
             const [quizzes, count] = await query.getManyAndCount();
             return new getQuizzesResponseDTO(quizzes.map(QuizDBtoQuiz), count);
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw unknownBedaDatabase()
         }
     }
 
@@ -114,7 +117,7 @@ export class QuizService {
                 id_owner: dto.id_owner,
             });
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw unknownBedaDatabase()
         }
     }
 
@@ -142,7 +145,7 @@ export class QuizService {
                 .andWhere('id_owner = :id_owner', { id_owner: dto.id_owner })
                 .execute();
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw unknownBedaDatabase()
         }
     }
 
@@ -160,11 +163,11 @@ export class QuizService {
                 })
                 .getOne();
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw unknownBedaDatabase()
         }
 
         if (!res) {
-            throw new Beda(Exceptions.NotFound, CodeError.NotFound);
+            throw bedaDatabase(DatabaseCodes.NotFound)
         }
 
         return new getQuizResponse(QuizDBtoQuiz(res));

@@ -10,6 +10,8 @@ import { Beda } from '../../../../pkg/beda/Beda';
 import { CodeError, Exceptions } from '../../exceptions/exceptions';
 import { PG_UNIQUE_VIOLATION } from '@drdgvhbh/postgres-error-codes';
 import { Logger } from '../../../../pkg/logger';
+import {DatabaseCodes} from "../../exceptions/database";
+import {bedaDatabase, unknownBedaDatabase} from "../utils";
 
 export class UserService {
     private logger: Logger;
@@ -39,27 +41,7 @@ export class UserService {
                 .where('id = :id', { id: dto.id })
                 .execute();
         } catch (e) {
-            if (e instanceof QueryFailedError) {
-                const err: any = e;
-                switch (err.code) {
-                    case PG_UNIQUE_VIOLATION:
-                        switch (err.constraint) {
-                            case 'users_username_uniq':
-                                throw new Beda(
-                                    Exceptions.UsernameAlreadyExist,
-                                    CodeError.AlreadyExist,
-                                );
-                            default:
-                                throw new Beda(
-                                    Exceptions.SomeAlreadyExist,
-                                    CodeError.AlreadyExist,
-                                );
-                        }
-                    default:
-                        throw new Beda(Exceptions.Database, CodeError.Database);
-                }
-            }
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            this.parseUpdateUserError(e)
         }
     }
 
@@ -74,12 +56,11 @@ export class UserService {
                 },
             });
         } catch (e) {
-            console.error(e);
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw unknownBedaDatabase()
         }
 
         if (!user) {
-            throw new Beda(Exceptions.NotFound, CodeError.NotFound);
+            throw bedaDatabase(DatabaseCodes.NotFound)
         }
 
         const userResp: UserResponse = {
@@ -93,5 +74,29 @@ export class UserService {
         };
 
         return new getUserRequestDTO(userResp);
+    }
+
+    private parseUpdateUserError(e: unknown) {
+        const beda = new Beda(Exceptions.Database, CodeError.Database)
+        if (e instanceof QueryFailedError) {
+            const err: any = e
+            switch (err.code) {
+                case PG_UNIQUE_VIOLATION: {
+                    switch (err.constraint) {
+                        case 'users_username_uniq':
+                            beda.addDesc(DatabaseCodes.UsernameAlreadyExist)
+                            break
+                        default:
+                            beda.addDesc(DatabaseCodes.SomeAlreadyExist)
+                            break
+                    }
+                    break
+                }
+                default:
+                    beda.addDesc(DatabaseCodes.Unknown)
+            }
+            throw beda
+        }
+        throw beda
     }
 }

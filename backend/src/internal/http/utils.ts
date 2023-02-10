@@ -11,7 +11,7 @@ export const NameCookieRefresh = 'refreshToken';
 
 export interface Error {
     error: string;
-    details: string[];
+    details: unknown[];
     code: number;
 }
 

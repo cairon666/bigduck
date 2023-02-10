@@ -10,6 +10,7 @@
 - ⚪ add white list for quiz
 - 🟢 add fields for user
 - 🟢 add attachments
+- ⚪ add attachments in quiz
 - ⚪ add statistics for quiz 
 - 🟢 add questions for quiz 
 - ⚫ add handler that gives quiz by username and quizname
@@ -19,6 +20,7 @@
 - ⚪ create validate for scheme create question
 - 🟢 add swagger
 - 🟢 fill swagger
+- ⚪ update swagger
 
 ## tests
 

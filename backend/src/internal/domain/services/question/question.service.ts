@@ -16,6 +16,8 @@ import {
 import { Beda } from '../../../../pkg/beda/Beda';
 import { CodeError, Exceptions } from '../../exceptions/exceptions';
 import { Brackets, Repository } from 'typeorm';
+import {DatabaseCodes} from "../../exceptions/database";
+import {bedaDatabase, unknownBedaDatabase} from "../utils";
 
 export class QuestionService {
     private logger: Logger;
@@ -51,7 +53,7 @@ export class QuestionService {
 
             return new createQuestionResponse(res.raw[0].id);
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw unknownBedaDatabase()
         }
     }
 
@@ -70,11 +72,11 @@ export class QuestionService {
                 },
             });
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw unknownBedaDatabase()
         }
 
         if (!res) {
-            throw new Beda(Exceptions.NotFound, CodeError.NotFound);
+            throw bedaDatabase(DatabaseCodes.NotFound)
         }
 
         return new getQuestionResponse(QuestionToQuestionRequest(res));
@@ -90,7 +92,7 @@ export class QuestionService {
                 id_user_owner: dto.id_user,
             });
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw unknownBedaDatabase()
         }
     }
 
@@ -115,7 +117,7 @@ export class QuestionService {
                 })
                 .execute();
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw unknownBedaDatabase()
         }
     }
 
@@ -162,7 +164,7 @@ export class QuestionService {
                 count,
             );
         } catch (e) {
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw unknownBedaDatabase()
         }
     }
 }

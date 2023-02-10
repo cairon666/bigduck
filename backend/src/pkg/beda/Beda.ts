@@ -1,7 +1,7 @@
 export class Beda extends Error {
     private readonly title: string;
     private readonly code: number;
-    private readonly details: string[];
+    private readonly details: unknown[];
 
     public constructor(title: string, code: number) {
         super(title);
@@ -16,7 +16,7 @@ export class Beda extends Error {
         Error.captureStackTrace(this);
     }
 
-    public addDesc(detail: string) {
+    public addDesc(detail: unknown) {
         this.details.push(detail);
     }
 
@@ -24,7 +24,7 @@ export class Beda extends Error {
         return this.title;
     }
 
-    public getDesc(): string[] {
+    public getDesc(): unknown[] {
         return this.details;
     }
 

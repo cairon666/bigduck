@@ -1,16 +1,15 @@
 import { object } from 'yup';
-import { Valid } from '../../exceptions/valid';
-import { Exceptions } from '../../exceptions/exceptions';
+import {ValidAlias, ValidCodes} from "../../exceptions/valid";
 
 export const updateUserScheme = object({
-    username: Valid.username.required(Exceptions.UsernameRequired),
-    first_name: Valid.first_name.required(Exceptions.FirstNameRequired),
-    second_name: Valid.second_name.required(Exceptions.SecondNameRequired),
-    avatar_url: Valid.avatar_url.nullable(),
-    day_of_birth: Valid.day_of_birth.nullable(),
-    gender: Valid.gender.nullable(),
+    username: ValidAlias.username.required(() => ValidCodes.UsernameRequired),
+    first_name: ValidAlias.first_name.required(() => ValidCodes.FirstNameRequired),
+    second_name: ValidAlias.second_name.required(() => ValidCodes.SecondNameRequired),
+    avatar_url: ValidAlias.avatar_url.nullable(),
+    day_of_birth: ValidAlias.day_of_birth.nullable(),
+    gender: ValidAlias.gender,
 });
 
 export const getUserScheme = object({
-    id: Valid.id_user.required(Exceptions.IdRequired),
+    id: ValidAlias.id_user.required(() => ValidCodes.IdUserRequired),
 });

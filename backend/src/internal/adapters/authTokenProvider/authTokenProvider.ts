@@ -75,6 +75,10 @@ export class AuthTokenProvider {
         return await this.redis.GET(key);
     }
 
+    public async delete(keys: string[]) {
+        await this.redis.DEL(keys)
+    }
+
     private generateHash(value: string): string {
         const privateKey = '12345678';
         const hashDigest = CryptoJS.SHA256(value);

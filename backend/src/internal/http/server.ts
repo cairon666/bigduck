@@ -79,22 +79,15 @@ export class HTTPServer {
     }
 
     public setup() {
-        this.app.setErrorHandler(this.errorHandler);
+
+        // hooks
         this.app.register(fastifyCookie, {
             secret: 'backend',
             hook: 'onRequest',
         });
-        this.app.addHook('preHandler', (req, res, done) => {
-            res.header('Access-Control-Allow-Origin', '*');
-            res.header('Access-Control-Allow-Methods', '*');
-            res.header('Access-Control-Allow-Headers', '*');
-
-            done();
-        });
+        this.app.addHook('preHandler', this.corsHandler.bind(this));
         this.app.addHook('onRequest', this.authCookieMiddleware.bind(this));
-        this.app.setNotFoundHandler(async (_, reply) => {
-            reply.status(HttpStatus.NOT_FOUND).send();
-        });
+
 
         // routes
         this.app.register(this.authRouter.router.bind(this.authRouter));
@@ -104,6 +97,10 @@ export class HTTPServer {
         this.app.register(
             this.attachmentRouter.router.bind(this.attachmentRouter),
         );
+
+        // utils
+        this.app.setNotFoundHandler(this.notFoundPathHandler.bind(this));
+        this.app.setErrorHandler(this.errorHandler.bind(this));
     }
 
     public run(): void {
@@ -128,7 +125,7 @@ export class HTTPServer {
 
     private async authCookieMiddleware(
         req: FastifyRequest,
-        // reply: FastifyReply,
+        reply: FastifyReply,
     ) {
         if (req.cookies[NameCookieAccess]) {
             const access_token = req.cookies[NameCookieAccess];
@@ -138,7 +135,7 @@ export class HTTPServer {
                 return;
             }
 
-            const authUnit: AuthStorageUnit = JSON.parse(res);
+               const authUnit: AuthStorageUnit = JSON.parse(res);
             console.log(authUnit);
             AuthContext.bind(req, authUnit);
         }
@@ -162,5 +159,23 @@ export class HTTPServer {
         } else {
             reply.send(e);
         }
+    }
+
+    private corsHandler(
+        _: FastifyRequest,
+        reply: FastifyReply,
+        done: () => void
+    ) {
+        reply.header('Access-Control-Allow-Origin', '*');
+        reply.header('Access-Control-Allow-Methods', '*');
+        reply.header('Access-Control-Allow-Headers', '*');
+        done()
+    }
+
+    private async notFoundPathHandler(
+        _: FastifyRequest,
+        reply: FastifyReply,
+    ) {
+        reply.status(HttpStatus.NOT_FOUND).send()
     }
 }

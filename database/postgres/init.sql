@@ -1,8 +1,10 @@
-create type gender as enum('male', 'female');
+drop type if exists gender;
+create type gender as enum('male', 'female') ;
+
+drop type if exists question_type;
 create type question_type as enum('choose_one','choose_many', 'input');
 
--- can be updated only one parameter
-create table public.credentials
+create table if not exists public.credentials
 (
     id            uuid primary key     default gen_random_uuid(),
     login         text        not null
@@ -15,7 +17,7 @@ create table public.credentials
         constraint credentials_email_uniq unique
 );
 
-create table public.users
+create table if not exists public.users
 (
     id           uuid primary key references public.credentials (id),
     username     text not null
@@ -29,26 +31,26 @@ create table public.users
     date_modify   timestamptz not null default now()
 );
 
-create table public.quizzes
+create table if not exists public.quizzes
 (
     id          serial primary key,
     id_owner    uuid    not null references public.credentials (id),
-    name        text    not null
-        constraint quizzes_name_uniq unique,
+    name        text    not null,
     title       text    not null,
     description text    not null,
     intro_url   text    not null,
     date_create timestamptz      default now(),
     date_modify timestamptz      default now(),
-    ttl         text, -- https://github.com/icholy/Duration.js
+    ttl         text,
     tts         timestamptz,
     tte         timestamptz,
     is_show     boolean not null default true,
     is_strict   boolean not null default false,
-    is_random   boolean not null default false
+    is_random   boolean not null default false,
+    constraint quizzes_name_uniq unique (name, id_owner)
 );
 
-create table public.quiz_questions
+create table if not exists public.quiz_questions
 (
     id            serial primary key,
     id_user_owner uuid          not null references public.credentials (id),
@@ -59,18 +61,3 @@ create table public.quiz_questions
     date_modify   timestamptz   not null default now(),
     is_show       boolean       not null default true
 );
-
-
--- for auth tests
-insert into public.credentials(id, login, password_hash, email)
-values ('c8bc0626-7934-4729-b550-3983d8f49a24', 'test.auth.duplicate',
-        '$2a$10$V70wp9gtvUztqT8r1VsUvetQ8aCsnrjr/Uffg3L0y5OcoNolYrOvq', 'test.auth.duplicate@email.com');
-insert into public.users(id, username, first_name, second_name)
-values ('c8bc0626-7934-4729-b550-3983d8f49a24', 'test.auth.duplicate', 'test.auth.duplicate', 'test.auth.duplicate');
-
--- for users tests
-insert into public.credentials(id, login, password_hash, email)
-values ('c8bc0626-7934-4729-b550-3983d8f49a25', 'test.users',
-        '$2a$10$V70wp9gtvUztqT8r1VsUvetQ8aCsnrjr/Uffg3L0y5OcoNolYrOvq', 'test.users@email.com');
-insert into public.users(id, username, first_name, second_name)
-values ('c8bc0626-7934-4729-b550-3983d8f49a25', 'test.users', 'test.users', 'test.users');

@@ -37,6 +37,10 @@ export class RedisController {
         return await this.client.GET(key);
     }
 
+    public async DEL(keys: string[]): Promise<number> {
+        return await this.client.DEL(keys);
+    }
+
     public async HSET(
         key: string,
         fields: string,

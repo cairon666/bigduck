@@ -8,6 +8,8 @@ import { Beda } from '../../../../pkg/beda/Beda';
 import { Logger } from '../../../../pkg/logger';
 import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
 import { PG_UNIQUE_VIOLATION } from '@drdgvhbh/postgres-error-codes';
+import {DatabaseCodes} from "../../exceptions/database";
+import {bedaDatabase, unknownBedaDatabase} from "../utils";
 
 export class AuthService {
     private managerStorage: EntityManager;
@@ -51,37 +53,7 @@ export class AuthService {
                 await mgr.insert(User, user);
             });
         } catch (e) {
-            if (e instanceof QueryFailedError) {
-                const err: any = e;
-                switch (err.code) {
-                    case PG_UNIQUE_VIOLATION:
-                        switch (err.constraint) {
-                            case 'users_username_uniq':
-                                throw new Beda(
-                                    Exceptions.UsernameAlreadyExist,
-                                    CodeError.AlreadyExist,
-                                );
-                            case 'credentials_login_uniq':
-                                throw new Beda(
-                                    Exceptions.LoginAlreadyExist,
-                                    CodeError.AlreadyExist,
-                                );
-                            case 'credentials_email_uniq':
-                                throw new Beda(
-                                    Exceptions.EmailAlreadyExist,
-                                    CodeError.AlreadyExist,
-                                );
-                            default:
-                                throw new Beda(
-                                    Exceptions.SomeAlreadyExist,
-                                    CodeError.AlreadyExist,
-                                );
-                        }
-                    default:
-                        throw new Beda(Exceptions.Database, CodeError.Database);
-                }
-            }
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw this.parseRegisterError(e)
         }
     }
 
@@ -96,18 +68,47 @@ export class AuthService {
                 },
             });
         } catch (e) {
-            this.logger.error({ not_handle_error: e });
-            throw new Beda(Exceptions.Database, CodeError.Database);
+            throw unknownBedaDatabase()
         }
 
         if (!cred) {
-            throw new Beda(Exceptions.NotFound, CodeError.NotFound);
+            throw bedaDatabase(DatabaseCodes.NotFound)
         }
 
         if (!compareSync(dto.password, cred.password_hash)) {
-            throw new Beda(Exceptions.BadPassword, CodeError.BadPassword);
+            throw bedaDatabase(DatabaseCodes.AuthBadPassword)
         }
 
         return new LoginResponseDTO(cred.id, cred.is_staff, cred.is_admin);
+    }
+
+    private parseRegisterError(e: unknown): Beda {
+        const beda = new Beda(Exceptions.Database, CodeError.Database)
+        if (e instanceof QueryFailedError) {
+            const err: any = e;
+            switch (err.code) {
+                case PG_UNIQUE_VIOLATION: {
+                    switch (err.constraint) {
+                        case 'users_username_uniq':
+                            beda.addDesc(DatabaseCodes.UsernameAlreadyExist)
+                            break
+                        case 'credentials_login_uniq':
+                            beda.addDesc(DatabaseCodes.LoginAlreadyExist)
+                            break
+                        case 'credentials_email_uniq':
+                            beda.addDesc(DatabaseCodes.EmailAlreadyExist)
+                            break
+                        default:
+                            beda.addDesc(DatabaseCodes.SomeAlreadyExist)
+                            break
+                    }
+                    break
+                }
+                default: {
+                    beda.addDesc(DatabaseCodes.Unknown)
+                }
+            }
+        }
+        throw beda
     }
 }

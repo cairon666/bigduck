@@ -1,23 +1,22 @@
 import { boolean, object } from 'yup';
-import { Valid } from '../../exceptions/valid';
-import { Exceptions } from '../../exceptions/exceptions';
+import {ValidAlias, ValidCodes} from "../../exceptions/valid";
 
 export const registerSchemeDTO = object({
-    login: Valid.login.required(Exceptions.LoginRequired),
-    password: Valid.password.required(Exceptions.PasswordRequired),
+    login: ValidAlias.login.required(() => ValidCodes.LoginRequired),
+    password: ValidAlias.password.required(() => ValidCodes.PasswordRequired),
     is_staff: boolean().default(false),
     is_admin: boolean().default(false),
-    phone: Valid.phone.nullable(),
-    email: Valid.email.required(Exceptions.EmailRequired),
-    username: Valid.username.required(Exceptions.UsernameRequired),
-    first_name: Valid.first_name.required(Exceptions.FirstNameRequired),
-    second_name: Valid.second_name.required(Exceptions.SecondNameRequired),
-    avatar_url: Valid.avatar_url.nullable(),
-    day_of_birth: Valid.day_of_birth.nullable(),
-    gender: Valid.gender.nullable(),
+    phone: ValidAlias.phone.nullable(),
+    email: ValidAlias.email.required(() => ValidCodes.EmailRequired),
+    username: ValidAlias.username.required(() => ValidCodes.UsernameRequired),
+    first_name: ValidAlias.first_name.required(() => ValidCodes.FirstNameRequired),
+    second_name: ValidAlias.second_name.required(() => ValidCodes.SecondNameRequired),
+    avatar_url: ValidAlias.avatar_url.nullable(),
+    day_of_birth: ValidAlias.day_of_birth.nullable(),
+    gender: ValidAlias.gender,
 });
 
 export const loginSchemeDTO = object({
-    login: Valid.login.required(Exceptions.LoginRequired),
-    password: Valid.password.required(Exceptions.PasswordRequired),
+    login: ValidAlias.login.required(() => ValidCodes.LoginRequired),
+    password: ValidAlias.password.required(() => ValidCodes.PasswordRequired),
 });

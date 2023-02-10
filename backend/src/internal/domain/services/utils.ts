@@ -1,6 +1,7 @@
 import { BaseSchema, ValidationError } from 'yup';
 import { Beda } from '../../../pkg/beda/Beda';
 import { CodeError, Exceptions } from '../exceptions/exceptions';
+import {DatabaseCodes} from "../exceptions/database";
 
 export function isValid(scheme: BaseSchema, obj: unknown) {
     try {
@@ -14,6 +15,18 @@ export function isValid(scheme: BaseSchema, obj: unknown) {
         }
         throw err;
     }
+}
+
+export function unknownBedaDatabase(): Beda {
+    const beda = new Beda(Exceptions.Database, CodeError.Database);
+    beda.addDesc(DatabaseCodes.Unknown)
+    return  beda
+}
+
+export function bedaDatabase(code: DatabaseCodes): Beda {
+    const beda = new Beda(Exceptions.Database, CodeError.Database);
+    beda.addDesc(code)
+    return  beda
 }
 
 export type OrderType = 'DESC' | 'ASC';

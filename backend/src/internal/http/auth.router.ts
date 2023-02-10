@@ -1,21 +1,22 @@
-import { AuthService } from '../domain/services/auth/auth.service';
-import { AuthTokenProvider } from '../adapters/authTokenProvider/authTokenProvider';
-import { LoginDTO, RegisterDTO } from '../domain/services/auth/dto';
-import { Beda } from '../../pkg/beda/Beda';
+import {AuthService} from '../domain/services/auth/auth.service';
+import {AuthTokenProvider} from '../adapters/authTokenProvider/authTokenProvider';
+import {LoginDTO, RegisterDTO} from '../domain/services/auth/dto';
+import {Beda} from '../../pkg/beda/Beda';
 import {
     AuthStorageUnit,
     NameCookieAccess,
     NameCookieRefresh,
     sendJson,
 } from './utils';
-import { CodeError, Exceptions } from '../domain/exceptions/exceptions';
-import { HttpStatus } from '../../pkg/http-status';
+import {CodeError, Exceptions} from '../domain/exceptions/exceptions';
+import {HttpStatus} from '../../pkg/http-status';
 import {
     FastifyInstance,
     FastifyPluginOptions,
     FastifyReply,
     FastifyRequest,
 } from 'fastify';
+import * as repl from "repl";
 
 export class AuthRouter {
     private authService: AuthService;
@@ -37,9 +38,19 @@ export class AuthRouter {
         instance.post('/api/v1/auth/login', this.loginHandler.bind(this));
         instance.post('/api/v1/auth/register', this.registerHandler.bind(this));
         instance.post('/api/v1/auth/refresh', this.refreshHandler.bind(this));
+        instance.post('/api/v1/auth/logout', this.logoutHandler.bind(this));
         // userRoute.post("/api/v1/auth/check", this.refreshHandler.bind(this)) TODO
 
         done();
+    }
+
+    private async logoutHandler(
+        req: FastifyRequest,
+        reply: FastifyReply
+    ) {
+        this.clearAuthCookies(reply)
+        await this.authTokenProvider.delete([NameCookieAccess, NameCookieRefresh])
+        reply.status(HttpStatus.NO_CONTENT).send()
     }
 
     private async loginHandler(
@@ -64,20 +75,9 @@ export class AuthRouter {
             JSON.stringify(authUnit),
         );
 
-        reply
-            .setCookie(NameCookieAccess, tokens.access, {
-                path: '/api/v1',
-                maxAge: 1000 * 60 * 24 * 30,
-                secure: true,
-                httpOnly: true,
-            })
-            .setCookie(NameCookieRefresh, tokens.refresh, {
-                path: '/api/v1',
-                secure: true,
-                httpOnly: true,
-            });
+        this.setAuthCookies(reply, tokens.access, tokens.refresh)
 
-        sendJson(reply, { id: authRes.id }, HttpStatus.OK);
+        sendJson(reply, {id: authRes.id}, HttpStatus.OK);
     }
 
     private async refreshHandler(req: FastifyRequest, reply: FastifyReply) {
@@ -102,18 +102,7 @@ export class AuthRouter {
             throw new Beda(Exceptions.CookieTimeout, CodeError.CookieTimeout);
         }
 
-        reply
-            .setCookie(NameCookieAccess, res.accessToken, {
-                path: '/api/v1',
-                maxAge: 1000 * 60 * 24 * 30,
-                secure: true,
-                httpOnly: true,
-            })
-            .setCookie(NameCookieRefresh, refreshToken, {
-                path: '/api/v1',
-                secure: true,
-                httpOnly: true,
-            });
+        this.setAuthCookies(reply, res.accessToken, refreshToken)
 
         reply.status(HttpStatus.NO_CONTENT).send();
     }
@@ -153,5 +142,25 @@ export class AuthRouter {
         await this.authService.Register(dto);
 
         reply.status(HttpStatus.NO_CONTENT).send();
+    }
+
+    private setAuthCookies(reply: FastifyReply, access: string, refresh: string) {
+        reply
+            .setCookie(NameCookieAccess, access, {
+                path: '/',
+                maxAge: 1000 * 60 * 24 * 30,
+                // secure: true,
+                // httpOnly: true,
+            })
+            .setCookie(NameCookieRefresh, refresh, {
+                path: '/',
+                // secure: true,
+                // httpOnly: true,
+            });
+    }
+
+    private clearAuthCookies(reply: FastifyReply) {
+        reply.clearCookie(NameCookieAccess)
+        reply.clearCookie(NameCookieRefresh)
     }
 }

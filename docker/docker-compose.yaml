@@ -23,29 +23,29 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ../database/postgres/dump.sql:/docker-entrypoint-initdb.d/dummy_dump.sql
-#      - ../database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-#  database_pgadmin:
-#    image: dpage/pgadmin4
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: 'admin@admin.admin'
-#      PGADMIN_DEFAULT_PASSWORD: 'admin'
-#      PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: 'False'
-#      GUNICORN_ACCESS_LOGFILE: '/dev/null'
-#    volumes:
-#      - pgadmin_data:/var/lib/pgadmin
-#    ports:
-#      - "5050:80"
-#    logging:
-#      driver: none
-#    restart: unless-stopped
+  #      - ../database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+  #  database_pgadmin:
+  #    image: dpage/pgadmin4
+  #    environment:
+  #      PGADMIN_DEFAULT_EMAIL: 'admin@admin.admin'
+  #      PGADMIN_DEFAULT_PASSWORD: 'admin'
+  #      PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: 'False'
+  #      GUNICORN_ACCESS_LOGFILE: '/dev/null'
+  #    volumes:
+  #      - pgadmin_data:/var/lib/pgadmin
+  #    ports:
+  #      - "5050:80"
+  #    logging:
+  #      driver: none
+  #    restart: unless-stopped
   backend:
     build:
       context: ../backend
       dockerfile: Dockerfile
     restart: unless-stopped
     depends_on:
-      - database_postgres
       - database_redis
+      - database_postgres
     environment:
       - REDIS_HOST=database_redis
       - POSTGRES_HOST=database_postgres
@@ -53,7 +53,7 @@ services:
       - "3000:3000"
     volumes:
       - ../backend:/usr/src/app
-      - node_modules:/home/node/app/node_modules
+      - node_modules:/usr/src/app/node_modules
   swagger-ui:
     image: swaggerapi/swagger-ui
     ports:

@@ -6,6 +6,7 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 
 RUN yarn
+RUN npm install
 # https://blog.npmjs.org/post/171556855892/introducing-npm-ci-for-faster-more-reliable
 # RUN npm ci --only=production
 

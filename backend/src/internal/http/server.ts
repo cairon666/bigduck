@@ -87,7 +87,7 @@ export class HTTPServer {
         });
         this.app.addHook('preHandler', this.corsHandler.bind(this));
         this.app.addHook('onRequest', this.authCookieMiddleware.bind(this));
-
+        this.app.options('*', (request, reply) => { reply.send() })
 
         // routes
         this.app.register(this.authRouter.router.bind(this.authRouter));

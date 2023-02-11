@@ -38,22 +38,22 @@ services:
 #    logging:
 #      driver: none
 #    restart: unless-stopped
-#  backend:
-#    build:
-#      context: ../backend
-#      dockerfile: Dockerfile
-#    restart: unless-stopped
-#    depends_on:
-#      - database_postgres
-#      - database_redis
-#    environment:
-#      - REDIS_HOST=database_redis
-#      - POSTGRES_HOST=database_postgres
-#    ports:
-#      - "3000:3000"
-#    volumes:
-#      - ../backend:/usr/src/app
-#      - node_modules:/home/node/app/node_modules
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - database_postgres
+      - database_redis
+    environment:
+      - REDIS_HOST=database_redis
+      - POSTGRES_HOST=database_postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../backend:/usr/src/app
+      - node_modules:/home/node/app/node_modules
   swagger-ui:
     image: swaggerapi/swagger-ui
     ports:

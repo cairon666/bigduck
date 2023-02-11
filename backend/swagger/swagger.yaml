@@ -792,7 +792,7 @@ components:
         details:
           type: array
           items:
-            type: string
+            type: number
         code:
           type: number
 

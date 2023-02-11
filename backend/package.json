@@ -4,7 +4,7 @@
   "description": "",
   "main": "./stc/main.ts",
   "scripts": {
-    "dev": "NODE_ENV=development ./node_modules/.bin/ts-node ./src/main.ts",
+    "dev": "NODE_ENV=development ts-node ./src/main.ts",
     "test": "mocha --require ts-node/register src/**/*.test.ts",
     "eslint": "eslint . --ext .ts,.js",
     "prettier": "prettier --write ./src"

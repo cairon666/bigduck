@@ -1,34 +1,34 @@
 drop type if exists gender;
-create type gender as enum('male', 'female') ;
+create type gender as enum ('male', 'female');
 
 drop type if exists question_type;
-create type question_type as enum('choose_one','choose_many', 'input');
+create type question_type as enum ('choose_one','choose_many', 'input');
 
 create table if not exists public.credentials
 (
-    id            uuid primary key     default gen_random_uuid(),
-    login         text        not null
-        constraint credentials_login_uniq unique,
-    password_hash text        not null,
-    is_staff      boolean     not null default false,
-    is_admin      boolean     not null default false,
+    id            uuid primary key default gen_random_uuid(),
+    login         text    not null,
+    password_hash text    not null,
+    is_staff      boolean not null default false,
+    is_admin      boolean not null default false,
     phone         text,
-    email         text        not null
-        constraint credentials_email_uniq unique
+    email         text    not null,
+    constraint credentials_login_uniq unique (login),
+    constraint credentials_email_uniq unique (email)
 );
 
 create table if not exists public.users
 (
     id           uuid primary key references public.credentials (id),
-    username     text not null
-        constraint users_username_uniq unique,
-    first_name   text not null,
-    second_name  text not null,
+    username     text        not null,
+    first_name   text        not null,
+    second_name  text        not null,
     avatar_url   text,
     day_of_birth date,
     gender       gender,
-    date_create   timestamptz not null default now(),
-    date_modify   timestamptz not null default now()
+    date_create  timestamptz not null default now(),
+    date_modify  timestamptz not null default now(),
+    constraint users_username_uniq unique (username)
 );
 
 create table if not exists public.quizzes

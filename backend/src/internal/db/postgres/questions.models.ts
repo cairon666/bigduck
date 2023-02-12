@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Credential } from './credential.models';
+import { CredentialDB } from './credential.models';
 import { Quizzes } from './quizzes.models';
 
 export interface QuestionChooseVariable {
@@ -36,7 +36,7 @@ export class Question {
         name: 'id_user_owner',
         type: 'uuid',
     })
-    @OneToMany(() => Credential, (credential) => credential.id)
+    @OneToMany(() => CredentialDB, (credential) => credential.id)
     public id_user_owner: string;
 
     @Column({

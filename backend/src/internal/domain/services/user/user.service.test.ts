@@ -4,7 +4,7 @@ import { NewDevLogger } from '../../../../pkg/logger';
 import { NewDataSource } from '../../../db/postgres';
 import { DataSource } from 'typeorm';
 import { UserService } from './user.service';
-import { User } from '../../../db/postgres/user.models';
+import { UserDB } from '../../../db/postgres/user.models';
 import { getUserDTO, updateUserDTO } from './dto';
 import assert from 'assert';
 import { Beda } from '../../../../pkg/beda/Beda';
@@ -19,7 +19,7 @@ describe('auth service', async function () {
         const logger = NewDevLogger();
         config.APP.DEBUG = false;
         postgresClient = await NewDataSource(config);
-        const userRepo = await postgresClient.getRepository(User);
+        const userRepo = await postgresClient.getRepository(UserDB);
         userService = new UserService(logger, userRepo);
     });
     after(async () => {

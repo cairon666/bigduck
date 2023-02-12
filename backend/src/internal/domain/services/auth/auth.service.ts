@@ -1,23 +1,20 @@
-import { EntityManager, QueryFailedError } from 'typeorm';
-import { Credential } from '../../../db/postgres/credential.models';
-import { User } from '../../../db/postgres/user.models';
-import { LoginDTO, LoginResponseDTO, RegisterDTO } from './dto';
-import { CodeError, Exceptions } from '../../exceptions/exceptions';
-import { v4 as uuidv4 } from 'uuid';
-import { Beda } from '../../../../pkg/beda/Beda';
-import { Logger } from '../../../../pkg/logger';
-import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
-import { PG_UNIQUE_VIOLATION } from '@drdgvhbh/postgres-error-codes';
+import {LoginDTO, LoginResponseDTO, RegisterDTO} from './dto';
+import {v4 as uuidv4} from 'uuid';
+import {compareSync, genSaltSync, hashSync} from 'bcryptjs';
 import {DatabaseCodes} from "../../exceptions/database";
-import {bedaDatabase, unknownBedaDatabase} from "../utils";
+import {bedaDatabase} from "../utils";
+import {Credential, User, UserLoginResponse} from "../../models/user";
+
+export interface AuthRepo {
+    register(c: Credential, u: User): Promise<void>
+    login(login: string): Promise<UserLoginResponse | null>
+}
 
 export class AuthService {
-    private managerStorage: EntityManager;
-    private logger: Logger;
+    private authRepo: AuthRepo
 
-    public constructor(logger: Logger, managerStorage: EntityManager) {
-        this.managerStorage = managerStorage;
-        this.logger = logger;
+    public constructor(authRepo: AuthRepo) {
+        this.authRepo = authRepo;
     }
 
     public async Register(dto: RegisterDTO) {
@@ -26,89 +23,38 @@ export class AuthService {
         const hash_password = hashSync(dto.password, genSaltSync(10));
         const uuid = uuidv4();
 
-        const credential = new Credential(
-            uuid,
-            dto.login,
-            hash_password,
-            dto.is_staff,
-            dto.is_admin,
-            dto.phone,
-            dto.email,
-        );
-        const user = new User(
-            uuid,
-            dto.username,
-            dto.first_name,
-            dto.second_name,
-            dto.avatar_url,
-            dto.day_of_birth,
-            dto.gender,
-            new Date(),
-            new Date(),
-        );
-
-        try {
-            await this.managerStorage.transaction(async (mgr) => {
-                await mgr.insert(Credential, credential);
-                await mgr.insert(User, user);
-            });
-        } catch (e) {
-            throw this.parseRegisterError(e)
-        }
+        await this.authRepo.register({
+            id: uuid,
+            login: dto.login,
+            password_hash: hash_password,
+            is_staff: dto.is_staff,
+            is_admin: dto.is_admin,
+            phone: dto.phone,
+            email: dto.email,
+        }, {
+            id: uuid,
+            username: dto.username,
+            first_name: dto.first_name,
+            second_name: dto.second_name,
+            avatar_url: dto.avatar_url,
+            day_of_birth: dto.day_of_birth,
+            gender: dto.gender,
+        })
     }
 
     public async Login(dto: LoginDTO): Promise<LoginResponseDTO> {
         dto.isValid();
 
-        let cred: Credential | null;
-        try {
-            cred = await this.managerStorage.findOne(Credential, {
-                where: {
-                    login: dto.login,
-                },
-            });
-        } catch (e) {
-            throw unknownBedaDatabase()
-        }
+        const resp = await this.authRepo.login(dto.login)
 
-        if (!cred) {
+        if (!resp) {
             throw bedaDatabase(DatabaseCodes.NotFound)
         }
 
-        if (!compareSync(dto.password, cred.password_hash)) {
+        if (!compareSync(dto.password, resp.password_hash)) {
             throw bedaDatabase(DatabaseCodes.AuthBadPassword)
         }
 
-        return new LoginResponseDTO(cred.id, cred.is_staff, cred.is_admin);
-    }
-
-    private parseRegisterError(e: unknown): Beda {
-        const beda = new Beda(Exceptions.Database, CodeError.Database)
-        if (e instanceof QueryFailedError) {
-            const err: any = e;
-            switch (err.code) {
-                case PG_UNIQUE_VIOLATION: {
-                    switch (err.constraint) {
-                        case 'users_username_uniq':
-                            beda.addDesc(DatabaseCodes.UsernameAlreadyExist)
-                            break
-                        case 'credentials_login_uniq':
-                            beda.addDesc(DatabaseCodes.LoginAlreadyExist)
-                            break
-                        case 'credentials_email_uniq':
-                            beda.addDesc(DatabaseCodes.EmailAlreadyExist)
-                            break
-                        default:
-                            beda.addDesc(DatabaseCodes.SomeAlreadyExist)
-                            break
-                    }
-                    break
-                }
-                default: {
-                    beda.addDesc(DatabaseCodes.Unknown)
-                }
-            }
-        }
-        throw beda
+        return new LoginResponseDTO(resp.is_staff, resp.is_admin, resp.user);
     }
 }

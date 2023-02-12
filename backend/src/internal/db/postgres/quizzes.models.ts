@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Credential } from './credential.models';
+import { CredentialDB } from './credential.models';
 
 @Entity({
     name: 'quizzes',
@@ -15,7 +15,7 @@ export class Quizzes {
         name: 'id_owner',
         type: 'uuid',
     })
-    @OneToMany(() => Credential, (credential) => credential.id)
+    @OneToMany(() => CredentialDB, (credential) => credential.id)
     public id_owner: string;
 
     @Column({

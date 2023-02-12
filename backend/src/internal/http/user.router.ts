@@ -1,8 +1,8 @@
-import { UserService } from '../domain/services/user/user.service';
-import { sendJson } from './utils';
-import { AuthContext } from './auth.context';
-import { HttpStatus } from '../../pkg/http-status';
-import { getUserDTO, updateUserDTO } from '../domain/services/user/dto';
+import {UserService} from '../domain/services/user/user.service';
+import {sendJson} from './utils';
+import {AuthContext} from './auth.context';
+import {HttpStatus} from '../../pkg/http-status';
+import {getUserDTO, updateUserDTO} from '../domain/services/user/dto';
 import {
     FastifyInstance,
     FastifyPluginOptions,
@@ -53,12 +53,14 @@ export class UserRouter {
 
         const dto: updateUserDTO = new updateUserDTO(
             id,
-            req.body.username || '',
-            req.body.first_name || '',
-            req.body.second_name || '',
-            req.body.avatar_url || null,
-            req.body.day_of_birth || null,
-            req.body.gender || null,
+            {
+                username: req.body.username || '',
+                first_name: req.body.first_name || '',
+                second_name: req.body.second_name || '',
+                avatar_url: req.body.avatar_url || null,
+                day_of_birth: req.body.day_of_birth || null,
+                gender: req.body.gender || null,
+            }
         );
 
         await this.userService.updateUser(dto);

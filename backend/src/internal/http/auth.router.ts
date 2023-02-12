@@ -16,7 +16,6 @@ import {
     FastifyReply,
     FastifyRequest,
 } from 'fastify';
-import * as repl from "repl";
 
 export class AuthRouter {
     private authService: AuthService;
@@ -67,7 +66,7 @@ export class AuthRouter {
         const authRes = await this.authService.Login(dto);
 
         const authUnit: AuthStorageUnit = {
-            id: authRes.id,
+            id: authRes.user.id,
             is_admin: authRes.is_admin,
             is_staff: authRes.is_staff,
         };
@@ -77,7 +76,7 @@ export class AuthRouter {
 
         this.setAuthCookies(reply, tokens.access, tokens.refresh)
 
-        sendJson(reply, {id: authRes.id}, HttpStatus.OK);
+        sendJson(reply, {user: authRes.user}, HttpStatus.OK);
     }
 
     private async refreshHandler(req: FastifyRequest, reply: FastifyReply) {

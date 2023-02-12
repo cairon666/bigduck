@@ -1,13 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import { Credential } from './credential.models';
+import {Column, Entity, PrimaryColumn} from 'typeorm';
 
 @Entity('users')
-export class User {
+export class UserDB {
     @PrimaryColumn({
         type: 'uuid',
         name: 'id',
     })
-    @OneToMany(() => Credential, (credential) => credential.id)
     public id: string;
 
     @Column({

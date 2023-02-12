@@ -62,14 +62,24 @@ export class LoginDTO {
     }
 }
 
+interface UserResponse {
+    id: string;
+    username: string;
+    first_name: string;
+    second_name: string;
+    avatar_url: string | null;
+    day_of_birth: Date | null;
+    gender: string | null;
+}
+
 export class LoginResponseDTO {
-    public id: string;
     public is_staff: boolean;
     public is_admin: boolean;
+    public user: UserResponse
 
-    public constructor(id: string, is_staff: boolean, is_admin: boolean) {
-        this.id = id;
+    public constructor(is_staff: boolean, is_admin: boolean, user: UserResponse) {
         this.is_staff = is_staff;
         this.is_admin = is_admin;
+        this.user = user
     }
 }

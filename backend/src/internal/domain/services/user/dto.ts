@@ -1,31 +1,17 @@
 import { isValid } from '../utils';
 import { getUserScheme, updateUserScheme } from './scheme';
+import {User} from "../../models/user";
 
 export class updateUserDTO {
     public id: string;
-    public username: string;
-    public first_name: string;
-    public second_name: string;
-    public avatar_url: string | null;
-    public day_of_birth: Date | null;
-    public gender: string | null;
+    public set: Omit<User, "id">
 
     public constructor(
         id: string,
-        username: string,
-        first_name: string,
-        second_name: string,
-        avatar_url: string | null,
-        day_of_birth: Date | null,
-        gender: string | null,
+        set: Omit<User, "id">
     ) {
         this.id = id;
-        this.username = username;
-        this.first_name = first_name;
-        this.second_name = second_name;
-        this.avatar_url = avatar_url;
-        this.day_of_birth = day_of_birth;
-        this.gender = gender;
+        this.set = set
     }
 
     public isValid() {
@@ -45,20 +31,11 @@ export class getUserDTO {
     }
 }
 
-export interface UserResponse {
-    id: string;
-    username: string;
-    first_name: string;
-    second_name: string;
-    avatar_url: string | null;
-    day_of_birth: Date | null;
-    gender: string | null;
-}
 
 export class getUserRequestDTO {
-    public user: UserResponse;
+    public user: User;
 
-    public constructor(user: UserResponse) {
+    public constructor(user: User) {
         this.user = user;
     }
 }

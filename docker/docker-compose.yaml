@@ -22,8 +22,8 @@ services:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ../database/postgres/dump.sql:/docker-entrypoint-initdb.d/dummy_dump.sql
-  #      - ../database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+#      - ../database/postgres/dump.sql:/docker-entrypoint-initdb.d/dummy_dump.sql
+      - ../database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
   #  database_pgadmin:
   #    image: dpage/pgadmin4
   #    environment:
@@ -54,14 +54,14 @@ services:
     volumes:
       - ../backend:/usr/src/app
       - node_modules:/usr/src/app/node_modules
-  swagger-ui:
-    image: swaggerapi/swagger-ui
-    ports:
-      - "3001:8080"
-    volumes:
-      - ../backend/swagger:/usr/share/nginx/html/doc
-    environment:
-      API_URL: doc/swagger.yaml
+#  swagger-ui:
+#    image: swaggerapi/swagger-ui
+#    ports:
+#      - "3001:8080"
+#    volumes:
+#      - ../backend/swagger:/usr/share/nginx/html/doc
+#    environment:
+#      API_URL: doc/swagger.yaml
 
 volumes:
   pgadmin_data:

@@ -1,5 +1,4 @@
-import {Column, Entity, JoinColumn, OneToOne, PrimaryColumn} from 'typeorm';
-import {UserDB} from "./user.models";
+import {Column, Entity, PrimaryColumn} from 'typeorm';
 
 @Entity('credentials')
 export class CredentialDB {
@@ -9,11 +8,6 @@ export class CredentialDB {
     })
     public id: string;
 
-    @OneToOne(() => UserDB)
-    @JoinColumn({
-        name: "id",
-    })
-    public user?: UserDB;
 
     @Column({
         type: 'text',

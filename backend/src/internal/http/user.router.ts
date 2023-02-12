@@ -77,6 +77,8 @@ export class UserRouter {
     ) {
         const id = req.params.id_user;
 
+        AuthContext.checkAccessIdOrAdmin(req, id);
+
         const res = await this.userService.getUser(new getUserDTO(id));
 
         sendJson(

@@ -1,45 +1,29 @@
 import classNames from 'classnames';
 import { forwardRef, HTMLProps } from 'react';
+import { Wrapper } from '../Wrapper';
 
 type InputProps = HTMLProps<HTMLInputElement> & {
-  fullWidth?: boolean;
-  label?: string;
-  error?: string;
+    fullWidth?: boolean;
+    label?: string;
+    error?: string;
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { fullWidth, label, error, required, ...otherProps } = props;
+    const { fullWidth, label, error, required, ...otherProps } = props;
 
-  return (
-    <label className='block'>
-      {label && (
-        <span
-          className={classNames(
-            'block text-sm font-medium text-slate-700',
-            error ? '!text-red-600' : '',
-          )}
-        >
-          {label} {required && <span className={'text-red-700'}>*</span>}
-        </span>
-      )}
-      <input
-        {...otherProps}
-        ref={ref}
-        className={classNames(
-          props.className,
-          `rounded border-2 border-slate-300 hover:border-indigo-300
-      disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200
-      disabled:shadow-none focus-visible:border-indigo-600 
-      focus-visible:outline-none py-1 px-2`,
-          fullWidth ? 'w-full' : '',
-          error ? '!border-red-600 ' : '',
-        )}
-      />
-      {error && (
-        <span className={'block text-xs font-medium text-red-600'}>
-          {error}
-        </span>
-      )}
-    </label>
-  );
+    return (
+        <Wrapper error={error} label={label} required={required}>
+            <input
+                {...otherProps}
+                ref={ref}
+                className={classNames(
+                    props.className,
+                    'relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm',
+                    'focus-visible:text-blue-900 cursor-text placeholder:text-slate-400',
+                    fullWidth ? 'w-full' : '',
+                    error ? '!ring-red-600 ring-1 ' : '',
+                )}
+            />
+        </Wrapper>
+    );
 });

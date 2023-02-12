@@ -1,15 +1,15 @@
 version: "3"
 
 services:
-  database_redis:
-    image: redis:7-alpine
-    restart: always
-    ports:
-      - '6379:6379'
-    volumes:
-      - redis_data:/data
-      - ../database/redis/redis.conf:/etc/redis/redis.conf
-    command: [ "redis-server", "/etc/redis/redis.conf" ]
+#  database_redis:
+#    image: redis:7-alpine
+#    restart: always
+#    ports:
+#      - '6379:6379'
+#    volumes:
+#      - redis_data:/data
+#      - ../database/redis/redis.conf:/etc/redis/redis.conf
+#    command: [ "redis-server", "/etc/redis/redis.conf" ]
   database_postgres:
     image: postgres:15-alpine
     restart: always
@@ -38,22 +38,22 @@ services:
   #    logging:
   #      driver: none
   #    restart: unless-stopped
-  backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    depends_on:
-      - database_redis
-      - database_postgres
-    environment:
-      - REDIS_HOST=database_redis
-      - POSTGRES_HOST=database_postgres
-    ports:
-      - "3000:3000"
-    volumes:
-      - ../backend:/usr/src/app
-      - node_modules:/usr/src/app/node_modules
+#  backend:
+#    build:
+#      context: ../backend
+#      dockerfile: Dockerfile
+#    restart: unless-stopped
+#    depends_on:
+##      - database_redis
+#      - database_postgres
+#    environment:
+#      - REDIS_HOST=database_redis
+#      - POSTGRES_HOST=database_postgres
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - ../backend:/usr/src/app
+#      - node_modules:/usr/src/app/node_modules
 #  swagger-ui:
 #    image: swaggerapi/swagger-ui
 #    ports:

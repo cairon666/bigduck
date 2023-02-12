@@ -1,12 +1,10 @@
 import { AuthService } from '../domain/services/auth/auth.service';
 import { Config } from '../config';
-import { AuthTokenProvider } from '../adapters/authTokenProvider/authTokenProvider';
 import { AuthRouter } from './auth.router';
 import { Logger } from '../../pkg/logger';
 import { UserService } from '../domain/services/user/user.service';
 import { UserRouter } from './user.router';
-import { AuthStorageUnit, NameCookieAccess, sendError } from './utils';
-import { AuthContext } from './auth.context';
+import { sendError } from './utils';
 import { QuizService } from '../domain/services/quiz/quiz.service';
 import { QuizRouter } from './quiz.router';
 import { QuestionRouter } from './question.router';
@@ -17,10 +15,10 @@ import Fastify, {
     FastifyReply,
     FastifyRequest,
 } from 'fastify';
-import fastifyCookie from '@fastify/cookie';
 import { Beda } from '../../pkg/beda/Beda';
 import { HttpStatus } from '../../pkg/http-status';
 import qs from 'qs';
+import fastifyCookie from "@fastify/cookie";
 
 export class HTTPServer {
     private config: Config;
@@ -28,7 +26,6 @@ export class HTTPServer {
 
     // service
     private authService: AuthService;
-    private authTokenProvider: AuthTokenProvider;
     private userService: UserService;
     private quizService: QuizService;
     private questionService: QuestionService;
@@ -46,7 +43,6 @@ export class HTTPServer {
     public constructor(
         conf: Config,
         logger: Logger,
-        AuthTokenProvider: AuthTokenProvider,
         authService: AuthService,
         userService: UserService,
         quizService: QuizService,
@@ -57,7 +53,6 @@ export class HTTPServer {
 
         // service
         this.authService = authService;
-        this.authTokenProvider = AuthTokenProvider;
         this.userService = userService;
         this.quizService = quizService;
         this.questionService = questionService;
@@ -65,7 +60,6 @@ export class HTTPServer {
         // routes
         this.userRouter = new UserRouter(this.userService);
         this.authRouter = new AuthRouter(
-            this.authTokenProvider,
             this.authService,
         );
         this.quizRouter = new QuizRouter(this.quizService);
@@ -82,11 +76,9 @@ export class HTTPServer {
 
         // hooks
         this.app.register(fastifyCookie, {
-            secret: 'backend',
-            hook: 'onRequest',
-        });
+            secret: "secret-cookie",
+        })
         this.app.addHook('preHandler', this.corsHandler.bind(this));
-        this.app.addHook('onRequest', this.authCookieMiddleware.bind(this));
         this.app.options('*', (request, reply) => { reply.send() })
 
         // routes
@@ -123,24 +115,6 @@ export class HTTPServer {
         });
     }
 
-    private async authCookieMiddleware(
-        req: FastifyRequest,
-        reply: FastifyReply,
-    ) {
-        if (req.cookies[NameCookieAccess]) {
-            const access_token = req.cookies[NameCookieAccess];
-            const res = await this.authTokenProvider.get(access_token);
-
-            if (!res) {
-                return;
-            }
-
-               const authUnit: AuthStorageUnit = JSON.parse(res);
-            console.log(authUnit);
-            AuthContext.bind(req, authUnit);
-        }
-    }
-
     private async errorHandler(
         e: unknown,
         _: FastifyRequest,
@@ -166,9 +140,11 @@ export class HTTPServer {
         reply: FastifyReply,
         done: () => void
     ) {
-        reply.header('Access-Control-Allow-Origin', '*');
+        reply.header('Access-Control-Allow-Origin', 'http://localhost:8080');
         reply.header('Access-Control-Allow-Methods', '*');
         reply.header('Access-Control-Allow-Headers', '*');
+        reply.header('Access-Control-Allow-Credentials', 'true');
+        reply.header("Access-Control-Expose-Headers", "Set-Cookie")
         done()
     }
 

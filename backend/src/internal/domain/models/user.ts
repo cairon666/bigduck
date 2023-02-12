@@ -18,6 +18,3 @@ export interface Credential {
     email: string,
 }
 
-export type UserLoginResponse = Credential & {
-    user: User
-}

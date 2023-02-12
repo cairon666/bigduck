@@ -9,6 +9,10 @@
     "node": ">=14"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.4.9",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@headlessui/react": "^1.7.10",
     "@heroicons/react": "^2.0.15",
     "@hookform/resolvers": "^2.9.11",
     "@reduxjs/toolkit": "^1.9.2",
@@ -16,10 +20,12 @@
     "@types/react-redux": "^7.1.25",
     "@types/tailwindcss": "^3.1.0",
     "classnames": "^2.3.2",
+    "framer-motion": "^9.0.2",
     "ky": "^0.33.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.1",
+    "react-icons": "^4.7.1",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.1",
     "redux": "^4.2.1",
@@ -28,6 +34,7 @@
     "rxjs": "^7.8.0",
     "tailwindcss": "^3.2.6",
     "typescript": "^4.9.5",
+    "use-lilius": "^2.0.3",
     "yup": "^1.0.0"
   },
   "devDependencies": {
@@ -37,6 +44,7 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
     "@types/react": "^18.0.27",
+    "@types/react-datepicker": "^4.8.0",
     "@types/react-dom": "^18.0.10",
     "@types/react-router-dom": "^5.3.3",
     "@types/redux": "^3.6.0",
@@ -61,6 +69,7 @@
     "postcss-loader": "^7.0.2",
     "postcss-preset-env": "^8.0.1",
     "prettier": "^2.8.4",
+    "react-datepicker": "^4.10.0",
     "sass": "^1.58.0",
     "sass-loader": "^13.2.0",
     "style-loader": "^3.3.1",

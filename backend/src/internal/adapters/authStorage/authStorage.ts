@@ -1,6 +1,6 @@
 import {EntityManager, QueryFailedError} from "typeorm";
 import {Logger} from "../../../pkg/logger";
-import {Credential, User, UserLoginResponse} from "../../domain/models/user";
+import {Credential, User} from "../../domain/models/user";
 import {CredentialDB} from "../../db/postgres/credential.models";
 import {UserDB} from "../../db/postgres/user.models";
 import {Beda} from "../../../pkg/beda/Beda";
@@ -80,7 +80,7 @@ export class AuthStorage {
         throw beda
     }
 
-    public async login(login: string): Promise<UserLoginResponse | null> {
+    public async login(login: string): Promise<Credential | null> {
         let cred: CredentialDB | null;
         try {
             cred = await this.managerStorage
@@ -89,13 +89,12 @@ export class AuthStorage {
                 .where({
                     login: login
                 })
-                .innerJoinAndSelect("credential.user", "user")
                 .getOne()
         } catch (e) {
             throw unknownBedaDatabase()
         }
 
-        if (!cred || !cred.user) {
+        if (!cred) {
             return null
         }
 
@@ -106,16 +105,7 @@ export class AuthStorage {
             is_staff: cred.is_staff,
             is_admin: cred.is_admin,
             phone: cred.phone,
-            email: cred.email,
-            user: {
-                id: cred.user.id,
-                username: cred.user.username,
-                first_name: cred.user.first_name,
-                second_name: cred.user.second_name,
-                avatar_url: cred.user.avatar_url,
-                day_of_birth: cred.user.day_of_birth,
-                gender: cred.user.gender,
-            }
+            email: cred.email
         }
     }
 }

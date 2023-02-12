@@ -3,11 +3,11 @@ import {v4 as uuidv4} from 'uuid';
 import {compareSync, genSaltSync, hashSync} from 'bcryptjs';
 import {DatabaseCodes} from "../../exceptions/database";
 import {bedaDatabase} from "../utils";
-import {Credential, User, UserLoginResponse} from "../../models/user";
+import {Credential, User} from "../../models/user";
 
 export interface AuthRepo {
     register(c: Credential, u: User): Promise<void>
-    login(login: string): Promise<UserLoginResponse | null>
+    login(login: string): Promise<Credential | null>
 }
 
 export class AuthService {
@@ -55,6 +55,6 @@ export class AuthService {
             throw bedaDatabase(DatabaseCodes.AuthBadPassword)
         }
 
-        return new LoginResponseDTO(resp.is_staff, resp.is_admin, resp.user);
+        return new LoginResponseDTO(resp.is_staff, resp.is_admin, resp.id);
     }
 }

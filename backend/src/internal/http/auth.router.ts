@@ -1,11 +1,8 @@
 import {AuthService} from '../domain/services/auth/auth.service';
-import {AuthTokenProvider} from '../adapters/authTokenProvider/authTokenProvider';
 import {LoginDTO, RegisterDTO} from '../domain/services/auth/dto';
 import {Beda} from '../../pkg/beda/Beda';
 import {
-    AuthStorageUnit,
-    NameCookieAccess,
-    NameCookieRefresh,
+
     sendJson,
 } from './utils';
 import {CodeError, Exceptions} from '../domain/exceptions/exceptions';
@@ -16,17 +13,15 @@ import {
     FastifyReply,
     FastifyRequest,
 } from 'fastify';
+import {AuthContext, AuthStorageUnit, NameCookieRefresh} from "./auth.context";
 
 export class AuthRouter {
     private authService: AuthService;
-    private authTokenProvider: AuthTokenProvider;
 
     public constructor(
-        authTokenProvider: AuthTokenProvider,
         authService: AuthService,
     ) {
         this.authService = authService;
-        this.authTokenProvider = authTokenProvider;
     }
 
     public router(
@@ -47,63 +42,50 @@ export class AuthRouter {
         req: FastifyRequest,
         reply: FastifyReply
     ) {
-        this.clearAuthCookies(reply)
-        await this.authTokenProvider.delete([NameCookieAccess, NameCookieRefresh])
         reply.status(HttpStatus.NO_CONTENT).send()
     }
 
     private async loginHandler(
         req: FastifyRequest<{
-            Body: {
+            Body?: {
                 login?: string;
                 password?: string;
             };
         }>,
         reply: FastifyReply,
     ) {
-        const dto = new LoginDTO(req.body.login || '', req.body.password || '');
+        const dto = new LoginDTO(req.body?.login || '', req.body?.password || '');
 
         const authRes = await this.authService.Login(dto);
 
         const authUnit: AuthStorageUnit = {
-            id: authRes.user.id,
+            id: authRes.id_user,
             is_admin: authRes.is_admin,
             is_staff: authRes.is_staff,
         };
-        const tokens = await this.authTokenProvider.setNew(
-            JSON.stringify(authUnit),
-        );
 
-        this.setAuthCookies(reply, tokens.access, tokens.refresh)
+        const access_token = AuthContext.generateAccessToken(authUnit)
+        const refresh_token = AuthContext.generateRefreshToken(authUnit)
 
-        sendJson(reply, {user: authRes.user}, HttpStatus.OK);
+        AuthContext.setRefreshCookie(reply, refresh_token)
+
+        sendJson(reply, {
+            id_user: authRes.id_user,
+            access_token: access_token,
+        }, HttpStatus.OK);
     }
 
     private async refreshHandler(req: FastifyRequest, reply: FastifyReply) {
-        const cookie = req.cookies;
-        if (!cookie) {
-            throw new Beda(
-                Exceptions.DontHaveRefreshCookie,
-                CodeError.DontHaveRefreshCookie,
-            );
-        }
+        const refresh_token = AuthContext.getRefreshCookie(req)
 
-        const refreshToken = cookie[NameCookieRefresh];
-        if (!refreshToken) {
-            throw new Beda(
-                Exceptions.DontHaveRefreshCookie,
-                CodeError.DontHaveRefreshCookie,
-            );
-        }
+        const authUnit = AuthContext.checkIsAuthStorageUnit(refresh_token)
 
-        const res = await this.authTokenProvider.refresh(refreshToken);
-        if (!res) {
-            throw new Beda(Exceptions.CookieTimeout, CodeError.CookieTimeout);
-        }
+        const access_token = AuthContext.generateAccessToken(authUnit)
+        console.log({access_token})
 
-        this.setAuthCookies(reply, res.accessToken, refreshToken)
-
-        reply.status(HttpStatus.NO_CONTENT).send();
+        reply.status(HttpStatus.OK).send({
+            access_token: access_token,
+        });
     }
 
     private async registerHandler(
@@ -141,25 +123,5 @@ export class AuthRouter {
         await this.authService.Register(dto);
 
         reply.status(HttpStatus.NO_CONTENT).send();
-    }
-
-    private setAuthCookies(reply: FastifyReply, access: string, refresh: string) {
-        reply
-            .setCookie(NameCookieAccess, access, {
-                path: '/',
-                maxAge: 1000 * 60 * 24 * 30,
-                // secure: true,
-                // httpOnly: true,
-            })
-            .setCookie(NameCookieRefresh, refresh, {
-                path: '/',
-                // secure: true,
-                // httpOnly: true,
-            });
-    }
-
-    private clearAuthCookies(reply: FastifyReply) {
-        reply.clearCookie(NameCookieAccess)
-        reply.clearCookie(NameCookieRefresh)
     }
 }

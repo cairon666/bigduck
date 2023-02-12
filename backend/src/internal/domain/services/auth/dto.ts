@@ -1,5 +1,6 @@
 import { isValid } from '../utils';
 import { loginSchemeDTO, registerSchemeDTO } from './scheme';
+import {Credential} from "../../models/user";
 
 export class RegisterDTO {
     public login: string;
@@ -62,24 +63,15 @@ export class LoginDTO {
     }
 }
 
-interface UserResponse {
-    id: string;
-    username: string;
-    first_name: string;
-    second_name: string;
-    avatar_url: string | null;
-    day_of_birth: Date | null;
-    gender: string | null;
-}
 
 export class LoginResponseDTO {
     public is_staff: boolean;
     public is_admin: boolean;
-    public user: UserResponse
+    public id_user: string
 
-    public constructor(is_staff: boolean, is_admin: boolean, user: UserResponse) {
+    public constructor(is_staff: boolean, is_admin: boolean, id_user: string) {
         this.is_staff = is_staff;
         this.is_admin = is_admin;
-        this.user = user
+        this.id_user = id_user
     }
 }

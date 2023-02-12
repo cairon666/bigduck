@@ -6,12 +6,11 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 
 RUN yarn
-RUN npm install -g ts-node typescript
 
 # https://blog.npmjs.org/post/171556855892/introducing-npm-ci-for-faster-more-reliable
 # RUN npm ci --only=production
 
-COPY ./src .
+COPY . .
 
 EXPOSE 3000
 CMD ["yarn", "dev"]

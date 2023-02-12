@@ -100,6 +100,6 @@ module.exports = {
         static: {
             directory: buildPath,
         },
-        open: true,
+        // open: true,
     },
 };

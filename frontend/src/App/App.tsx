@@ -8,7 +8,7 @@ import { AuthPage, Login, Register } from '../pages/AuthPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import { PanelPage } from '../pages/PanelPage';
 import RootPage from '../pages/RootPage';
-import { store } from '../redux/store';
+import { store } from '../services/redux/store';
 
 const routerConfig = [
     {

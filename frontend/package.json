@@ -15,8 +15,6 @@
     "@hookform/resolvers": "^2.9.11",
     "@reduxjs/toolkit": "^1.9.2",
     "@tailwindcss/typography": "^0.5.9",
-    "@types/react-redux": "^7.1.25",
-    "@types/tailwindcss": "^3.1.0",
     "classnames": "^2.3.2",
     "framer-motion": "^9.0.2",
     "ky": "^0.33.2",
@@ -33,6 +31,8 @@
     "yup": "^1.0.0"
   },
   "devDependencies": {
+    "@types/react-redux": "^7.1.25",
+    "@types/tailwindcss": "^3.1.0",
     "@rollup/plugin-image": "^3.0.2",
     "@types/react": "^18.0.27",
     "@types/react-datepicker": "^4.8.0",

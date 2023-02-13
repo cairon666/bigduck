@@ -1,24 +1,25 @@
-import { AuthService } from '../domain/services/auth/auth.service';
-import { Config } from '../config';
-import { AuthRouter } from './auth.router';
-import { Logger } from '../../pkg/logger';
-import { UserService } from '../domain/services/user/user.service';
-import { UserRouter } from './user.router';
-import { sendError } from './utils';
-import { QuizService } from '../domain/services/quiz/quiz.service';
-import { QuizRouter } from './quiz.router';
-import { QuestionRouter } from './question.router';
-import { QuestionService } from '../domain/services/question/question.service';
-import { AttachmentRouter } from './attachment.router';
+import {AuthService} from '../domain/services/auth/auth.service';
+import {Config} from '../config';
+import {AuthRouter} from './auth.router';
+import {Logger} from '../../pkg/logger';
+import {UserService} from '../domain/services/user/user.service';
+import {UserRouter} from './user.router';
+import {sendError} from './utils';
+import {QuizService} from '../domain/services/quiz/quiz.service';
+import {QuizRouter} from './quiz.router';
+import {QuestionRouter} from './question.router';
+import {QuestionService} from '../domain/services/question/question.service';
+import {AttachmentRouter} from './attachment.router';
 import Fastify, {
     FastifyInstance,
     FastifyReply,
     FastifyRequest,
 } from 'fastify';
-import { Beda } from '../../pkg/beda/Beda';
-import { HttpStatus } from '../../pkg/http-status';
+import {Beda} from '../../pkg/beda/Beda';
+import {HttpStatus} from '../../pkg/http-status';
 import qs from 'qs';
 import fastifyCookie from "@fastify/cookie";
+import {Forbidden} from "../errors";
 
 export class HTTPServer {
     private config: Config;
@@ -79,7 +80,9 @@ export class HTTPServer {
             secret: "secret-cookie",
         })
         this.app.addHook('preHandler', this.corsHandler.bind(this));
-        this.app.options('*', (request, reply) => { reply.send() })
+        this.app.options('*', (request, reply) => {
+            reply.send()
+        })
 
         // routes
         this.app.register(this.authRouter.router.bind(this.authRouter));
@@ -120,7 +123,9 @@ export class HTTPServer {
         _: FastifyRequest,
         reply: FastifyReply,
     ) {
-        if (e instanceof Beda) {
+        if (e instanceof Forbidden) {
+            reply.status(HttpStatus.FORBIDDEN).send();
+        } else if (e instanceof Beda) {
             sendError(
                 reply,
                 {

@@ -5,3 +5,4 @@ export * from './Card';
 export * from './Button';
 export * from './SingleDatePicker';
 export * from './Wrapper';
+export * from './Modal';

@@ -16,7 +16,7 @@ export class ApiClient implements ApiClientInterface {
         this.authToken = authToken;
     }
 
-    public async get(endpoint = '', params?: SearchParamsOption, signal?: AbortSignal): Promise<unknown> {
+    public async get(endpoint = '', params?: SearchParamsOption, signal?: AbortSignal): Promise<Response> {
         try {
             const client = this.createClient(params);
             return await client.get(endpoint, {
@@ -77,9 +77,9 @@ export class ApiClient implements ApiClientInterface {
         if (error instanceof HTTPError) {
             switch (error.response.status) {
                 case 401:
-                    return new Unauthorized(await error.response.json());
+                    return new Unauthorized();
                 case 403:
-                    return new Forbidden(await error.response.json());
+                    return new Forbidden();
                 case 400: {
                     const json = await error.response.json();
                     return new BadRequest(json.err, json.code, json.details);

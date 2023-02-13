@@ -1,5 +1,5 @@
 export interface ApiClientInterface {
-    get(endpoint: string, params?: URLSearchParams, signal?: AbortSignal): Promise<unknown>;
+    get(endpoint: string, params?: URLSearchParams, signal?: AbortSignal): Promise<Response>;
 
     post(endpoint: string, data?: object, signal?: AbortSignal): Promise<Response>;
 

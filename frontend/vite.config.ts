@@ -35,6 +35,7 @@ export default defineConfig((configEnv) => ({
         rollupOptions: {
             plugins: [analyze()],
         },
+        emptyOutDir: true,
     },
     esbuild: {
         jsxFactory: 'h',

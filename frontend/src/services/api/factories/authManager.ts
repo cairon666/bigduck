@@ -45,6 +45,10 @@ export class AuthManager {
     public async refresh(): Promise<RefreshResponse> {
         return this.apiClient.post('refresh').then((v) => v.json());
     }
+
+    public async logout(): Promise<Response> {
+        return this.apiClient.post('logout');
+    }
 }
 
 export class AuthManagerFactory {

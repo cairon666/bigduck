@@ -3,6 +3,7 @@ import {CodeError, Exceptions} from '../domain/exceptions/exceptions';
 import {FastifyReply, FastifyRequest} from 'fastify';
 import {Jwt, sign, verify} from "jsonwebtoken";
 import { v4 } from 'uuid';
+import {Forbidden} from "../errors";
 
 export interface AuthStorageUnit {
     id: string;
@@ -38,16 +39,15 @@ export class AuthContext {
     ): AuthStorageUnit {
         const authorization = req.headers.authorization
         if (!authorization) {
-            throw new Beda(Exceptions.AccessForbidden, CodeError.Forbidden);
+            throw new Forbidden();
         }
 
         const access_token = authorization.split(" ")[1];
 
-
         const authUnit = AuthContext.checkIsAuthStorageUnit(access_token)
 
         if (authUnit.id !== id && !authUnit.is_admin) {
-            throw new Beda(Exceptions.AccessForbidden, CodeError.Forbidden);
+            throw new Forbidden();
         }
 
         return authUnit;
@@ -60,15 +60,15 @@ export class AuthContext {
                 complete: true
             })
         } catch (e) {
-            throw new Beda(Exceptions.AccessForbidden, CodeError.Forbidden);
+            throw new Forbidden();
         }
 
         if (typeof decoded.payload === "string") {
-            throw new Beda(Exceptions.AccessForbidden, CodeError.Forbidden);
+            throw new Forbidden();
         }
 
         if (decoded.payload.id === undefined || decoded.payload.is_admin === undefined || decoded.payload.is_staff === undefined) {
-            throw new Beda(Exceptions.AccessForbidden, CodeError.Forbidden);
+            throw new Forbidden();
         }
 
         return {

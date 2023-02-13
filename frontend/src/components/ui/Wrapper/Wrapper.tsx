@@ -14,22 +14,16 @@ export const Wrapper = (props: WrapperProps) => {
             {props.label && (
                 <span
                     className={classNames(
-                        'block text-sm font-medium text-slate-700 mb-1',
+                        'mb-1 block text-sm font-medium text-slate-700',
                         props.error ? '!text-red-600' : '',
                     )}
                 >
                     {props.label}
-                    {props.required && (
-                        <span className={'text-red-700'}> *</span>
-                    )}
+                    {props.required && <span className={'text-red-700'}> *</span>}
                 </span>
             )}
             {props.children}
-            {props.error && (
-                <span className={'block text-xs font-medium text-red-600 mt-1'}>
-                    {props.error}
-                </span>
-            )}
+            {props.error && <span className={'mt-1 block text-xs font-medium text-red-600'}>{props.error}</span>}
         </div>
     );
 };

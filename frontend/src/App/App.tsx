@@ -1,20 +1,16 @@
-import React, { StrictMode, useEffect, useState } from 'react';
-import {
-    createBrowserRouter,
-    RouteObject,
-    RouterProvider,
-} from 'react-router-dom';
 import './App.scss';
-import { Provider } from 'react-redux';
-import { store } from '../redux/store';
-import NotFoundPage from '../pages/NotFoundPage';
-import RootPage from '../pages/RootPage';
-import PanelPage from '../pages/PanelPage';
-import AuthPage from '../pages/AuthPage';
-import Login from '../pages/AuthPage/Login';
-import Register from '../pages/AuthPage/Register';
 
-const routerConfig: RouteObject[] = [
+import React, { StrictMode } from 'react';
+import { Provider } from 'react-redux';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+
+import { AuthPage, Login, Register } from '../pages/AuthPage';
+import NotFoundPage from '../pages/NotFoundPage';
+import { PanelPage } from '../pages/PanelPage';
+import RootPage from '../pages/RootPage';
+import { store } from '../redux/store';
+
+const routerConfig = [
     {
         path: '/',
         element: <RootPage />,

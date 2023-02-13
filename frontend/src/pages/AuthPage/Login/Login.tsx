@@ -1,18 +1,13 @@
-import { Input, Link } from '../../../components/ui';
-import { Button } from '../../../components/ui';
+import { Button, Input, Link } from '../../../components/ui';
 import { useLoginForm } from './useLoginForm';
 
 export const Login = () => {
-    const { register, onSubmit, errors, isLoading, queryErrors } =
-        useLoginForm();
+    const { register, onSubmit, errors, isLoading, queryErrors } = useLoginForm();
 
     return (
         <>
-            <div className={'text-2xl mb-2'}>Авторизация</div>
-            <form
-                onSubmit={onSubmit}
-                className={'flex flex-col gap-2 w-2/3 sm:w-full'}
-            >
+            <div className={'mb-2 text-2xl'}>Авторизация</div>
+            <form onSubmit={onSubmit} className={'flex w-2/3 flex-col gap-2 sm:w-full'}>
                 <Input
                     fullWidth
                     label='Логин'
@@ -36,8 +31,7 @@ export const Login = () => {
                 </Button>
             </form>
             <div className='text-md mt-2 text-center'>
-                Нет аккаунта?{' '}
-                <Link to={'/auth/register'}>Зарегистрироваться</Link>
+                Нет аккаунта? <Link to={'/auth/register'}>Зарегистрироваться</Link>
             </div>
         </>
     );

@@ -1,6 +1,5 @@
 import { ApiClientInterface, ApiHeaders } from '../types';
 import { ApiClientFactory } from './apiClientFactory';
-import { User } from '../types';
 
 export interface LoginRequest {
     login: string;
@@ -31,7 +30,7 @@ export interface RefreshResponse {
 export class AuthManager {
     private readonly apiClient: ApiClientInterface;
 
-    constructor(apiClient: ApiClientInterface) {
+    public constructor(apiClient: ApiClientInterface) {
         this.apiClient = apiClient;
     }
 
@@ -51,11 +50,8 @@ export class AuthManager {
 export class AuthManagerFactory {
     private readonly apiClientFactory: ApiClientFactory;
 
-    constructor(baseUrl: string, headers: ApiHeaders) {
-        this.apiClientFactory = new ApiClientFactory(
-            `${baseUrl}/api/v1/auth/`,
-            headers,
-        );
+    public constructor(baseUrl: string, headers: ApiHeaders) {
+        this.apiClientFactory = new ApiClientFactory(`${baseUrl}/api/v1/auth/`, headers);
     }
 
     public createAuthManager(): AuthManager {

@@ -1,42 +1,20 @@
-import React, { useCallback, useState } from 'react';
+import { Button, Input, Link, Select, SingleDatePicker } from '../../../components/ui';
 import { useRegisterForm } from './useRegisterForm';
-import {
-    Button,
-    Input,
-    Link,
-    Select,
-    SingleDatePicker,
-} from '../../../components/ui';
 
 export const Register = () => {
-    const {
-        register,
-        onSubmit,
-        errors,
-        isLoading,
-        alreadyExist,
-        itemsSelect,
-        changeSelectGender,
-        watch,
-        changeDate,
-    } = useRegisterForm();
+    const { register, onSubmit, errors, isLoading, alreadyExist, itemsSelect, changeSelectGender, watch, changeDate } =
+        useRegisterForm();
 
     return (
         <>
-            <div className={'text-2xl mb-2'}>Регистрация</div>
-            <form
-                onSubmit={onSubmit}
-                className={'flex flex-col gap-2 w-2/3 sm:w-full'}
-            >
+            <div className={'mb-2 text-2xl'}>Регистрация</div>
+            <form onSubmit={onSubmit} className={'flex w-2/3 flex-col gap-2 sm:w-full'}>
                 <Input
                     fullWidth
                     label='Логин'
                     type='text'
                     placeholder='vania228'
-                    error={
-                        errors.login?.message ||
-                        (alreadyExist.login ? 'Логин уже занят' : undefined)
-                    }
+                    error={errors.login?.message || (alreadyExist.login ? 'Логин уже занят' : undefined)}
                     required
                     {...register('login')}
                 />
@@ -54,10 +32,7 @@ export const Register = () => {
                     label='Почта'
                     placeholder='example@domain.com'
                     type='email'
-                    error={
-                        errors.email?.message ||
-                        (alreadyExist.email ? 'Почта уже занят' : undefined)
-                    }
+                    error={errors.email?.message || (alreadyExist.email ? 'Почта уже занят' : undefined)}
                     required
                     {...register('email')}
                 />
@@ -66,12 +41,7 @@ export const Register = () => {
                     label='Никнейм'
                     type='text'
                     placeholder='Vania'
-                    error={
-                        errors.username?.message ||
-                        (alreadyExist.username
-                            ? 'Никнейм уже занят'
-                            : undefined)
-                    }
+                    error={errors.username?.message || (alreadyExist.username ? 'Никнейм уже занят' : undefined)}
                     required
                     {...register('username')}
                 />
@@ -100,9 +70,9 @@ export const Register = () => {
                     placeholder={'Выбрать'}
                 />
                 <Select
-                    label={'Гендер'}
+                    label={'Пол'}
                     items={itemsSelect}
-                    value={watch('gender') || undefined}
+                    value={watch('gender') || null}
                     onChange={changeSelectGender}
                     placeholder={'Выбрать'}
                 />

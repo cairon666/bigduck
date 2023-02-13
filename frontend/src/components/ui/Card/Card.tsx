@@ -7,7 +7,7 @@ export const Card = (props: HTMLProps<HTMLDivElement>) => {
             {...props}
             className={classNames(
                 props.className,
-                'p-1 border border-blue-400 cursor-default rounded-lg bg-gray-100 text-left shadow-md',
+                'cursor-default rounded-lg border border-blue-400 bg-gray-100 p-1 text-left shadow-md',
             )}
         />
     );

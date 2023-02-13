@@ -1,10 +1,11 @@
-import { object, string } from 'yup';
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { createAuthManager, setAccessToken } from '../../../di/api-client';
+import { object, string } from 'yup';
+
 import { BadRequest, LoginRequest } from '../../../api';
+import { createAuthManager, setAccessToken } from '../../../di/api-client';
 import { CodeError, DatabaseCodes } from '../../../redux/types';
 
 type FormData = {
@@ -15,10 +16,7 @@ type FormData = {
 const loginScheme = object({
     login: string()
         .required('Логин обязательный параметр')
-        .matches(
-            /^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\d.-]{0,19}$/,
-            'Логин не должен содержать пробелов',
-        ),
+        .matches(/^(?=.*[A-Za-z0-9]$)[A-Za-z][A-Za-z\d.-]{0,19}$/, 'Логин не должен содержать пробелов'),
     password: string()
         .required('Пароль обязательный параметр')
         .matches(
@@ -63,6 +61,7 @@ export const useLoginForm = () => {
             setAccessToken(res.access_token);
             navigate('/panel');
         } catch (e) {
+            console.error(e)
             if (e instanceof BadRequest) {
                 switch (e.code) {
                     // database

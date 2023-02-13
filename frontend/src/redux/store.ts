@@ -1,14 +1,13 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { logger } from 'redux-logger';
 import { createEpicMiddleware } from 'redux-observable';
-import logger from 'redux-logger';
+
 // import { rootEpic } from "./modules/root";
-import { authSlice } from './slice/auth';
 import { userSlice } from './slice/user';
 
 const epicMiddleware = createEpicMiddleware();
 
 export const rootReducer = combineReducers({
-    auth: authSlice.reducer,
     user: userSlice.reducer,
 });
 

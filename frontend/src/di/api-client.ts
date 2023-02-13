@@ -1,5 +1,5 @@
+import { ApiHeaders, AuthManager, AuthManagerFactory } from '../api';
 import config from '../config';
-import { ApiHeaders, AuthManager, AuthManagerFactory, HttpError } from '../api';
 
 export async function createAuthManager(): Promise<AuthManager> {
     const factory = new AuthManagerFactory(config.apiBaseUrl, getBaseHeaders());
@@ -17,11 +17,12 @@ const refresh = async () => {
     return await manager.refresh();
 };
 
-export function getAccessToken(): [string | null, string | null] {
-    return [
-        localStorage.getItem('access_token'),
-        localStorage.getItem('access_token_create'),
-    ];
+export function getAccessToken(): string | null {
+    return localStorage.getItem('access_token');
+}
+
+export function getAccessTokenCreate(): string | null {
+    return localStorage.getItem('access_token_create');
 }
 
 export function setAccessToken(access_token: string) {
@@ -29,18 +30,20 @@ export function setAccessToken(access_token: string) {
     localStorage.setItem('access_token_create', new Date().toString());
 }
 
+// TODO: add to utils
 function addHours(d: Date, h: number): Date {
     return new Date(d.setTime(d.getTime() + h * 60 * 60 * 1000));
 }
 
 export async function getAuthToken(): Promise<string | null> {
-    let [access_token, access_token_create] = getAccessToken();
+    const access_token_create = getAccessTokenCreate();
+    let access_token = getAccessToken();
 
     if (
-        access_token == null ||
+        !access_token ||
         access_token === '' ||
-        access_token_create === null ||
-        addHours(new Date(access_token!), 1) < new Date()
+        !access_token_create ||
+        addHours(new Date(access_token_create), 1) < new Date()
     ) {
         try {
             const res = await refresh();

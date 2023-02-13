@@ -1,5 +1,6 @@
 import classNames from 'classnames';
-import { forwardRef, HTMLProps } from 'react';
+import { HTMLProps, forwardRef } from 'react';
+
 import { Wrapper } from '../Wrapper';
 
 type InputProps = HTMLProps<HTMLInputElement> & {
@@ -8,7 +9,7 @@ type InputProps = HTMLProps<HTMLInputElement> & {
     error?: string;
 };
 
-export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref) {
     const { fullWidth, label, error, required, ...otherProps } = props;
 
     return (
@@ -19,9 +20,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
                 className={classNames(
                     props.className,
                     'relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm',
-                    'focus-visible:text-blue-900 cursor-text placeholder:text-slate-400',
+                    'cursor-text placeholder:text-slate-400 focus-visible:text-blue-900',
                     fullWidth ? 'w-full' : '',
-                    error ? '!ring-red-600 ring-1 ' : '',
+                    error ? 'ring-1 !ring-red-600 ' : '',
                 )}
             />
         </Wrapper>

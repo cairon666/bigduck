@@ -1,8 +1,30 @@
+@import "fonts";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body,
 #root {
-    min-height: 100vh;
+  min-height: 100vh;
+}
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: #f7f4ed;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 10px;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #656565;
+  }
 }

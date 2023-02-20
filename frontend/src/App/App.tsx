@@ -4,43 +4,38 @@ import React, { StrictMode } from 'react';
 import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import { AuthPage, Login, Register } from '../pages/AuthPage';
-import NotFoundPage from '../pages/NotFoundPage';
-import { PanelPage } from '../pages/PanelPage';
-import RootPage from '../pages/RootPage';
-import { store } from '../services/redux/store';
+import { AuthPage, LoginPage, RegisterPage } from '../pages/AuthPage';
+import { RedirectPage } from '../pages/RedirectPage';
+import { store } from '../redux';
 
-const routerConfig = [
-    {
-        path: '/',
-        element: <RootPage />,
-    },
+const router = createBrowserRouter([
     {
         path: '/auth',
         element: <AuthPage />,
         children: [
             {
-                path: 'register',
-                element: <Register />,
+                path: 'login',
+                element: <LoginPage />,
             },
             {
-                path: 'login',
-                element: <Login />,
+                path: 'register',
+                element: <RegisterPage />,
+            },
+            {
+                path: '',
+                element: <RedirectPage to={'/auth/login'} />,
             },
         ],
     },
-
     {
         path: '/panel',
-        element: <PanelPage />,
+        // element: <RedirectPage to={'/auth'} />,
     },
     {
         path: '*',
-        element: <NotFoundPage />,
+        element: <RedirectPage to={'/auth'} />,
     },
-];
-
-const router = createBrowserRouter(routerConfig);
+]);
 
 export const App = () => {
     return (

@@ -1,30 +1,31 @@
 import classNames from 'classnames';
-import { HTMLProps, forwardRef } from 'react';
+import { InputHTMLAttributes, forwardRef } from 'react';
 
-import { Wrapper } from '../Wrapper';
+import { Error } from '../_Error';
+import { Label } from '../_Label';
 
-type InputProps = HTMLProps<HTMLInputElement> & {
+export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     fullWidth?: boolean;
     label?: string;
     error?: string;
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref) {
-    const { fullWidth, label, error, required, ...otherProps } = props;
+    const { error, label, fullWidth, required, ...otherProps } = props;
 
     return (
-        <Wrapper error={error} label={label} required={required}>
+        <label>
+            <Label label={label} required={required} />
             <input
                 {...otherProps}
                 ref={ref}
                 className={classNames(
-                    props.className,
-                    'relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm',
-                    'cursor-text placeholder:text-slate-400 focus-visible:text-blue-900',
+                    'peer rounded border border-gray-200 bg-white px-2 py-1 font-normal text-gray-900 placeholder-gray-300 hover:border-gray-600 focus-visible:border-gray-500 focus-visible:outline-none disabled:border-gray-100 disabled:bg-gray-60',
                     fullWidth ? 'w-full' : '',
-                    error ? 'ring-1 !ring-red-600 ' : '',
+                    error ? 'border-red-800 text-red-800' : '',
                 )}
             />
-        </Wrapper>
+            <Error error={error} />
+        </label>
     );
 });

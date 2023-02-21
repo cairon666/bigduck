@@ -1,25 +1,50 @@
 import { Transition } from '@headlessui/react';
-import { Fragment, useCallback, useRef, useState } from 'react';
+import { Fragment, useMemo } from 'react';
+import { AiOutlineSetting } from 'react-icons/ai';
+import { BiExit, BiSupport, MdOutlineKeyboardArrowRight, RxAvatar } from 'react-icons/all';
 import { RiArrowDownSLine } from 'react-icons/ri';
+import { Link } from 'react-router-dom';
 
-import { useOnClickOutside } from '../../../../_hooks';
 import { Button, Card } from '../../../../components/ui';
+import { useProfile } from './useProfile';
 
 export function Profile() {
-    const [isOpen, setIsOpen] = useState(false);
-    const ref = useRef(null);
+    const { isOpen, onOpen, initials, ref, fullName, email } = useProfile();
 
-    const onOpen = useCallback(() => {
-        setIsOpen(true);
+    const navList = useMemo(() => {
+        const list = [
+            {
+                to: '/panel/settings',
+                label: 'Настройки',
+                icon: AiOutlineSetting,
+            },
+            {
+                to: '/panel/support',
+                label: 'Помощь',
+                icon: BiSupport,
+            },
+            {
+                to: '/panel/logout',
+                label: 'Выйти',
+                icon: BiExit,
+            },
+        ];
+
+        return list.map((item) => {
+            return (
+                <Link
+                    key={item.to}
+                    to={item.to}
+                    className={
+                        'flex cursor-pointer items-center gap-2 border border-gray-100 border-x-transparent border-b-transparent py-2 px-4 font-light hover:border-yellow-500 hover:bg-gray-20 focus-visible:border-yellow-500 focus-visible:outline-none'
+                    }
+                >
+                    <item.icon className={'h-5 w-5'} />
+                    <p>{item.label}</p>
+                </Link>
+            );
+        });
     }, []);
-
-    const onClose = useCallback(() => {
-        setIsOpen(false);
-    }, []);
-
-    useOnClickOutside(ref, () => {
-        onClose();
-    });
 
     return (
         <div className={'relative'}>
@@ -27,16 +52,16 @@ export function Profile() {
                 theme={'text'}
                 onFocus={onOpen}
                 onClick={onOpen}
-                className={'group flex cursor-pointer items-center gap-1'}
+                className={'group flex cursor-pointer items-center gap-1 !p-0'}
                 onlyIcon
             >
-                <div
+                <p
                     className={
-                        'flex h-[40px] w-[40px] items-center justify-center rounded bg-gray-40 text-sm font-medium text-gray-900 group-hover:bg-gray-80'
+                        'flex h-[40px] w-[40px] items-center justify-center rounded bg-gray-40 text-sm text-gray-900 group-hover:bg-gray-80'
                     }
                 >
-                    ЕМ
-                </div>
+                    {initials}
+                </p>
                 <RiArrowDownSLine className={'h-5 w-5 text-gray-900'} />
             </Button>
             <Transition
@@ -52,11 +77,28 @@ export function Profile() {
                 <Card
                     ref={ref}
                     className={
-                        'scrollbar absolute right-0 top-[calc(100%+0.25rem)] z-20 flex max-h-72 w-56 flex-col gap-1 overflow-y-auto '
+                        'scrollbar absolute -right-1 top-[calc(100%+0.5rem+1px)] z-20 flex w-72 flex-col flex-col !rounded-t-none shadow'
                     }
                 >
-                    <div>какая-то информация</div>
-                    <div>об аккаунте</div>
+                    <div className={'p-4'}>
+                        <Link
+                            to={'/panel/user'}
+                            className={
+                                'flex items-center justify-between gap-2 rounded-lg border border-transparent bg-gray-20 p-2 hover:border-yellow-600 focus-visible:border-yellow-500 focus-visible:outline-none'
+                            }
+                        >
+                            <div className={'flex items-center gap-1'}>
+                                <RxAvatar className={'h-8 w-8 text-gray-900'} />
+                                <div className={'mt-2 text-sm font-light'}>
+                                    <p>{fullName}</p>
+                                    <p>{email}</p>
+                                </div>
+                            </div>
+
+                            <MdOutlineKeyboardArrowRight className={'text-black min-h-5 min-w-5'} />
+                        </Link>
+                    </div>
+                    {navList}
                 </Card>
             </Transition>
         </div>

@@ -12,8 +12,8 @@ export function Header() {
                 <Menu />
                 <DivideLine />
                 <Link to={'/panel'} className={'flex items-center gap-2'}>
-                    <GiPlasticDuck className={'h-10 w-10 text-yellow-500'} />
-                    <div className={'text-2xl'}>BigDuck</div>
+                    <GiPlasticDuck className={'h-10 w-10 text-yellow-600'} />
+                    <div className={'text-2xl font-medium'}>BigDuck</div>
                 </Link>
             </div>
             <div className={'flex items-center gap-4'}>

@@ -36,7 +36,7 @@ export function Button(props: ButtonProps) {
                     : '',
                 theme === 'text' ? 'bg-transparent hover:bg-gray-20 disabled:bg-gray-20 disabled:text-gray-100' : '',
                 theme === 'gray'
-                    ? 'border-2 border-gray-80 bg-gray-20 hover:bg-gray-40 disabled:bg-gray-20 disabled:text-gray-80'
+                    ? 'border-2 border-gray-150 bg-gray-20 hover:bg-gray-40 disabled:bg-gray-20 disabled:text-gray-80'
                     : '',
                 onlyIcon ? 'p-1' : 'px-2 py-1',
             )}

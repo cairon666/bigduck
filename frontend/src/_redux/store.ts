@@ -3,11 +3,12 @@ import { logger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 
 import { rootSaga } from './sagas';
-import { authSlice } from './slices';
+import { authSlice, userSlice } from './slices';
 
 const sagaMiddleware = createSagaMiddleware();
 export const rootReducer = combineReducers({
     auth: authSlice.reducer,
+    user: userSlice.reducer,
 });
 
 const middlewares = [logger, sagaMiddleware];

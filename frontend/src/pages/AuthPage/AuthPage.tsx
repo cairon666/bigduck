@@ -1,6 +1,5 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { RedirectPage } from '../RedirectPage';
 import { Login } from './Login';
 import { Register } from './Register';
 
@@ -12,7 +11,7 @@ export function AuthPage() {
                     <Routes>
                         <Route path={'/login'} element={<Login />} />
                         <Route path={'/register'} element={<Register />} />
-                        <Route path={'*'} element={<RedirectPage to={'/auth/login'} />} />
+                        <Route path={'*'} element={<Navigate to={'/auth/login'} />} />
                     </Routes>
                 </div>
             </div>

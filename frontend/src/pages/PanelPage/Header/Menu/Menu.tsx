@@ -48,7 +48,7 @@ export function Menu() {
                 <Card
                     ref={ref}
                     className={
-                        'scrollbar absolute left-0 top-[calc(100%+0.25rem)] z-20 flex max-h-72 w-56 flex-col gap-1 overflow-y-auto '
+                        'p-2 shadow scrollbar absolute left-0 top-[calc(100%+0.25rem)] z-20 flex max-h-72 w-56 flex-col gap-1 overflow-y-auto '
                     }
                 >
                     <div>какая-то информация</div>

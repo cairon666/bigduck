@@ -9,11 +9,12 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export function Button(props: ButtonProps) {
-    const { className, theme = 'contained', containerClassName, isLoading, children, ...otherProps } = props;
+    const { className, theme = 'contained', containerClassName, isLoading, children, onClick, ...otherProps } = props;
 
     return (
         <button
             {...otherProps}
+            onClick={isLoading ? undefined : onClick}
             className={classNames(
                 className,
                 'relative rounded border border-transparent px-2 py-1 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2',

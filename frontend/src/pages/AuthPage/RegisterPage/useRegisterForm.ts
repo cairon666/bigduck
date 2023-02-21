@@ -1,6 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { object, string } from 'yup';
+
+import { authSlice, fetchLogin, useAppDispatch, useAppSelector } from '../../../_redux';
 
 const registerScheme = object({
     login: string().required('Логин обязательное поле'),
@@ -30,27 +34,39 @@ export function useRegisterForm() {
         handleSubmit,
         formState: { errors },
         setValue,
+        getValues,
     } = useForm<RegisterForm>({
         resolver: yupResolver(registerScheme),
     });
+    const authStorage = useAppSelector((state) => state.auth);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
-    const onSubmit = handleSubmit(
-        (form) => {
-            console.log(form);
-        },
-        (form) => {
-            console.log(form);
-        },
-    );
+    const onSubmit = handleSubmit((form) => {
+        if (authStorage.isLoading) {
+            return;
+        }
+
+        dispatch(fetchLogin());
+    });
 
     const onChangeDate = (date: Date | null) => {
         setValue('date_of_birth', date);
     };
+
+    useEffect(() => {
+        if (authStorage.isSuccess) {
+            dispatch(authSlice.actions.CLEAR());
+            const values = getValues();
+            navigate(`/auth/login?login=${values.login}&password=${values.password}`);
+        }
+    }, [authStorage.isSuccess]);
 
     return {
         register,
         onSubmit,
         errors,
         onChangeDate,
+        isLoading: authStorage.isLoading,
     };
 }

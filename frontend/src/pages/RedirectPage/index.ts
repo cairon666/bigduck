@@ -1,1 +1,1 @@
-export * from "./RedirectPage"
+export * from './RedirectPage';

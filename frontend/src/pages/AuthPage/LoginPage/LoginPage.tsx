@@ -4,7 +4,7 @@ import { Button, Input } from '../../../components/ui';
 import { useLoginForm } from './useLoginForm';
 
 export function LoginPage() {
-    const { register, onSubmit, errors } = useLoginForm();
+    const { register, onSubmit, errors, isLoading } = useLoginForm();
 
     return (
         <div className={'w-1/6 min-w-[300px] rounded bg-white px-4 py-6 shadow-md'}>
@@ -28,7 +28,9 @@ export function LoginPage() {
                     label={'Пароль'}
                     {...register('password')}
                 />
-                <Button type={'submit'}>Войти</Button>
+                <Button isLoading={isLoading} type={'submit'}>
+                    Войти
+                </Button>
             </form>
             <p className={'mt-1 text-center text-sm font-light'}>
                 Нету аккаунта?{' '}

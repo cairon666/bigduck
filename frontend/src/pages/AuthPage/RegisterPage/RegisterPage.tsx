@@ -1,10 +1,12 @@
+import { useCallback, useRef } from 'react';
+import { UIEvent, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Button, Checkbox, DatePicker, Input, Label } from '../../../components/ui';
 import { useRegisterForm } from './useRegisterForm';
 
 export function RegisterPage() {
-    const { register, onSubmit, errors, onChangeDate } = useRegisterForm();
+    const { register, onSubmit, errors, onChangeDate, isLoading } = useRegisterForm();
 
     return (
         <div className={'w-1/6  min-w-[300px] rounded bg-white px-4 py-6 shadow-md'}>
@@ -78,7 +80,9 @@ export function RegisterPage() {
                         <Checkbox value='female' type='radio' {...register('gender')} label={'Женщина'} />
                     </div>
                 </div>
-                <Button type={'submit'}>Создать</Button>
+                <Button isLoading={isLoading} type={'submit'}>
+                    Создать
+                </Button>
             </form>
             <p className={'mt-1 text-center text-sm font-light'}>
                 Уже есть аккаунт?{' '}

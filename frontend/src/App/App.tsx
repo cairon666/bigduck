@@ -4,9 +4,9 @@ import React, { StrictMode } from 'react';
 import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
+import { store } from '../_redux';
 import { AuthPage, LoginPage, RegisterPage } from '../pages/AuthPage';
 import { RedirectPage } from '../pages/RedirectPage';
-import { store } from '../redux';
 
 const router = createBrowserRouter([
     {

@@ -1,6 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { object, string } from 'yup';
+
+import { authSlice, fetchLogin, useAppDispatch, useAppSelector } from '../../../_redux';
 
 const loginScheme = object({
     login: string().required('Логин обязательное поле'),
@@ -20,10 +24,24 @@ export function useLoginForm() {
     } = useForm<LoginForm>({
         resolver: yupResolver(loginScheme),
     });
+    const authStorage = useAppSelector((state) => state.auth);
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const onSubmit = handleSubmit((data) => {
-        console.log(data);
+        if (authStorage.isLoading) {
+            return;
+        }
+
+        dispatch(fetchLogin());
     });
 
-    return { register, onSubmit, errors };
+    useEffect(() => {
+        if (authStorage.isSuccess) {
+            dispatch(authSlice.actions.CLEAR());
+            navigate('/panel');
+        }
+    }, [authStorage.isSuccess]);
+
+    return { register, onSubmit, errors, isLoading: authStorage.isLoading };
 }

@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { Button, Input } from '../../../components/ui';
 import { useLoginForm } from './useLoginForm';
 
-export function LoginPage() {
+export function Login() {
     const { register, onSubmit, errors, isLoading } = useLoginForm();
 
     return (
-        <div className={'w-1/6 min-w-[300px] rounded bg-white px-4 py-6 shadow-md'}>
+        <>
             <h1 className={'text-center text-xl font-medium'}>Авторизация</h1>
             <form onSubmit={onSubmit} className={'flex flex-col gap-2'}>
                 <Input
@@ -38,6 +38,6 @@ export function LoginPage() {
                     Регистрация
                 </Link>
             </p>
-        </div>
+        </>
     );
 }

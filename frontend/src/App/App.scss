@@ -1,4 +1,5 @@
 @import 'fonts';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,16 +16,16 @@ body,
     }
 
     .scrollbar::-webkit-scrollbar-track {
-        border-radius: 10px;
-        background: #f7f4ed;
+        border-radius: 2px;
+        background: #f5f5f5;
     }
 
     .scrollbar::-webkit-scrollbar-thumb {
-        background: gray;
+        background: #c0c0c0;
         border-radius: 10px;
     }
 
     .scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #656565;
+        background: #949494;
     }
 }

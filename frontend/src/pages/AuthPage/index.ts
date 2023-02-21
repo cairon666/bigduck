@@ -1,3 +1,3 @@
-export * from './AuthPage';
-export * from './LoginPage';
-export * from './RegisterPage';
+import { AuthPage } from './AuthPage';
+
+export default AuthPage;

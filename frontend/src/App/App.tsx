@@ -1,35 +1,31 @@
 import './App.scss';
 
-import React, { StrictMode } from 'react';
+import React, { StrictMode, Suspense, lazy } from 'react';
 import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import { store } from '../_redux';
-import { AuthPage, LoginPage, RegisterPage } from '../pages/AuthPage';
 import { RedirectPage } from '../pages/RedirectPage';
+
+const AuthPage = lazy(() => import('../pages/AuthPage'));
+const PanelPage = lazy(() => import('../pages/PanelPage'));
 
 const router = createBrowserRouter([
     {
-        path: '/auth',
-        element: <AuthPage />,
-        children: [
-            {
-                path: 'login',
-                element: <LoginPage />,
-            },
-            {
-                path: 'register',
-                element: <RegisterPage />,
-            },
-            {
-                path: '',
-                element: <RedirectPage to={'/auth/login'} />,
-            },
-        ],
+        path: '/auth/*',
+        element: (
+            <Suspense fallback={<div>loading...</div>}>
+                <AuthPage />
+            </Suspense>
+        ),
     },
     {
-        path: '/panel',
-        // element: <RedirectPage to={'/auth'} />,
+        path: '/panel/*',
+        element: (
+            <Suspense fallback={<div>loading...</div>}>
+                <PanelPage />
+            </Suspense>
+        ),
     },
     {
         path: '*',

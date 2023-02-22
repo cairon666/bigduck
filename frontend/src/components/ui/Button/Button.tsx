@@ -27,9 +27,9 @@ export function Button(props: ButtonProps) {
             onClick={isLoading ? undefined : onClick}
             className={classNames(
                 className,
-                'relative rounded border border-transparent text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2',
+                'relative rounded border text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2',
                 theme === 'contained'
-                    ? 'bg-yellow-600 text-gray-900 hover:bg-yellow-700 disabled:bg-yellow-200 disabled:text-gray-200'
+                    ? 'border-transparent bg-yellow-600 text-gray-900 hover:bg-yellow-700 disabled:bg-yellow-200 disabled:text-gray-200'
                     : '',
                 theme === 'outlined'
                     ? 'border-yellow-600 bg-white text-gray-900 hover:border-yellow-700 hover:bg-yellow-200 disabled:bg-yellow-200 disabled:text-gray-200'

@@ -1,7 +1,7 @@
 import { Transition } from '@headlessui/react';
 import { Fragment, useCallback, useRef, useState } from 'react';
 
-import { useOnClickOutside } from '../../../../_hooks';
+import { useOnClickOutside } from '../../../../hooks';
 import { Button, Card } from '../../../../components/ui';
 
 export function Menu() {

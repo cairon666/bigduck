@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { fetchUser, useAppDispatch, useAppSelector } from '../../../../_redux';
+import { fetchNotifies, useAppDispatch, useAppSelector } from '../../../../_redux';
 import { useOnClickOutside } from '../../../../hooks';
 
-export function useProfile() {
-    const userStorage = useAppSelector((state) => state.user);
+export function useNotify() {
     const [isOpen, setIsOpen] = useState(false);
     const ref = useRef(null);
+    const notifyStorage = useAppSelector((state) => state.notify);
     const dispatch = useAppDispatch();
 
     const onOpen = useCallback(() => {
@@ -22,14 +22,15 @@ export function useProfile() {
     });
 
     useEffect(() => {
-        dispatch(fetchUser());
+        dispatch(fetchNotifies());
     }, []);
 
     return {
         isOpen,
-        onOpen,
         ref,
-        user: userStorage.user,
-        isLoading: userStorage.isLoading,
+        onOpen,
+        hasUnViewed: notifyStorage.has_unviewed,
+        isLoading: notifyStorage.isLoading,
+        notifies: notifyStorage.notifies,
     };
 }

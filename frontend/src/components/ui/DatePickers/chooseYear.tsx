@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Fragment, useCallback, useRef, useState } from 'react';
 import { RiArrowDownSLine } from 'react-icons/ri';
 
-import { useOnClickOutside } from '../../../_hooks';
+import { useOnClickOutside } from '../../../hooks';
 
 interface ChooseYearProps {
     current: Date;

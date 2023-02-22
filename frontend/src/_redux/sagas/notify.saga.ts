@@ -20,7 +20,8 @@ function* fetchNotifies() {
                     id: '2',
                     date: new Date(),
                     title: 'Какое-то название увведомления 2',
-                    description: 'Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2',
+                    description:
+                        'Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2',
                     unviewed: false,
                 },
                 {
@@ -34,7 +35,8 @@ function* fetchNotifies() {
                     id: '4',
                     date: new Date(),
                     title: 'Какое-то название увведомления 2',
-                    description: 'Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2',
+                    description:
+                        'Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2 Какое-то описание увведомления 2',
                     unviewed: false,
                 },
             ]),
@@ -44,8 +46,21 @@ function* fetchNotifies() {
     }
 }
 
+function* readAllNotifies() {
+    try {
+        yield put(notifySlice.actions.START());
+        yield delay(2000);
+        yield put(notifySlice.actions.END_READ_ALL_SUCCESS());
+    } catch (e) {
+        yield put(notifySlice.actions.END_FAILED());
+    }
+}
+
 function* notifySaga() {
-    yield all([takeLatest(notifyTypes.FETCH_NOTIFIES, fetchNotifies)]);
+    yield all([
+        takeLatest(notifyTypes.FETCH_NOTIFIES, fetchNotifies),
+        takeLatest(notifyTypes.READ_ALL_NOTIFIES, readAllNotifies),
+    ]);
 }
 
 export default notifySaga;

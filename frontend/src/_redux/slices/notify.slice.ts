@@ -32,6 +32,14 @@ export const notifySlice = createSlice({
             state.notifies = action.payload;
             state.has_unviewed = hasUnviewed(state.notifies);
         },
+        END_READ_ALL_SUCCESS: (state: State) => {
+            state.isLoading = false;
+            state.notifies = state.notifies?.map((notify) => ({
+                ...notify,
+                unviewed: false,
+            }));
+            state.has_unviewed = false;
+        },
         END_FAILED: (state: State) => {
             state.isLoading = false;
         },

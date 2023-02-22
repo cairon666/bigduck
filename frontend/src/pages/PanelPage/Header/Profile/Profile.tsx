@@ -111,7 +111,11 @@ function UserNav(props: UserNavProps) {
             }
         >
             <div className={'flex w-full items-center gap-1 overflow-hidden'}>
-                <img src={props.url || ''} className={'h-8 w-8 min-w-[2rem] rounded-full'} alt='avatar' />
+                {props.url ? (
+                    <img src={props.url} className={'h-8 w-8 min-w-[2rem] rounded-full'} alt='avatar' />
+                ) : (
+                    <div className={'h-8 w-8 min-w-[2rem] animate-pulse rounded-full bg-gray-80'} />
+                )}
                 <div className={'flex w-full flex-col overflow-hidden text-sm font-light'}>
                     <p
                         className={classNames(

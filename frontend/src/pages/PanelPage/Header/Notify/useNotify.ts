@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { fetchNotifies, useAppDispatch, useAppSelector } from '../../../../_redux';
+import { fetchNotifies, readAllNotifies, useAppDispatch, useAppSelector } from '../../../../_redux';
 import { useOnClickOutside } from '../../../../hooks';
 
 export function useNotify() {
@@ -25,6 +25,10 @@ export function useNotify() {
         dispatch(fetchNotifies());
     }, []);
 
+    const onReadAll = useCallback(() => {
+        dispatch(readAllNotifies());
+    }, []);
+
     return {
         isOpen,
         ref,
@@ -32,5 +36,6 @@ export function useNotify() {
         hasUnViewed: notifyStorage.has_unviewed,
         isLoading: notifyStorage.isLoading,
         notifies: notifyStorage.notifies,
+        onReadAll: onReadAll,
     };
 }

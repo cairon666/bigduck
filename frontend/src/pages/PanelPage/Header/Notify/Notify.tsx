@@ -1,5 +1,4 @@
 import { Transition } from '@headlessui/react';
-import classNames from 'classnames';
 import { Fragment } from 'react';
 import { MdOutlineNotificationsNone } from 'react-icons/md';
 
@@ -7,7 +6,7 @@ import { Button, Card } from '../../../../components/ui';
 import { useNotify } from './useNotify';
 
 export function Notify() {
-    const { isOpen, ref, onOpen, hasUnViewed, isLoading, notifies } = useNotify();
+    const { isOpen, ref, onOpen, hasUnViewed, isLoading, notifies, onReadAll } = useNotify();
 
     return (
         <div className={'relative flex flex h-full items-center justify-center'}>
@@ -35,28 +34,36 @@ export function Notify() {
                 <Card
                     ref={ref}
                     className={
-                        'scrollbar absolute right-0 top-full z-20 flex max-h-72 w-72 flex-col flex-col overflow-y-auto !rounded-t-none font-light shadow'
+                        'absolute right-0 top-full z-20 flex w-72 flex-col flex-col overflow-hidden !rounded-t-none font-light shadow'
                     }
                 >
                     <div className={'bg-gray-40 py-1 px-4 text-lg font-normal'}>Уведомления</div>
-                    {isLoading && !notifies && (
-                        <>
-                            <NotifyBlockSkeleton />
-                            <NotifyBlockSkeleton />
-                        </>
-                    )}
-                    {notifies &&
-                        notifies.map((notify) => {
-                            return (
-                                <NotifyBlock
-                                    key={notify.id}
-                                    date={notify.date}
-                                    title={notify.title}
-                                    description={notify.description}
-                                    unviewed={notify.unviewed}
-                                />
-                            );
-                        })}
+                    <div className={'scrollbar flex max-h-56 flex-col overflow-y-auto'}>
+                        {isLoading && !notifies && (
+                            <>
+                                <NotifyBlockSkeleton />
+                                <NotifyBlockSkeleton />
+                                <NotifyBlockSkeleton />
+                            </>
+                        )}
+                        {notifies &&
+                            notifies.map((notify) => {
+                                return (
+                                    <NotifyBlock
+                                        key={notify.id}
+                                        date={notify.date}
+                                        title={notify.title}
+                                        description={notify.description}
+                                        unviewed={notify.unviewed}
+                                    />
+                                );
+                            })}
+                    </div>
+                    <div className={'flex items-center justify-end border-t-2 border-gray-80 py-1 px-2'}>
+                        <Button disabled={!hasUnViewed} isLoading={isLoading} onClick={onReadAll} theme={'text'}>
+                            Прочитать все
+                        </Button>
+                    </div>
                 </Card>
             </Transition>
         </div>

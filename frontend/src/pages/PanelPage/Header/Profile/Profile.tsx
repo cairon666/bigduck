@@ -47,7 +47,7 @@ export function Profile() {
     }, []);
 
     return (
-        <div className={'relative'}>
+        <div className={'relative py-2'}>
             <Button
                 theme={'text'}
                 onFocus={onOpen}
@@ -76,9 +76,7 @@ export function Profile() {
             >
                 <Card
                     ref={ref}
-                    className={
-                        'scrollbar absolute -right-1 top-[calc(100%+0.5rem+1px)] z-20 flex w-72 flex-col flex-col !rounded-t-none shadow'
-                    }
+                    className={'absolute -right-1 top-full z-20 flex w-72 flex-col flex-col !rounded-t-none shadow-md'}
                 >
                     <div className={'p-4'}>
                         <Link

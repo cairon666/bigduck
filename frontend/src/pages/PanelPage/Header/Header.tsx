@@ -7,7 +7,7 @@ import { Profile } from './Profile';
 
 export function Header() {
     return (
-        <header className={'flex w-full items-center justify-between border-b-2 border-gray-80 bg-white px-4 py-2'}>
+        <header className={'flex w-full items-center justify-between border-b-2 border-gray-80 bg-white px-4'}>
             <div className='flex items-center gap-4'>
                 <Menu />
                 <DivideLine />
@@ -16,7 +16,7 @@ export function Header() {
                     <div className={'text-2xl font-medium'}>BigDuck</div>
                 </Link>
             </div>
-            <div className={'flex items-center gap-4'}>
+            <div className={'flex h-full items-center gap-4'}>
                 <Notify />
                 <DivideLine />
                 <Profile />

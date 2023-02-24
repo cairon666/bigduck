@@ -81,7 +81,7 @@ function NotifyBlock(props: NotifyBlockProps) {
     return (
         <div
             className={
-                'w-full cursor-pointer border border-r-transparent border-l-transparent border-b-transparent border-t-gray-100 py-2 px-4 text-sm font-light hover:border-yellow-500'
+                'w-full cursor-pointer border border-r-transparent border-l-transparent border-b-transparent border-t-gray-100 py-2 px-4 text-sm font-light duration-75 ease-linear hover:border-yellow-500'
             }
         >
             <h4 className={'w-full rounded font-normal'}>{props.title || ''}</h4>

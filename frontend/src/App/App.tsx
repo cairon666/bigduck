@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import { store } from '../_redux';
+import { Loader } from '../components/ui';
 
 const AuthPage = lazy(() => import('../pages/AuthPage'));
 const PanelPage = lazy(() => import('../pages/PanelPage'));
@@ -13,7 +14,7 @@ const router = createBrowserRouter([
     {
         path: '/auth/*',
         element: (
-            <Suspense fallback={<div>loading...</div>}>
+            <Suspense fallback={<Loader />}>
                 <AuthPage />
             </Suspense>
         ),
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
     {
         path: '/panel/*',
         element: (
-            <Suspense fallback={<div>loading...</div>}>
+            <Suspense fallback={<Loader />}>
                 <PanelPage />
             </Suspense>
         ),

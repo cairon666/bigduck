@@ -37,7 +37,7 @@ export function Profile() {
                     key={item.to}
                     to={item.to}
                     className={classNames(
-                        'flex cursor-pointer items-center gap-2 border border-gray-100 border-x-transparent border-b-transparent py-2 px-4 font-light hover:border-yellow-500 hover:bg-gray-20 focus-visible:border-yellow-500 focus-visible:outline-none',
+                        'flex cursor-pointer items-center gap-2 border border-gray-100 border-x-transparent border-b-transparent py-2 px-4 font-light duration-75 ease-linear hover:border-yellow-500 hover:bg-gray-20 focus-visible:border-yellow-500 focus-visible:outline-none',
                     )}
                 >
                     <item.icon className={'h-5 w-5'} />
@@ -107,7 +107,7 @@ function UserNav(props: UserNavProps) {
         <Link
             to={'/panel/user'}
             className={
-                'flex items-center justify-between gap-2 rounded-lg border border-transparent bg-gray-20 p-2 hover:border-yellow-600 focus-visible:border-yellow-500 focus-visible:outline-none'
+                'flex items-center justify-between gap-2 rounded-lg border border-transparent bg-gray-20 p-2 duration-75 ease-linear hover:border-yellow-600 focus-visible:border-yellow-500 focus-visible:outline-none'
             }
         >
             <div className={'flex w-full items-center gap-1 overflow-hidden'}>

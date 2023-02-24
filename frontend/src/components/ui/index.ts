@@ -6,3 +6,5 @@ export * from './_Error';
 export * from './_Label';
 export * from './Card';
 export * from './PageHeader';
+export * from './Loader';
+export * from './Switch';

@@ -2,7 +2,7 @@ const tryExtensions = ['.js', '.json', '.ts', '.node'];
 
 module.exports = {
     env: {
-        browser: true,
+        browser: false,
         es2021: true,
     },
     extends: [

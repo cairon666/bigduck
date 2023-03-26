@@ -3,15 +3,18 @@ create type gender as enum ('male', 'female');
 
 create table if not exists public.user
 (
-    id            uuid primary key     default gen_random_uuid(),
-    email         text        not null,
+    id               uuid        not null,
+    email            text        not null,
+    email_is_confirm bool        not null,
+    password_hash    text        not null,
+    salt             text        not null,
+    first_name       text        not null,
+    second_name      text        not null,
+    day_of_birth     date,
+    avatar_url       text,
+    gender           gender,
+    create_at        timestamptz not null,
+    modify_at        timestamptz not null,
     constraint credential_email_uniq unique (email),
-    password_hash text        not null,
-    salt          text        not null,
-    first_name    text        not null,
-    second_name   text        not null,
-    day_of_birth  date,
-    gender        gender,
-    date_create   timestamptz not null default now(),
-    date_modify   timestamptz not null default now()
+    primary key (id, email)
 );

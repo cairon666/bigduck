@@ -36,10 +36,10 @@ export default defineConfig((configEnv) => ({
     server: {
         host: 'localhost',
         port: 8080,
-        https: {
-            key: fs.readFileSync(path.join(process.cwd(), '.config', 'cert', 'example.com+5-key.pem')),
-            cert: fs.readFileSync(path.join(process.cwd(), '.config', 'cert', 'example.com+5.pem')),
-        },
+        // https: {
+        //     key: fs.readFileSync(path.join(process.cwd(), '.config', 'cert', 'example.com+5-key.pem')),
+        //     cert: fs.readFileSync(path.join(process.cwd(), '.config', 'cert', 'example.com+5.pem')),
+        // },
     },
     build: {
         outDir: build,

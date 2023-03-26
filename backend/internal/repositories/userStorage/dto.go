@@ -1,10 +1,8 @@
-package models
+package userStorage
 
-import (
-	"time"
-)
+import "time"
 
-type User struct {
+type UserDB struct {
 	Id             string
 	Email          string
 	EmailIsConfirm bool
@@ -14,7 +12,7 @@ type User struct {
 	SecondName     string
 	AvatarURL      *string
 	DateOfBirth    *time.Time
-	Gender         *Gender
+	Gender         *string
 	CreateAt       time.Time
 	ModifyAt       time.Time
 }

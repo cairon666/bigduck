@@ -1,17 +1,25 @@
 version: "3"
 
 services:
-  database_redis:
-    image: redis:7-alpine
-    restart: always
-    ports:
-      - '6379:6379'
-    volumes:
-      - redis_data:/data
-      - ../database/redis/redis.conf:/etc/redis/redis.conf
-    command: [ "redis-server", "/etc/redis/redis.conf"  ]
-  bigduck_postgres:
-    container_name: postgres
+#  proxy:
+#    image: nginx:stable
+#    restart: always
+#    ports:
+#      - 8080:80
+#    networks:
+#      - network
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/nginx.conf
+#  database_redis:
+#    image: redis:7-alpine
+#    restart: always
+#    ports:
+#      - '6379:6379'
+#    volumes:
+#      - redis_data:/data
+#      - ../database/redis/redis.conf:/etc/redis/redis.conf
+#    command: [ "redis-server", "/etc/redis/redis.conf"  ]
+  postgres:
     image: postgres:15-alpine
     restart: always
     environment:
@@ -19,10 +27,10 @@ services:
       POSTGRES_USER: admin
       POSTGRES_DB: root
       PGDATA: /var/lib/postgresql/data
-    ports:
-      - '5432:5432'
     networks:
-      - bigduck_network
+      - network
+    ports:
+      - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
 #      - ../database/postgres/dump.sql:/docker-entrypoint-initdb.d/dummy_dump.sql
@@ -46,38 +54,33 @@ services:
 #      context: ../backend
 #      dockerfile: Dockerfile
 #    restart: unless-stopped
+#    networks:
+#      - network
 #    depends_on:
 ##      - database_redis
-#      - database_postgres
+#      - postgres
 #    environment:
-#      - REDIS_HOST=database_redis
-#      - POSTGRES_HOST=database_postgres
-#    ports:
-#      - "3000:3000"
+#      - POSTGRESQL_URL=postgresql://admin:admin@postgres:5432/root
 #    volumes:
 #      - ../backend:/usr/src/app
-#      - node_modules:/usr/src/app/node_modules
 #  swagger-ui:
 #    image: swaggerapi/swagger-ui
 #    ports:
 #      - "3001:8080"
 #    volumes:
-#      - ../backend/swagger:/usr/share/nginx/html/doc
+#      - ../backend/docs:/usr/share/nginx/html/doc
 #    environment:
 #      API_URL: doc/swagger.yaml
-#  bigduck-frontend:
-#    container_name: frontend
+#  frontend:
 #    build:
 #      context: ../frontend
 #      dockerfile: Dockerfile
 #    restart: unless-stopped
-#    ports:
-#      - 8080:8080
 #    volumes:
 #      - ../frontend:/app
 #      - frontend_node_modules:/app/node_modules
 #    networks:
-#      bigduck_network:
+#      network:
 
 volumes:
   postgres_data:
@@ -85,4 +88,4 @@ volumes:
   frontend_node_modules:
 
 networks:
-  bigduck_network:
+  network:

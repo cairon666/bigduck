@@ -1,10 +1,11 @@
 package v1
 
 import (
-	"backend/internal/domain/usecases/authUsecase"
-	"backend/pkg/beda"
 	"encoding/json"
 	"net/http"
+
+	"backend/internal/domain/usecases/authusecase"
+	"backend/pkg/beda"
 )
 
 type loginRequest struct {
@@ -13,28 +14,30 @@ type loginRequest struct {
 }
 
 type loginResponse struct {
-	IdUser      string `json:"id_user"`
+	IDUser      string `json:"id_user"`
 	AccessToken string `json:"access_token"`
 }
 
-func (s *server) loginHandler(rw http.ResponseWriter, req *http.Request) {
+func (s *Server) loginHandler(rw http.ResponseWriter, req *http.Request) {
 	var reqDTO loginRequest
 	if err := json.NewDecoder(req.Body).Decode(&reqDTO); err != nil {
 		s.handleError(rw, beda.Wrap("Decode", err))
+
 		return
 	}
 
-	dto := authUsecase.LoginRequest{
+	dto := authusecase.LoginRequest{
 		Email:    reqDTO.Email,
 		Password: reqDTO.Password,
 	}
+
 	resp, err := s.authUsecase.Login(req.Context(), dto)
 	if err != nil {
 		s.handleError(rw, beda.Wrap("Login", err))
 		return
 	}
 
-	access, refresh, err := s.authHelper.NewTokens(resp.IdUser)
+	access, refresh, err := s.authHelper.NewTokens(resp.IDUser)
 	if err != nil {
 		s.handleError(rw, beda.Wrap("NewTokens", err))
 		return
@@ -42,11 +45,12 @@ func (s *server) loginHandler(rw http.ResponseWriter, req *http.Request) {
 
 	if err := s.authHelper.SetRefreshCookie(rw, refresh); err != nil {
 		s.handleError(rw, beda.Wrap("SetRefreshCookie", err))
+
 		return
 	}
 
 	s.sendJSON(rw, loginResponse{
-		IdUser:      resp.IdUser,
+		IDUser:      resp.IDUser,
 		AccessToken: access,
 	}, http.StatusOK)
 }

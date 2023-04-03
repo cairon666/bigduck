@@ -1,4 +1,4 @@
-package authHelper
+package authhelper
 
 import (
 	"backend/pkg/beda"
@@ -10,12 +10,13 @@ const (
 	refreshNameToken = "Refresh-Token"
 )
 
-func (h *helper) NewTokens(IdUser string) (access string, refresh string, err error) {
-	accessClaims, err := h.newAccessClaims(IdUser)
+func (h *helper) NewTokens(id string) (string, string, error) {
+	accessClaims, err := h.newAccessClaims(id)
 	if err != nil {
 		return "", "", beda.Wrap("accessClaims.newAccessClaims", err)
 	}
-	refreshClaims, err := h.newRefreshClaims(IdUser)
+
+	refreshClaims, err := h.newRefreshClaims(id)
 	if err != nil {
 		return "", "", beda.Wrap("refreshClaims.newAccessClaims", err)
 	}
@@ -23,26 +24,26 @@ func (h *helper) NewTokens(IdUser string) (access string, refresh string, err er
 	tokenAccess := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
 	tokenRefresh := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
 
-	access, err = tokenAccess.SignedString(h.private)
+	access, err := tokenAccess.SignedString(h.private)
 	if err != nil {
 		return "", "", beda.Wrap("access.SignedString", err)
 	}
 
-	refresh, err = tokenRefresh.SignedString(h.private)
+	refresh, err := tokenRefresh.SignedString(h.private)
 	if err != nil {
 		return "", "", beda.Wrap("refresh.SignedString", err)
 	}
 
-	return
+	return access, refresh, nil
 }
 
 func (h *helper) UpdateTokens(refresh string) (string, string, error) {
-	idUser, err := h.ParseToken(refresh)
+	id, err := h.ParseToken(refresh)
 	if err != nil {
 		return "", "", beda.Wrap("ParseToken", err)
 	}
 
-	newAccess, newRefresh, err := h.NewTokens(idUser.IdUser)
+	newAccess, newRefresh, err := h.NewTokens(id.IDUser)
 	if err != nil {
 		return "", "", beda.Wrap("NewTokens", err)
 	}
@@ -51,7 +52,9 @@ func (h *helper) UpdateTokens(refresh string) (string, string, error) {
 }
 
 func (h *helper) ParseToken(tokenString string) (*Claims, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) { return h.private, nil })
+	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return h.private, nil
+	})
 	if err != nil {
 		return nil, beda.Wrap("ParseWithClaims", err)
 	}

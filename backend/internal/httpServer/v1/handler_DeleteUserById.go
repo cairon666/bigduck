@@ -1,23 +1,26 @@
 package v1
 
 import (
-	"backend/internal/domain/usecases/userUsecase"
+	"net/http"
+
+	"backend/internal/domain/usecases/userusecase"
 	"backend/pkg/beda"
 	"github.com/go-chi/chi/v5"
-	"net/http"
 )
 
-func (s *server) deleteUserById(rw http.ResponseWriter, r *http.Request) {
-	IdUser := chi.URLParam(r, "IdUser")
+func (s *Server) deleteUserByID(rw http.ResponseWriter, r *http.Request) {
+	IDUser := chi.URLParam(r, "IDUser")
 
-	if err := shouldEqualIdUserOrAdmin(r, IdUser); err != nil {
-		s.handleError(rw, beda.Wrap("shouldEqualIdUserOrAdmin", err))
+	if err := shouldEqualIDUserOrAdmin(r, IDUser); err != nil {
+		s.handleError(rw, beda.Wrap("shouldEqualIDUserOrAdmin", err))
+
 		return
 	}
 
-	err := s.userUsecase.DeleteById(r.Context(), userUsecase.DeleteByIdRequest{IdUser: IdUser})
+	err := s.userUsecase.DeleteById(r.Context(), userusecase.DeleteByIDRequest{IDUser: IDUser})
 	if err != nil {
-		s.handleError(rw, beda.Wrap("DeleteById", err))
+		s.handleError(rw, beda.Wrap("DeleteByID", err))
+
 		return
 	}
 

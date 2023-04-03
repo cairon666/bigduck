@@ -1,12 +1,15 @@
 package exceptions
 
-import "errors"
+import (
+	"net/http"
+)
 
 var (
-	ErrorNotFound          = errors.New("not found")
-	ErrorEmailAlreadyExist = errors.New("email already exist")
-	ErrorDatabase          = errors.New("database")
-	ErrorUnknown           = errors.New("unknown")
-	ErrorBadPassword       = errors.New("bad password")
-	ErrorValidation        = errors.New("validate")
+	ErrNotFound          = newErr("not found", http.StatusNotFound)
+	ErrEmailAlreadyExist = newErr("email already exist", http.StatusBadRequest)
+	ErrInternal          = newErr("internal", http.StatusInternalServerError)
+	ErrDatabase          = ErrInternal
+	ErrBadPassword       = newErr("bad password", http.StatusBadRequest)
+	ErrForbidden         = newErr("forbidden", http.StatusForbidden)
+	ErrGenderNotFound    = newErr("gender not found", http.StatusBadRequest)
 )

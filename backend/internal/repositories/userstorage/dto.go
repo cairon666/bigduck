@@ -1,9 +1,9 @@
-package userStorage
+package userstorage
 
 import "time"
 
 type UserDB struct {
-	Id             string
+	ID             string
 	Email          string
 	EmailIsConfirm bool
 	PasswordHash   string

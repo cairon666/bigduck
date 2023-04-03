@@ -1,4 +1,4 @@
-package authUsecase
+package authusecase
 
 import "time"
 
@@ -30,5 +30,5 @@ func (dto *LoginRequest) IsValid() error {
 }
 
 type LoginResponse struct {
-	IdUser string
+	IDUser string
 }

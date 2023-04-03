@@ -2,6 +2,6 @@ package v1
 
 import "net/http"
 
-func (s *server) logoutHandler(rw http.ResponseWriter, r *http.Request) {
+func (s *Server) logoutHandler(rw http.ResponseWriter, _ *http.Request) {
 	s.authHelper.ClearRefreshCookie(rw)
 }

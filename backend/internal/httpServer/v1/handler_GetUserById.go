@@ -1,15 +1,16 @@
 package v1
 
 import (
-	"backend/internal/domain/usecases/userUsecase"
-	"backend/pkg/beda"
-	"github.com/go-chi/chi/v5"
 	"net/http"
 	"time"
+
+	"backend/internal/domain/usecases/userusecase"
+	"backend/pkg/beda"
+	"github.com/go-chi/chi/v5"
 )
 
-type getUserByIdResponse struct {
-	Id          string     `json:"id"`
+type getUserByIDResponse struct {
+	ID          string     `json:"id"`
 	Email       string     `json:"email"`
 	FirstName   string     `json:"first_name"`
 	SecondName  string     `json:"second_name"`
@@ -20,22 +21,24 @@ type getUserByIdResponse struct {
 	ModifyAt    time.Time  `json:"modify_at"`
 }
 
-func (s *server) getUserById(rw http.ResponseWriter, r *http.Request) {
-	IdUser := chi.URLParam(r, "IdUser")
+func (s *Server) getUserByID(rw http.ResponseWriter, r *http.Request) {
+	IDUser := chi.URLParam(r, "IDUser")
 
-	if err := shouldEqualIdUserOrAdmin(r, IdUser); err != nil {
-		s.handleError(rw, beda.Wrap("shouldEqualIdUserOrAdmin", err))
+	if err := shouldEqualIDUserOrAdmin(r, IDUser); err != nil {
+		s.handleError(rw, beda.Wrap("shouldEqualIDUserOrAdmin", err))
+
 		return
 	}
 
-	resp, err := s.userUsecase.ReadById(r.Context(), userUsecase.ReadByIdRequest{IdUser: IdUser})
+	resp, err := s.userUsecase.ReadById(r.Context(), userusecase.ReadByIDRequest{IDUser: IDUser})
 	if err != nil {
-		s.handleError(rw, beda.Wrap("ReadById", err))
+		s.handleError(rw, beda.Wrap("ReadByID", err))
+
 		return
 	}
 
-	s.sendJSON(rw, getUserByIdResponse{
-		Id:          resp.Id,
+	s.sendJSON(rw, getUserByIDResponse{
+		ID:          resp.ID,
 		Email:       resp.Email,
 		FirstName:   resp.FirstName,
 		SecondName:  resp.SecondName,

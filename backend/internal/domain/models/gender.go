@@ -1,31 +1,35 @@
 package models
 
+import (
+	"backend/internal/exceptions"
+)
+
 type Gender string
 
 var (
-	MALE   Gender = "MALE"
-	FEMALE Gender = "FEMALE"
+	GenderMale   Gender = "MALE"
+	GenderFemale Gender = "FEMALE"
 )
 
-func ParseGender(g *string) *Gender {
-	if g == nil {
-		return nil
-	}
-
-	switch Gender(*g) {
-	case MALE:
-		return &MALE
-	case FEMALE:
-		return &FEMALE
+func ParseGender(g string) (Gender, error) {
+	switch Gender(g) {
+	case GenderMale:
+		return GenderMale, nil
+	case GenderFemale:
+		return GenderFemale, nil
 	default:
-		return nil
+		return "", exceptions.ErrGenderNotFound
 	}
 }
 
-func NewMaleGender() *Gender {
-	return &MALE
+func NewMaleGender() Gender {
+	return GenderMale
 }
 
-func NewFemaleGender() *Gender {
-	return &FEMALE
+func NewFemaleGender() Gender {
+	return GenderFemale
+}
+
+func (g Gender) ToString() string {
+	return string(g)
 }

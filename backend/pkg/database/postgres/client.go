@@ -1,12 +1,13 @@
 package postgres
 
 import (
-	"backend/pkg/logger"
 	"context"
+	"time"
+
+	"backend/pkg/logger"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"time"
 )
 
 type Client interface {
@@ -44,6 +45,7 @@ func (client *postgresClient) Query(ctx context.Context, sql string, args ...any
 		logger.Any("args", args),
 		logger.Time("time", time.Now()),
 	)
+
 	return client.conn.Query(ctx, sql, args...)
 }
 

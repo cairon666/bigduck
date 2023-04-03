@@ -24,9 +24,9 @@ func checkPasswordHash(password, salt, hash string) error {
 	return nil
 }
 
-func generateEmailCode() (string, error) {
-	return "0000", nil
-}
+//func generateEmailCode() (string, error) {
+//	return "0000", nil
+//}
 
 func generateSalt() (string, error) {
 	salt := make([]byte, 12)

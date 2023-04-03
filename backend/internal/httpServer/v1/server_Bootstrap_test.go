@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func Bootstrap(t *testing.T) (params ServerParams, server Server) {
+func Bootstrap(t *testing.T) (params ServerParams, server *server) {
 	log, err := logger.NewDev()
 	if err != nil {
 		t.Fatal(err)

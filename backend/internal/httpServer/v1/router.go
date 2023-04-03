@@ -15,6 +15,7 @@ func (s *server) router() http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(time.Second * 10))
+	r.Use(s.authenticationMiddleware)
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Route("/auth", func(r chi.Router) {
@@ -25,6 +26,9 @@ func (s *server) router() http.Handler {
 		})
 
 		r.Route("/user", func(r chi.Router) {
+			r.Get("/{IdUser}", s.getUserById)
+			r.Put("/{IdUser}", s.updateUserById)
+			r.Delete("/{IdUser}", s.deleteUserById)
 		})
 	})
 

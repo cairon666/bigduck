@@ -66,20 +66,18 @@ func (_c *MockUserService_Create_Call) RunAndReturn(run func(context.Context, mo
 }
 
 // ReadByEmail provides a mock function with given fields: ctx, email
-func (_m *MockUserService) ReadByEmail(ctx context.Context, email string) (*models.User, error) {
+func (_m *MockUserService) ReadByEmail(ctx context.Context, email string) (models.User, error) {
 	ret := _m.Called(ctx, email)
 
-	var r0 *models.User
+	var r0 models.User
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (*models.User, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (models.User, error)); ok {
 		return rf(ctx, email)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) *models.User); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) models.User); ok {
 		r0 = rf(ctx, email)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*models.User)
-		}
+		r0 = ret.Get(0).(models.User)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
@@ -110,12 +108,12 @@ func (_c *MockUserService_ReadByEmail_Call) Run(run func(ctx context.Context, em
 	return _c
 }
 
-func (_c *MockUserService_ReadByEmail_Call) Return(_a0 *models.User, _a1 error) *MockUserService_ReadByEmail_Call {
+func (_c *MockUserService_ReadByEmail_Call) Return(_a0 models.User, _a1 error) *MockUserService_ReadByEmail_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockUserService_ReadByEmail_Call) RunAndReturn(run func(context.Context, string) (*models.User, error)) *MockUserService_ReadByEmail_Call {
+func (_c *MockUserService_ReadByEmail_Call) RunAndReturn(run func(context.Context, string) (models.User, error)) *MockUserService_ReadByEmail_Call {
 	_c.Call.Return(run)
 	return _c
 }

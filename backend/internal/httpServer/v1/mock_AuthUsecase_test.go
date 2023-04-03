@@ -23,20 +23,18 @@ func (_m *MockAuthUsecase) EXPECT() *MockAuthUsecase_Expecter {
 }
 
 // Login provides a mock function with given fields: ctx, dto
-func (_m *MockAuthUsecase) Login(ctx context.Context, dto authUsecase.LoginRequest) (*authUsecase.LoginResponse, error) {
+func (_m *MockAuthUsecase) Login(ctx context.Context, dto authUsecase.LoginRequest) (authUsecase.LoginResponse, error) {
 	ret := _m.Called(ctx, dto)
 
-	var r0 *authUsecase.LoginResponse
+	var r0 authUsecase.LoginResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, authUsecase.LoginRequest) (*authUsecase.LoginResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, authUsecase.LoginRequest) (authUsecase.LoginResponse, error)); ok {
 		return rf(ctx, dto)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, authUsecase.LoginRequest) *authUsecase.LoginResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, authUsecase.LoginRequest) authUsecase.LoginResponse); ok {
 		r0 = rf(ctx, dto)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*authUsecase.LoginResponse)
-		}
+		r0 = ret.Get(0).(authUsecase.LoginResponse)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, authUsecase.LoginRequest) error); ok {
@@ -67,12 +65,12 @@ func (_c *MockAuthUsecase_Login_Call) Run(run func(ctx context.Context, dto auth
 	return _c
 }
 
-func (_c *MockAuthUsecase_Login_Call) Return(_a0 *authUsecase.LoginResponse, _a1 error) *MockAuthUsecase_Login_Call {
+func (_c *MockAuthUsecase_Login_Call) Return(_a0 authUsecase.LoginResponse, _a1 error) *MockAuthUsecase_Login_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAuthUsecase_Login_Call) RunAndReturn(run func(context.Context, authUsecase.LoginRequest) (*authUsecase.LoginResponse, error)) *MockAuthUsecase_Login_Call {
+func (_c *MockAuthUsecase_Login_Call) RunAndReturn(run func(context.Context, authUsecase.LoginRequest) (authUsecase.LoginResponse, error)) *MockAuthUsecase_Login_Call {
 	_c.Call.Return(run)
 	return _c
 }

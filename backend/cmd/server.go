@@ -21,6 +21,10 @@ var serverCmd = cobra.Command{
 	},
 }
 
+type Server interface {
+	Run() error
+}
+
 func boostrap() {
 	var err error
 	c := dig.New()
@@ -74,13 +78,13 @@ func boostrap() {
 
 	// server
 	fmt.Println("create server")
-	err = c.Provide(httpServer.NewServer)
+	err = c.Provide(httpServer.NewServer, dig.As(new(Server)))
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("start server")
-	err = c.Invoke(func(server httpServer.Server) error {
+	err = c.Invoke(func(server Server) error {
 		return server.Run()
 	})
 	if err != nil {

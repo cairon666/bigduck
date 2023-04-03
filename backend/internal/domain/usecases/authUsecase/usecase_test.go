@@ -20,7 +20,7 @@ func TestUserUsecase_Login(t *testing.T) {
 
 		userService.
 			On("ReadByEmail", mock.Anything, dto.Email).
-			Return(&models.User{}, exceptions.ErrorNotFound)
+			Return(models.User{}, exceptions.ErrorNotFound)
 
 		_, err := usecase.Login(ctx, dto)
 		if err == nil {
@@ -62,7 +62,7 @@ func TestUserUsecase_Login(t *testing.T) {
 
 		userService.
 			On("ReadByEmail", mock.Anything, dto.Email).
-			Return(&user, nil)
+			Return(user, nil)
 
 		_, err = usecase.Login(ctx, dto)
 		if err != nil {

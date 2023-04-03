@@ -22,7 +22,7 @@ func NewUserStorage(log logger.Logger, client postgres.Client) *userStorage {
 	}
 }
 
-func (s *userStorage) ReadById(ctx context.Context, id string) (*models.User, error) {
+func (s *userStorage) ReadById(ctx context.Context, id string) (models.User, error) {
 	query := `select (id, email, email_is_confirm, password_hash, salt, first_name, second_name, avatar_url, day_of_birth, gender, create_at, modify_at) 
 from public.user 
 where id = $1`
@@ -30,22 +30,22 @@ where id = $1`
 	rows, err := s.client.Query(ctx, query, id)
 	if err != nil {
 		s.log.Error("Query", logger.Error(err))
-		return nil, exceptions.ErrorDatabase
+		return models.User{}, exceptions.ErrorDatabase
 	}
 	defer rows.Close()
 
 	if !rows.Next() {
 		s.log.Error("Next")
-		return nil, exceptions.ErrorNotFound
+		return models.User{}, exceptions.ErrorNotFound
 	}
 
 	var userDB UserDB
 	if err := rows.Scan(&userDB); err != nil {
 		s.log.Error("Scan", logger.Error(err))
-		return nil, exceptions.ErrorDatabase
+		return models.User{}, exceptions.ErrorDatabase
 	}
 
-	return &models.User{
+	return models.User{
 		Id:             userDB.Id,
 		Email:          userDB.Email,
 		EmailIsConfirm: userDB.EmailIsConfirm,
@@ -61,7 +61,7 @@ where id = $1`
 	}, nil
 }
 
-func (s *userStorage) ReadByEmail(ctx context.Context, email string) (*models.User, error) {
+func (s *userStorage) ReadByEmail(ctx context.Context, email string) (models.User, error) {
 	query := `select (id, email, email_is_confirm, password_hash, salt, first_name, second_name, avatar_url, day_of_birth, gender, create_at, modify_at) 
 from public.user 
 where email = $1`
@@ -69,22 +69,22 @@ where email = $1`
 	rows, err := s.client.Query(ctx, query, email)
 	if err != nil {
 		s.log.Error("Query", logger.Error(err))
-		return nil, exceptions.ErrorDatabase
+		return models.User{}, exceptions.ErrorDatabase
 	}
 	defer rows.Close()
 
 	if !rows.Next() {
 		s.log.Error("Next")
-		return nil, exceptions.ErrorNotFound
+		return models.User{}, exceptions.ErrorNotFound
 	}
 
 	var userDB UserDB
 	if err := rows.Scan(&userDB); err != nil {
 		s.log.Error("Scan", logger.Error(err))
-		return nil, exceptions.ErrorDatabase
+		return models.User{}, exceptions.ErrorDatabase
 	}
 
-	return &models.User{
+	return models.User{
 		Id:             userDB.Id,
 		Email:          userDB.Email,
 		EmailIsConfirm: userDB.EmailIsConfirm,

@@ -28,7 +28,7 @@ func TestUserUsecase_ReadById(t *testing.T) {
 
 		userService.
 			On("ReadById", mock.Anything, genUUID.String()).
-			Return(&models.User{}, nil)
+			Return(models.User{}, nil)
 
 		if _, err = userUsecase.ReadById(ctx, dto); err != nil {
 			t.Fatal(err)
@@ -47,7 +47,7 @@ func TestUserUsecase_ReadById(t *testing.T) {
 
 		userService.
 			On("ReadById", mock.Anything, genUUID.String()).
-			Return(&models.User{}, exceptions.ErrorNotFound)
+			Return(models.User{}, exceptions.ErrorNotFound)
 
 		if _, err = userUsecase.ReadById(ctx, dto); !errors.Is(err, exceptions.ErrorNotFound) {
 			t.Fatal(beda.Wrap("should be error not found, err:", err))

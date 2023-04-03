@@ -9,7 +9,7 @@ import (
 
 //go:generate mockery --name UserService
 type UserService interface {
-	ReadByEmail(ctx context.Context, email string) (*models.User, error)
+	ReadByEmail(ctx context.Context, email string) (models.User, error)
 	Create(ctx context.Context, user models.User) error
 }
 type usecase struct {
@@ -22,21 +22,21 @@ func NewAuthUsecase(userService UserService) *usecase {
 	}
 }
 
-func (u *usecase) Login(ctx context.Context, dto LoginRequest) (*LoginResponse, error) {
+func (u *usecase) Login(ctx context.Context, dto LoginRequest) (LoginResponse, error) {
 	if err := dto.IsValid(); err != nil {
-		return nil, beda.Wrap("IsValid", err)
+		return LoginResponse{}, beda.Wrap("IsValid", err)
 	}
 
 	user, err := u.userService.ReadByEmail(ctx, dto.Email)
 	if err != nil {
-		return nil, beda.Wrap("Read", err)
+		return LoginResponse{}, beda.Wrap("Read", err)
 	}
 
 	if err := checkPasswordHash(dto.Password, user.Salt, user.PasswordHash); err != nil {
-		return nil, beda.Wrap("checkPasswordHash", err)
+		return LoginResponse{}, beda.Wrap("checkPasswordHash", err)
 	}
 
-	return &LoginResponse{
+	return LoginResponse{
 		IdUser: user.Id,
 	}, nil
 }

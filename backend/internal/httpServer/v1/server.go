@@ -16,19 +16,15 @@ import (
 
 //go:generate mockery --name UserUsecase
 type UserUsecase interface {
-	ReadById(ctx context.Context, dto userUsecase.ReadByIdRequest) (*userUsecase.ReadByIdResponse, error)
+	ReadById(ctx context.Context, dto userUsecase.ReadByIdRequest) (userUsecase.ReadByIdResponse, error)
 	UpdateById(ctx context.Context, dto userUsecase.UpdateByIdRequest) error
 	DeleteById(ctx context.Context, dto userUsecase.DeleteByIdRequest) error
 }
 
 //go:generate mockery --name AuthUsecase
 type AuthUsecase interface {
-	Login(ctx context.Context, dto authUsecase.LoginRequest) (*authUsecase.LoginResponse, error)
+	Login(ctx context.Context, dto authUsecase.LoginRequest) (authUsecase.LoginResponse, error)
 	Register(ctx context.Context, dto authUsecase.RegisterRequest) error
-}
-
-type Server interface {
-	Run() error
 }
 
 type server struct {
@@ -46,7 +42,7 @@ type ServerParams struct {
 	UserUsecase UserUsecase
 }
 
-func NewServer(log logger.Logger, conf *config.Config, params ServerParams) Server {
+func NewServer(log logger.Logger, conf *config.Config, params ServerParams) *server {
 	return &server{
 		conf:        conf,
 		log:         log,

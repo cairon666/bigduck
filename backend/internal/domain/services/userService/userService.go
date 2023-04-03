@@ -6,8 +6,8 @@ import (
 )
 
 type Repository interface {
-	ReadByEmail(ctx context.Context, email string) (*models.User, error)
-	ReadById(ctx context.Context, id string) (*models.User, error)
+	ReadByEmail(ctx context.Context, email string) (models.User, error)
+	ReadById(ctx context.Context, id string) (models.User, error)
 	Create(ctx context.Context, user models.User) error
 	UpdateById(ctx context.Context, id string, data map[string]any) error
 	DeleteById(ctx context.Context, id string) error
@@ -23,11 +23,11 @@ func NewUserService(repo Repository) *userService {
 	}
 }
 
-func (s *userService) ReadByEmail(ctx context.Context, email string) (*models.User, error) {
+func (s *userService) ReadByEmail(ctx context.Context, email string) (models.User, error) {
 	return s.repo.ReadByEmail(ctx, email)
 }
 
-func (s *userService) ReadById(ctx context.Context, id string) (*models.User, error) {
+func (s *userService) ReadById(ctx context.Context, id string) (models.User, error) {
 	return s.repo.ReadById(ctx, id)
 }
 

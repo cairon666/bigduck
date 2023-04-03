@@ -9,7 +9,7 @@ import (
 
 //go:generate mockery --name UserService
 type UserService interface {
-	ReadById(ctx context.Context, id string) (*models.User, error)
+	ReadById(ctx context.Context, id string) (models.User, error)
 	UpdateById(ctx context.Context, id string, data map[string]any) error
 	DeleteById(ctx context.Context, id string) error
 }
@@ -24,14 +24,14 @@ func NewUserUsecase(userService UserService) *userUsecase {
 	}
 }
 
-func (u *userUsecase) ReadById(ctx context.Context, dto ReadByIdRequest) (*ReadByIdResponse, error) {
+func (u *userUsecase) ReadById(ctx context.Context, dto ReadByIdRequest) (ReadByIdResponse, error) {
 	if err := dto.IsValid(); err != nil {
-		return nil, err
+		return ReadByIdResponse{}, err
 	}
 
 	user, err := u.userService.ReadById(ctx, dto.IdUser)
 	if err != nil {
-		return nil, beda.Wrap("ReadById.Read", err)
+		return ReadByIdResponse{}, beda.Wrap("ReadById.Read", err)
 	}
 
 	var gender *string
@@ -40,7 +40,7 @@ func (u *userUsecase) ReadById(ctx context.Context, dto ReadByIdRequest) (*ReadB
 		gender = &tmp
 	}
 
-	return &ReadByIdResponse{
+	return ReadByIdResponse{
 		Id:          user.Id,
 		Email:       user.Email,
 		FirstName:   user.FirstName,

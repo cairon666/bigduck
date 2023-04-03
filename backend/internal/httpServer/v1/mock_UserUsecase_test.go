@@ -66,20 +66,18 @@ func (_c *MockUserUsecase_DeleteById_Call) RunAndReturn(run func(context.Context
 }
 
 // ReadById provides a mock function with given fields: ctx, dto
-func (_m *MockUserUsecase) ReadById(ctx context.Context, dto userUsecase.ReadByIdRequest) (*userUsecase.ReadByIdResponse, error) {
+func (_m *MockUserUsecase) ReadById(ctx context.Context, dto userUsecase.ReadByIdRequest) (userUsecase.ReadByIdResponse, error) {
 	ret := _m.Called(ctx, dto)
 
-	var r0 *userUsecase.ReadByIdResponse
+	var r0 userUsecase.ReadByIdResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, userUsecase.ReadByIdRequest) (*userUsecase.ReadByIdResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, userUsecase.ReadByIdRequest) (userUsecase.ReadByIdResponse, error)); ok {
 		return rf(ctx, dto)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, userUsecase.ReadByIdRequest) *userUsecase.ReadByIdResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, userUsecase.ReadByIdRequest) userUsecase.ReadByIdResponse); ok {
 		r0 = rf(ctx, dto)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*userUsecase.ReadByIdResponse)
-		}
+		r0 = ret.Get(0).(userUsecase.ReadByIdResponse)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, userUsecase.ReadByIdRequest) error); ok {
@@ -110,12 +108,12 @@ func (_c *MockUserUsecase_ReadById_Call) Run(run func(ctx context.Context, dto u
 	return _c
 }
 
-func (_c *MockUserUsecase_ReadById_Call) Return(_a0 *userUsecase.ReadByIdResponse, _a1 error) *MockUserUsecase_ReadById_Call {
+func (_c *MockUserUsecase_ReadById_Call) Return(_a0 userUsecase.ReadByIdResponse, _a1 error) *MockUserUsecase_ReadById_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockUserUsecase_ReadById_Call) RunAndReturn(run func(context.Context, userUsecase.ReadByIdRequest) (*userUsecase.ReadByIdResponse, error)) *MockUserUsecase_ReadById_Call {
+func (_c *MockUserUsecase_ReadById_Call) RunAndReturn(run func(context.Context, userUsecase.ReadByIdRequest) (userUsecase.ReadByIdResponse, error)) *MockUserUsecase_ReadById_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -15,7 +15,7 @@ func TestSelect(t *testing.T) {
 		AndWhere(Eql("second", "second_arg")).
 		ToSQL()
 
-	assert.Equal(t, sql, "SELECT (1, 2, 3) FROM test WHERE first = $1 AND second = $2")
+	assert.Equal(t, sql, "SELECT 1, 2, 3 FROM test WHERE first = $1 AND second = $2")
 }
 
 func TestInsert(t *testing.T) {

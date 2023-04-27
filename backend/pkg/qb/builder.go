@@ -36,7 +36,6 @@ func Select(cols ...string) Builder {
 	b := newBuilder()
 
 	b.buff.WriteString("SELECT ")
-	b.buff.WriteString("(")
 
 	for index, col := range cols {
 		if index != 0 {
@@ -45,8 +44,6 @@ func Select(cols ...string) Builder {
 
 		b.buff.WriteString(col)
 	}
-
-	b.buff.WriteString(")")
 
 	return b
 }

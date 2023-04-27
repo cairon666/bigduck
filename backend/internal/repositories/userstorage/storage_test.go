@@ -4,51 +4,77 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
-	"backend/internal/config"
 	"backend/internal/exceptions"
-	"backend/pkg/database/postgres"
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/pashagolub/pgxmock/v2"
 )
 
-func Bootstrap(t *testing.T) *UserStorage {
+func Bootstrap(t *testing.T) (context.Context, *UserStorage, pgxmock.PgxPoolIface) {
 	t.Helper()
 
-	conf, _ := config.NewConfig()
-
-	client, err := postgres.NewPostgresClient(conf.Postgres)
+	mock, err := pgxmock.NewPool()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	return NewUserStorage(client)
+	return context.Background(), NewUserStorage(mock), mock
 }
 
-func TestReadOne(t *testing.T) {
+func TestUserStorage_ReadOne(t *testing.T) {
 	t.Parallel()
-
-	ctx := context.Background()
-	storage := Bootstrap(t)
 
 	t.Run("should success", func(t *testing.T) {
 		t.Parallel()
+		ctx, storage, mock := Bootstrap(t)
+		defer mock.Close()
+
+		mock.ExpectQuery("SELECT").
+			WithArgs("").
+			WillReturnRows(pgxmock.NewRows([]string{
+				"id",
+				"email",
+				"email_is_confirm",
+				"password_hash",
+				"salt",
+				"first_name",
+				"second_name",
+				"avatar_url",
+				"day_of_birth",
+				"gender",
+				"create_at",
+				"modify_at",
+			}).
+				AddRow("", "", true, "", "", "", "", nil, nil, nil, time.Now(), time.Now()).
+				AddCommandTag(pgconn.NewCommandTag("SELECT 1")),
+			)
 
 		_, err := storage.ReadOne(ctx, map[string]any{
-			"id": "a4158df8-d36a-11ed-8cdc-2887ba94adbb",
+			"id": "",
 		})
 		if err != nil {
-			t.Fatal("should success read: " + err.Error())
+			t.Fatal(err)
 		}
 	})
 
-	t.Run("should error: not found", func(t *testing.T) {
+	t.Run("should except not found err", func(t *testing.T) {
 		t.Parallel()
+		ctx, storage, mock := Bootstrap(t)
+		defer mock.Close()
+
+		mock.ExpectQuery("SELECT").
+			WithArgs("").
+			WillReturnRows(
+				pgxmock.NewRows([]string{}).
+					AddCommandTag(pgconn.NewCommandTag("SELECT 0")),
+			)
 
 		_, err := storage.ReadOne(ctx, map[string]any{
-			"id": uuid.Must(uuid.NewUUID()),
+			"id": "",
 		})
 		if !errors.Is(err, exceptions.ErrNotFound) {
-			t.Fatal("should be exceptions.ErrNotFound: " + err.Error())
+			t.Fatal(err)
 		}
 	})
 }

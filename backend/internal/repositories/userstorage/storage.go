@@ -6,15 +6,15 @@ import (
 	"backend/internal/domain/models"
 	"backend/internal/exceptions"
 	"backend/pkg/beda"
+	"backend/pkg/database/postgres"
 	"backend/pkg/qb"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserStorage struct {
-	client *pgxpool.Pool
+	client postgres.PgxPool
 }
 
-func NewUserStorage(client *pgxpool.Pool) *UserStorage {
+func NewUserStorage(client postgres.PgxPool) *UserStorage {
 	return &UserStorage{
 		client: client,
 	}
@@ -26,7 +26,8 @@ func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (model
 		"email",
 		"email_is_confirm",
 		"password_hash",
-		"salt", "first_name",
+		"salt",
+		"first_name",
 		"second_name",
 		"avatar_url",
 		"day_of_birth",
@@ -57,7 +58,20 @@ func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (model
 	}
 
 	var userDB UserDB
-	if err := rows.Scan(&userDB); err != nil {
+	if err := rows.Scan(
+		&userDB.ID,
+		&userDB.Email,
+		&userDB.EmailIsConfirm,
+		&userDB.PasswordHash,
+		&userDB.Salt,
+		&userDB.FirstName,
+		&userDB.SecondName,
+		&userDB.AvatarURL,
+		&userDB.DateOfBirth,
+		&userDB.Gender,
+		&userDB.CreateAt,
+		&userDB.ModifyAt,
+	); err != nil {
 		return models.User{}, beda.Wrap("Scan", exceptions.ErrDatabase)
 	}
 

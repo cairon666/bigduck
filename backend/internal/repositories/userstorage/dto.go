@@ -34,7 +34,7 @@ func (userDB *UserDB) ToUser() (models.User, error) {
 		SecondName:     userDB.SecondName,
 		AvatarURL:      userDB.AvatarURL,
 		DateOfBirth:    userDB.DateOfBirth,
-		Gender:         nil,
+		Gender:         nil, // later
 		CreateAt:       userDB.CreateAt,
 		ModifyAt:       userDB.ModifyAt,
 	}

@@ -2,12 +2,14 @@ package userstorage
 
 import (
 	"context"
+	"errors"
 
 	"backend/internal/domain/models"
 	"backend/internal/exceptions"
 	"backend/pkg/beda"
 	"backend/pkg/database/postgres"
 	"backend/pkg/qb"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type UserStorage struct {
@@ -116,7 +118,14 @@ func (s *UserStorage) Create(ctx context.Context, user models.User) error {
 
 	_, err := s.client.Exec(ctx, query, args...)
 	if err != nil {
-		return beda.Wrap("Exec", exceptions.ErrDatabase)
+		if pgErr := new(pgconn.PgError); errors.As(err, &pgErr) {
+			switch pgErr.ConstraintName {
+			case "credential_email_uniq":
+				return beda.Wrap("Exec", exceptions.ErrEmailAlreadyExist)
+			default:
+				return beda.Wrap("Exec", exceptions.ErrDatabase)
+			}
+		}
 	}
 
 	return nil

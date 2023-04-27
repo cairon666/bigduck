@@ -1,4 +1,4 @@
-package userUsecase
+package userusecase
 
 import (
 	"time"
@@ -6,16 +6,16 @@ import (
 
 // --------------------- READ -----------------
 
-type ReadByIdRequest struct {
-	IdUser string
+type ReadByIDRequest struct {
+	IDUser string
 }
 
-func (dto *ReadByIdRequest) IsValid() error {
+func (dto *ReadByIDRequest) IsValid() error {
 	return nil
 }
 
-type ReadByIdResponse struct {
-	Id          string
+type ReadByIDResponse struct {
+	ID          string
 	Email       string
 	FirstName   string
 	SecondName  string
@@ -28,8 +28,8 @@ type ReadByIdResponse struct {
 
 // --------------------- UPDATE -----------------
 
-type UpdateByIdRequest struct {
-	IdUser      string
+type UpdateByIDRequest struct {
+	IDUser      string
 	FirstName   string
 	SecondName  string
 	Gender      *string
@@ -37,16 +37,16 @@ type UpdateByIdRequest struct {
 	AvatarURL   *string
 }
 
-func (dto *UpdateByIdRequest) IsValid() error {
+func (dto *UpdateByIDRequest) IsValid() error {
 	return nil
 }
 
 // --------------------- DELETE -----------------
 
-type DeleteByIdRequest struct {
-	IdUser string
+type DeleteByIDRequest struct {
+	IDUser string
 }
 
-func (dto *DeleteByIdRequest) IsValid() error {
+func (dto *DeleteByIDRequest) IsValid() error {
 	return nil
 }

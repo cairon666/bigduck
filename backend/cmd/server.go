@@ -2,14 +2,13 @@ package cmd
 
 import (
 	"backend/internal/config"
-	"backend/internal/domain/services/userService"
-	"backend/internal/domain/usecases/authUsecase"
-	"backend/internal/domain/usecases/userUsecase"
+	"backend/internal/domain/services/userservice"
+	"backend/internal/domain/usecases/authusecase"
+	"backend/internal/domain/usecases/userusecase"
 	httpServer "backend/internal/httpServer/v1"
-	"backend/internal/repositories/userStorage"
+	"backend/internal/repositories/userstorage"
 	"backend/pkg/database/postgres"
 	"backend/pkg/logger"
-	"fmt"
 	"github.com/spf13/cobra"
 	"go.uber.org/dig"
 )
@@ -17,79 +16,67 @@ import (
 var serverCmd = cobra.Command{
 	Use: "server",
 	Run: func(cmd *cobra.Command, args []string) {
-		boostrap()
+		var err error
+		c := dig.New()
+
+		err = c.Provide(config.NewConfig)
+		if err != nil {
+			panic(err)
+		}
+
+		err = c.Provide(logger.NewDev)
+		if err != nil {
+			panic(err)
+		}
+
+		// db
+		err = c.Provide(func(log logger.Logger, conf *config.Config) (postgres.PgxPool, error) {
+			return postgres.NewPostgresClient(conf.Postgres, postgres.WithLogger(log))
+		})
+		if err != nil {
+			panic(err)
+		}
+
+		err = c.Provide(userstorage.NewUserStorage, dig.As(new(userservice.Repository)))
+		if err != nil {
+			panic(err)
+		}
+
+		// services
+		err = c.Provide(userservice.NewUserService, dig.As(new(userusecase.UserService), new(authusecase.UserService)))
+		if err != nil {
+			panic(err)
+		}
+
+		// usecases
+		err = c.Provide(userusecase.NewUserUsecase, dig.As(new(httpServer.UserUsecase)))
+		if err != nil {
+			panic(err)
+		}
+
+		err = c.Provide(authusecase.NewAuthUsecase, dig.As(new(httpServer.AuthUsecase)))
+		if err != nil {
+			panic(err)
+		}
+
+		// server
+		err = c.Provide(httpServer.NewServer, dig.As(new(Server)))
+		if err != nil {
+			panic(err)
+		}
+
+		err = c.Invoke(func(server Server, log logger.Logger) error {
+			log.Info("Start app!")
+			return server.Run()
+		})
+		if err != nil {
+			panic(err)
+		}
 	},
 }
 
 type Server interface {
 	Run() error
-}
-
-func boostrap() {
-	var err error
-	c := dig.New()
-
-	fmt.Println("parse config")
-	err = c.Provide(config.NewConfig)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("create logger")
-	err = c.Provide(logger.NewDev)
-	if err != nil {
-		panic(err)
-	}
-
-	// db
-	fmt.Println("connect to postgres")
-	err = c.Provide(func(log logger.Logger, conf *config.Config) (postgres.Client, error) {
-		return postgres.NewPostgresClient(log, conf.POSTGRESQL_URL)
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("create user storage")
-	err = c.Provide(userStorage.NewUserStorage, dig.As(new(userService.Repository)))
-	if err != nil {
-		panic(err)
-	}
-
-	// services
-	fmt.Println("create user service")
-	err = c.Provide(userService.NewUserService, dig.As(new(userUsecase.UserService), new(authUsecase.UserService)))
-	if err != nil {
-		panic(err)
-	}
-
-	// usecases
-	fmt.Println("create user usecase")
-	err = c.Provide(userUsecase.NewUserUsecase, dig.As(new(httpServer.UserUsecase)))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("create auth usecase")
-	err = c.Provide(authUsecase.NewAuthUsecase, dig.As(new(httpServer.AuthUsecase)))
-	if err != nil {
-		panic(err)
-	}
-
-	// server
-	fmt.Println("create server")
-	err = c.Provide(httpServer.NewServer, dig.As(new(Server)))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("start server")
-	err = c.Invoke(func(server Server) error {
-		return server.Run()
-	})
-	if err != nil {
-		panic(err)
-	}
 }
 
 func init() {

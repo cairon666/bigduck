@@ -1,25 +1,26 @@
-package authHelper
+package authhelper
 
 import (
+	"time"
+
 	"backend/pkg/beda"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"time"
 )
 
 type Claims struct {
-	IdUser string `json:"id_user"`
+	IDUser string `json:"id_user"`
 	jwt.RegisteredClaims
 }
 
-func (h *helper) newAccessClaims(IdUser string) (Claims, error) {
+func (h *helper) newAccessClaims(id string) (Claims, error) {
 	genID, err := uuid.NewUUID()
 	if err != nil {
 		return Claims{}, beda.Wrap("NewUUID", err)
 	}
 
 	return Claims{
-		IdUser: IdUser,
+		IDUser: id,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "",
 			Subject:   accessNameToken,
@@ -31,14 +32,14 @@ func (h *helper) newAccessClaims(IdUser string) (Claims, error) {
 	}, nil
 }
 
-func (h *helper) newRefreshClaims(IdUser string) (Claims, error) {
+func (h *helper) newRefreshClaims(id string) (Claims, error) {
 	genID, err := uuid.NewUUID()
 	if err != nil {
 		return Claims{}, beda.Wrap("NewUUID", err)
 	}
 
 	return Claims{
-		IdUser: IdUser,
+		IDUser: id,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "",
 			Subject:   refreshNameToken,

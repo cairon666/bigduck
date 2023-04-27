@@ -1,15 +1,16 @@
 package v1
 
 import (
-	"backend/internal/domain/usecases/userUsecase"
-	"backend/pkg/beda"
 	"encoding/json"
-	"github.com/go-chi/chi/v5"
 	"net/http"
 	"time"
+
+	"backend/internal/domain/usecases/userusecase"
+	"backend/pkg/beda"
+	"github.com/go-chi/chi/v5"
 )
 
-type updateUserByIdRequest struct {
+type updateUserByIDRequest struct {
 	FirstName   string     `json:"first_name"`
 	SecondName  string     `json:"second_name"`
 	Gender      *string    `json:"gender"`
@@ -17,22 +18,24 @@ type updateUserByIdRequest struct {
 	AvatarURL   *string    `json:"avatar_url"`
 }
 
-func (s *server) updateUserById(rw http.ResponseWriter, r *http.Request) {
-	IdUser := chi.URLParam(r, "IdUser")
+func (s *Server) updateUserByID(rw http.ResponseWriter, r *http.Request) {
+	IDUser := chi.URLParam(r, "IDUser")
 
-	var reqDTO updateUserByIdRequest
+	var reqDTO updateUserByIDRequest
 	if err := json.NewDecoder(r.Body).Decode(&reqDTO); err != nil {
 		s.handleError(rw, beda.Wrap("Decode", err))
+
 		return
 	}
 
-	if err := shouldEqualIdUserOrAdmin(r, IdUser); err != nil {
-		s.handleError(rw, beda.Wrap("shouldEqualIdUserOrAdmin", err))
+	if err := shouldEqualIDUserOrAdmin(r, IDUser); err != nil {
+		s.handleError(rw, beda.Wrap("shouldEqualIDUserOrAdmin", err))
+
 		return
 	}
 
-	err := s.userUsecase.UpdateById(r.Context(), userUsecase.UpdateByIdRequest{
-		IdUser:      IdUser,
+	err := s.userUsecase.UpdateByID(r.Context(), userusecase.UpdateByIDRequest{
+		IDUser:      IDUser,
 		FirstName:   reqDTO.FirstName,
 		SecondName:  reqDTO.SecondName,
 		Gender:      reqDTO.Gender,
@@ -40,7 +43,8 @@ func (s *server) updateUserById(rw http.ResponseWriter, r *http.Request) {
 		AvatarURL:   reqDTO.AvatarURL,
 	})
 	if err != nil {
-		s.handleError(rw, beda.Wrap("UpdateById", err))
+		s.handleError(rw, beda.Wrap("UpdateByID", err))
+
 		return
 	}
 

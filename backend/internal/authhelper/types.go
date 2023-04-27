@@ -1,4 +1,4 @@
-package authHelper
+package authhelper
 
 var AuthClaimKey AuthClaimKeyType = 1
 

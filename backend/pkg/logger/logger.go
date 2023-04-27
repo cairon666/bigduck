@@ -35,6 +35,7 @@ func NewDev() (Logger, error) {
 	}
 	core := zapcore.NewCore(zapcore.NewConsoleEncoder(cfgFile), zapcore.Lock(os.Stdout), zapcore.DebugLevel)
 	log := zap.New(core)
+
 	return &logger{
 		log: log,
 	}, nil

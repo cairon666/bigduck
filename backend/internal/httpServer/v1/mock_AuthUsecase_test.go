@@ -3,9 +3,9 @@
 package v1
 
 import (
-	authUsecase "backend/internal/domain/usecases/authUsecase"
 	context "context"
 
+	authusecase "backend/internal/domain/usecases/authusecase"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -23,21 +23,21 @@ func (_m *MockAuthUsecase) EXPECT() *MockAuthUsecase_Expecter {
 }
 
 // Login provides a mock function with given fields: ctx, dto
-func (_m *MockAuthUsecase) Login(ctx context.Context, dto authUsecase.LoginRequest) (authUsecase.LoginResponse, error) {
+func (_m *MockAuthUsecase) Login(ctx context.Context, dto authusecase.LoginRequest) (authusecase.LoginResponse, error) {
 	ret := _m.Called(ctx, dto)
 
-	var r0 authUsecase.LoginResponse
+	var r0 authusecase.LoginResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, authUsecase.LoginRequest) (authUsecase.LoginResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, authusecase.LoginRequest) (authusecase.LoginResponse, error)); ok {
 		return rf(ctx, dto)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, authUsecase.LoginRequest) authUsecase.LoginResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, authusecase.LoginRequest) authusecase.LoginResponse); ok {
 		r0 = rf(ctx, dto)
 	} else {
-		r0 = ret.Get(0).(authUsecase.LoginResponse)
+		r0 = ret.Get(0).(authusecase.LoginResponse)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, authUsecase.LoginRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, authusecase.LoginRequest) error); ok {
 		r1 = rf(ctx, dto)
 	} else {
 		r1 = ret.Error(1)
@@ -53,34 +53,34 @@ type MockAuthUsecase_Login_Call struct {
 
 // Login is a helper method to define mock.On call
 //   - ctx context.Context
-//   - dto authUsecase.LoginRequest
+//   - dto authusecase.LoginRequest
 func (_e *MockAuthUsecase_Expecter) Login(ctx interface{}, dto interface{}) *MockAuthUsecase_Login_Call {
 	return &MockAuthUsecase_Login_Call{Call: _e.mock.On("Login", ctx, dto)}
 }
 
-func (_c *MockAuthUsecase_Login_Call) Run(run func(ctx context.Context, dto authUsecase.LoginRequest)) *MockAuthUsecase_Login_Call {
+func (_c *MockAuthUsecase_Login_Call) Run(run func(ctx context.Context, dto authusecase.LoginRequest)) *MockAuthUsecase_Login_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(authUsecase.LoginRequest))
+		run(args[0].(context.Context), args[1].(authusecase.LoginRequest))
 	})
 	return _c
 }
 
-func (_c *MockAuthUsecase_Login_Call) Return(_a0 authUsecase.LoginResponse, _a1 error) *MockAuthUsecase_Login_Call {
+func (_c *MockAuthUsecase_Login_Call) Return(_a0 authusecase.LoginResponse, _a1 error) *MockAuthUsecase_Login_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockAuthUsecase_Login_Call) RunAndReturn(run func(context.Context, authUsecase.LoginRequest) (authUsecase.LoginResponse, error)) *MockAuthUsecase_Login_Call {
+func (_c *MockAuthUsecase_Login_Call) RunAndReturn(run func(context.Context, authusecase.LoginRequest) (authusecase.LoginResponse, error)) *MockAuthUsecase_Login_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Register provides a mock function with given fields: ctx, dto
-func (_m *MockAuthUsecase) Register(ctx context.Context, dto authUsecase.RegisterRequest) error {
+func (_m *MockAuthUsecase) Register(ctx context.Context, dto authusecase.RegisterRequest) error {
 	ret := _m.Called(ctx, dto)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, authUsecase.RegisterRequest) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, authusecase.RegisterRequest) error); ok {
 		r0 = rf(ctx, dto)
 	} else {
 		r0 = ret.Error(0)
@@ -96,14 +96,14 @@ type MockAuthUsecase_Register_Call struct {
 
 // Register is a helper method to define mock.On call
 //   - ctx context.Context
-//   - dto authUsecase.RegisterRequest
+//   - dto authusecase.RegisterRequest
 func (_e *MockAuthUsecase_Expecter) Register(ctx interface{}, dto interface{}) *MockAuthUsecase_Register_Call {
 	return &MockAuthUsecase_Register_Call{Call: _e.mock.On("Register", ctx, dto)}
 }
 
-func (_c *MockAuthUsecase_Register_Call) Run(run func(ctx context.Context, dto authUsecase.RegisterRequest)) *MockAuthUsecase_Register_Call {
+func (_c *MockAuthUsecase_Register_Call) Run(run func(ctx context.Context, dto authusecase.RegisterRequest)) *MockAuthUsecase_Register_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(authUsecase.RegisterRequest))
+		run(args[0].(context.Context), args[1].(authusecase.RegisterRequest))
 	})
 	return _c
 }
@@ -113,7 +113,7 @@ func (_c *MockAuthUsecase_Register_Call) Return(_a0 error) *MockAuthUsecase_Regi
 	return _c
 }
 
-func (_c *MockAuthUsecase_Register_Call) RunAndReturn(run func(context.Context, authUsecase.RegisterRequest) error) *MockAuthUsecase_Register_Call {
+func (_c *MockAuthUsecase_Register_Call) RunAndReturn(run func(context.Context, authusecase.RegisterRequest) error) *MockAuthUsecase_Register_Call {
 	_c.Call.Return(run)
 	return _c
 }

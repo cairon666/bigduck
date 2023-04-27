@@ -1,4 +1,4 @@
-package authHelper
+package authhelper
 
 import (
 	"net/http"
@@ -15,12 +15,12 @@ type helper struct {
 type HelperProps struct {
 	Issuer     string
 	Private    []byte
-	TtlAccess  time.Duration
-	TtlRefresh time.Duration
+	TTLAccess  time.Duration
+	TTLRefresh time.Duration
 }
 
 type Helper interface {
-	NewTokens(IdUser string) (access string, refresh string, err error)
+	NewTokens(ID string) (access string, refresh string, err error)
 	UpdateTokens(refresh string) (newAccess string, newRefresh string, err error)
 	ParseToken(tokenString string) (*Claims, error)
 	SetRefreshCookie(rw http.ResponseWriter, refresh string) error
@@ -32,7 +32,7 @@ func NewHelper(props HelperProps) Helper {
 	return &helper{
 		issuer:     props.Issuer,
 		private:    props.Private,
-		ttlAccess:  props.TtlAccess,
-		ttlRefresh: props.TtlRefresh,
+		ttlAccess:  props.TTLAccess,
+		ttlRefresh: props.TTLRefresh,
 	}
 }

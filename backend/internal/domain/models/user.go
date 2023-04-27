@@ -5,7 +5,7 @@ import (
 )
 
 type User struct {
-	Id             string
+	ID             string
 	Email          string
 	EmailIsConfirm bool
 	PasswordHash   string

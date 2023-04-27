@@ -3,9 +3,9 @@
 package v1
 
 import (
-	userUsecase "backend/internal/domain/usecases/userUsecase"
 	context "context"
 
+	userusecase "backend/internal/domain/usecases/userusecase"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -22,12 +22,12 @@ func (_m *MockUserUsecase) EXPECT() *MockUserUsecase_Expecter {
 	return &MockUserUsecase_Expecter{mock: &_m.Mock}
 }
 
-// DeleteById provides a mock function with given fields: ctx, dto
-func (_m *MockUserUsecase) DeleteById(ctx context.Context, dto userUsecase.DeleteByIdRequest) error {
+// DeleteByID provides a mock function with given fields: ctx, dto
+func (_m *MockUserUsecase) DeleteByID(ctx context.Context, dto userusecase.DeleteByIDRequest) error {
 	ret := _m.Called(ctx, dto)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, userUsecase.DeleteByIdRequest) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, userusecase.DeleteByIDRequest) error); ok {
 		r0 = rf(ctx, dto)
 	} else {
 		r0 = ret.Error(0)
@@ -36,51 +36,51 @@ func (_m *MockUserUsecase) DeleteById(ctx context.Context, dto userUsecase.Delet
 	return r0
 }
 
-// MockUserUsecase_DeleteById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteById'
-type MockUserUsecase_DeleteById_Call struct {
+// MockUserUsecase_DeleteByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByID'
+type MockUserUsecase_DeleteByID_Call struct {
 	*mock.Call
 }
 
-// DeleteById is a helper method to define mock.On call
+// DeleteByID is a helper method to define mock.On call
 //   - ctx context.Context
-//   - dto userUsecase.DeleteByIdRequest
-func (_e *MockUserUsecase_Expecter) DeleteById(ctx interface{}, dto interface{}) *MockUserUsecase_DeleteById_Call {
-	return &MockUserUsecase_DeleteById_Call{Call: _e.mock.On("DeleteById", ctx, dto)}
+//   - dto userusecase.DeleteByIDRequest
+func (_e *MockUserUsecase_Expecter) DeleteByID(ctx interface{}, dto interface{}) *MockUserUsecase_DeleteByID_Call {
+	return &MockUserUsecase_DeleteByID_Call{Call: _e.mock.On("DeleteByID", ctx, dto)}
 }
 
-func (_c *MockUserUsecase_DeleteById_Call) Run(run func(ctx context.Context, dto userUsecase.DeleteByIdRequest)) *MockUserUsecase_DeleteById_Call {
+func (_c *MockUserUsecase_DeleteByID_Call) Run(run func(ctx context.Context, dto userusecase.DeleteByIDRequest)) *MockUserUsecase_DeleteByID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(userUsecase.DeleteByIdRequest))
+		run(args[0].(context.Context), args[1].(userusecase.DeleteByIDRequest))
 	})
 	return _c
 }
 
-func (_c *MockUserUsecase_DeleteById_Call) Return(_a0 error) *MockUserUsecase_DeleteById_Call {
+func (_c *MockUserUsecase_DeleteByID_Call) Return(_a0 error) *MockUserUsecase_DeleteByID_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockUserUsecase_DeleteById_Call) RunAndReturn(run func(context.Context, userUsecase.DeleteByIdRequest) error) *MockUserUsecase_DeleteById_Call {
+func (_c *MockUserUsecase_DeleteByID_Call) RunAndReturn(run func(context.Context, userusecase.DeleteByIDRequest) error) *MockUserUsecase_DeleteByID_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// ReadById provides a mock function with given fields: ctx, dto
-func (_m *MockUserUsecase) ReadById(ctx context.Context, dto userUsecase.ReadByIdRequest) (userUsecase.ReadByIdResponse, error) {
+// ReadByID provides a mock function with given fields: ctx, dto
+func (_m *MockUserUsecase) ReadByID(ctx context.Context, dto userusecase.ReadByIDRequest) (userusecase.ReadByIDResponse, error) {
 	ret := _m.Called(ctx, dto)
 
-	var r0 userUsecase.ReadByIdResponse
+	var r0 userusecase.ReadByIDResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, userUsecase.ReadByIdRequest) (userUsecase.ReadByIdResponse, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, userusecase.ReadByIDRequest) (userusecase.ReadByIDResponse, error)); ok {
 		return rf(ctx, dto)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, userUsecase.ReadByIdRequest) userUsecase.ReadByIdResponse); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, userusecase.ReadByIDRequest) userusecase.ReadByIDResponse); ok {
 		r0 = rf(ctx, dto)
 	} else {
-		r0 = ret.Get(0).(userUsecase.ReadByIdResponse)
+		r0 = ret.Get(0).(userusecase.ReadByIDResponse)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, userUsecase.ReadByIdRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, userusecase.ReadByIDRequest) error); ok {
 		r1 = rf(ctx, dto)
 	} else {
 		r1 = ret.Error(1)
@@ -89,41 +89,41 @@ func (_m *MockUserUsecase) ReadById(ctx context.Context, dto userUsecase.ReadByI
 	return r0, r1
 }
 
-// MockUserUsecase_ReadById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadById'
-type MockUserUsecase_ReadById_Call struct {
+// MockUserUsecase_ReadByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadByID'
+type MockUserUsecase_ReadByID_Call struct {
 	*mock.Call
 }
 
-// ReadById is a helper method to define mock.On call
+// ReadByID is a helper method to define mock.On call
 //   - ctx context.Context
-//   - dto userUsecase.ReadByIdRequest
-func (_e *MockUserUsecase_Expecter) ReadById(ctx interface{}, dto interface{}) *MockUserUsecase_ReadById_Call {
-	return &MockUserUsecase_ReadById_Call{Call: _e.mock.On("ReadById", ctx, dto)}
+//   - dto userusecase.ReadByIDRequest
+func (_e *MockUserUsecase_Expecter) ReadByID(ctx interface{}, dto interface{}) *MockUserUsecase_ReadByID_Call {
+	return &MockUserUsecase_ReadByID_Call{Call: _e.mock.On("ReadByID", ctx, dto)}
 }
 
-func (_c *MockUserUsecase_ReadById_Call) Run(run func(ctx context.Context, dto userUsecase.ReadByIdRequest)) *MockUserUsecase_ReadById_Call {
+func (_c *MockUserUsecase_ReadByID_Call) Run(run func(ctx context.Context, dto userusecase.ReadByIDRequest)) *MockUserUsecase_ReadByID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(userUsecase.ReadByIdRequest))
+		run(args[0].(context.Context), args[1].(userusecase.ReadByIDRequest))
 	})
 	return _c
 }
 
-func (_c *MockUserUsecase_ReadById_Call) Return(_a0 userUsecase.ReadByIdResponse, _a1 error) *MockUserUsecase_ReadById_Call {
+func (_c *MockUserUsecase_ReadByID_Call) Return(_a0 userusecase.ReadByIDResponse, _a1 error) *MockUserUsecase_ReadByID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockUserUsecase_ReadById_Call) RunAndReturn(run func(context.Context, userUsecase.ReadByIdRequest) (userUsecase.ReadByIdResponse, error)) *MockUserUsecase_ReadById_Call {
+func (_c *MockUserUsecase_ReadByID_Call) RunAndReturn(run func(context.Context, userusecase.ReadByIDRequest) (userusecase.ReadByIDResponse, error)) *MockUserUsecase_ReadByID_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// UpdateById provides a mock function with given fields: ctx, dto
-func (_m *MockUserUsecase) UpdateById(ctx context.Context, dto userUsecase.UpdateByIdRequest) error {
+// UpdateByID provides a mock function with given fields: ctx, dto
+func (_m *MockUserUsecase) UpdateByID(ctx context.Context, dto userusecase.UpdateByIDRequest) error {
 	ret := _m.Called(ctx, dto)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, userUsecase.UpdateByIdRequest) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, userusecase.UpdateByIDRequest) error); ok {
 		r0 = rf(ctx, dto)
 	} else {
 		r0 = ret.Error(0)
@@ -132,31 +132,31 @@ func (_m *MockUserUsecase) UpdateById(ctx context.Context, dto userUsecase.Updat
 	return r0
 }
 
-// MockUserUsecase_UpdateById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateById'
-type MockUserUsecase_UpdateById_Call struct {
+// MockUserUsecase_UpdateByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateByID'
+type MockUserUsecase_UpdateByID_Call struct {
 	*mock.Call
 }
 
-// UpdateById is a helper method to define mock.On call
+// UpdateByID is a helper method to define mock.On call
 //   - ctx context.Context
-//   - dto userUsecase.UpdateByIdRequest
-func (_e *MockUserUsecase_Expecter) UpdateById(ctx interface{}, dto interface{}) *MockUserUsecase_UpdateById_Call {
-	return &MockUserUsecase_UpdateById_Call{Call: _e.mock.On("UpdateById", ctx, dto)}
+//   - dto userusecase.UpdateByIDRequest
+func (_e *MockUserUsecase_Expecter) UpdateByID(ctx interface{}, dto interface{}) *MockUserUsecase_UpdateByID_Call {
+	return &MockUserUsecase_UpdateByID_Call{Call: _e.mock.On("UpdateByID", ctx, dto)}
 }
 
-func (_c *MockUserUsecase_UpdateById_Call) Run(run func(ctx context.Context, dto userUsecase.UpdateByIdRequest)) *MockUserUsecase_UpdateById_Call {
+func (_c *MockUserUsecase_UpdateByID_Call) Run(run func(ctx context.Context, dto userusecase.UpdateByIDRequest)) *MockUserUsecase_UpdateByID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(userUsecase.UpdateByIdRequest))
+		run(args[0].(context.Context), args[1].(userusecase.UpdateByIDRequest))
 	})
 	return _c
 }
 
-func (_c *MockUserUsecase_UpdateById_Call) Return(_a0 error) *MockUserUsecase_UpdateById_Call {
+func (_c *MockUserUsecase_UpdateByID_Call) Return(_a0 error) *MockUserUsecase_UpdateByID_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockUserUsecase_UpdateById_Call) RunAndReturn(run func(context.Context, userUsecase.UpdateByIdRequest) error) *MockUserUsecase_UpdateById_Call {
+func (_c *MockUserUsecase_UpdateByID_Call) RunAndReturn(run func(context.Context, userusecase.UpdateByIDRequest) error) *MockUserUsecase_UpdateByID_Call {
 	_c.Call.Return(run)
 	return _c
 }

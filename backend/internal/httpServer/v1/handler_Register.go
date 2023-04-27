@@ -1,11 +1,12 @@
 package v1
 
 import (
-	"backend/internal/domain/usecases/authUsecase"
-	"backend/pkg/beda"
 	"encoding/json"
 	"net/http"
 	"time"
+
+	"backend/internal/domain/usecases/authusecase"
+	"backend/pkg/beda"
 )
 
 type registerRequest struct {
@@ -21,14 +22,15 @@ type registerRequest struct {
 type registerResponse struct {
 }
 
-func (s *server) registerHandler(rw http.ResponseWriter, req *http.Request) {
+func (s *Server) registerHandler(rw http.ResponseWriter, req *http.Request) {
 	var reqDTO registerRequest
 	if err := json.NewDecoder(req.Body).Decode(&reqDTO); err != nil {
 		s.handleError(rw, beda.Wrap("Decode", err))
+
 		return
 	}
 
-	dto := authUsecase.RegisterRequest{
+	dto := authusecase.RegisterRequest{
 		Email:       reqDTO.Email,
 		Password:    reqDTO.Password,
 		FirstName:   reqDTO.FirstName,

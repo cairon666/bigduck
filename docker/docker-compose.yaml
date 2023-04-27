@@ -5,21 +5,31 @@ services:
 #    image: nginx:stable
 #    restart: always
 #    ports:
-#      - 8080:80
+#      - 3000:80
 #    networks:
 #      - network
 #    volumes:
 #      - ./nginx.conf:/etc/nginx/nginx.conf
-#  database_redis:
-#    image: redis:7-alpine
-#    restart: always
-#    ports:
-#      - '6379:6379'
-#    volumes:
-#      - redis_data:/data
-#      - ../database/redis/redis.conf:/etc/redis/redis.conf
-#    command: [ "redis-server", "/etc/redis/redis.conf"  ]
+  #  database_redis:
+  #    image: redis:7-alpine
+  #    restart: always
+  #    ports:
+  #      - '6379:6379'
+  #    volumes:
+  #      - redis_data:/data
+  #      - ../database/redis/redis.conf:/etc/redis/redis.conf
+  #    command: [ "redis-server", "/etc/redis/redis.conf"  ]
+  #  grafana:
+  #    container_name: grafana
+  #    image: grafana/grafana-enterprise
+  #    ports:
+  #      - 3000:3000
+  #    environment:
+  #      GF_SECURITY_ADMIN_USER: admin
+  #      GF_SECURITY_ADMIN_PASSWORD: admin
+  #      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
   postgres:
+    container_name: postgres
     image: postgres:15-alpine
     restart: always
     environment:
@@ -27,14 +37,15 @@ services:
       POSTGRES_USER: admin
       POSTGRES_DB: root
       PGDATA: /var/lib/postgresql/data
-    networks:
-      - network
     ports:
       - 5432:5432
+    networks:
+      - network
     volumes:
       - postgres_data:/var/lib/postgresql/data
-#      - ../database/postgres/dump.sql:/docker-entrypoint-initdb.d/dummy_dump.sql
+      #      - ../database/postgres/dump.sql:/docker-entrypoint-initdb.d/dummy_dump.sql
       - ../database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../database/postgres/z_for_testing.sql:/docker-entrypoint-initdb.d/z_for_testing.sql
   #  database_pgadmin:
   #    image: dpage/pgadmin4
   #    environment:
@@ -50,6 +61,7 @@ services:
   #      driver: none
   #    restart: unless-stopped
 #  backend:
+#    container_name: backend
 #    build:
 #      context: ../backend
 #      dockerfile: Dockerfile
@@ -57,12 +69,13 @@ services:
 #    networks:
 #      - network
 #    depends_on:
-##      - database_redis
+#      #      - database_redis
 #      - postgres
 #    environment:
+#      - APP_PORT=8080
 #      - POSTGRESQL_URL=postgresql://admin:admin@postgres:5432/root
 #    volumes:
-#      - ../backend:/usr/src/app
+#      - ../backend:/app
 #  swagger-ui:
 #    image: swaggerapi/swagger-ui
 #    ports:
@@ -81,6 +94,7 @@ services:
 #      - frontend_node_modules:/app/node_modules
 #    networks:
 #      network:
+
 
 volumes:
   postgres_data:

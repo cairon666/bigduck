@@ -3,9 +3,9 @@
 package v1
 
 import (
-	userusecase "backend/internal/domain/usecases/userusecase"
 	context "context"
 
+	userusecase "backend/internal/domain/usecases/userusecase"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -36,7 +36,7 @@ func (_m *MockUserUsecase) DeleteById(ctx context.Context, dto userusecase.Delet
 	return r0
 }
 
-// MockUserUsecase_DeleteById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteById'
+// MockUserUsecase_DeleteById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByID'
 type MockUserUsecase_DeleteById_Call struct {
 	*mock.Call
 }
@@ -45,7 +45,7 @@ type MockUserUsecase_DeleteById_Call struct {
 //   - ctx context.Context
 //   - dto userusecase.DeleteByIDRequest
 func (_e *MockUserUsecase_Expecter) DeleteById(ctx interface{}, dto interface{}) *MockUserUsecase_DeleteById_Call {
-	return &MockUserUsecase_DeleteById_Call{Call: _e.mock.On("DeleteById", ctx, dto)}
+	return &MockUserUsecase_DeleteById_Call{Call: _e.mock.On("DeleteByID", ctx, dto)}
 }
 
 func (_c *MockUserUsecase_DeleteById_Call) Run(run func(ctx context.Context, dto userusecase.DeleteByIDRequest)) *MockUserUsecase_DeleteById_Call {
@@ -89,7 +89,7 @@ func (_m *MockUserUsecase) ReadById(ctx context.Context, dto userusecase.ReadByI
 	return r0, r1
 }
 
-// MockUserUsecase_ReadById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadById'
+// MockUserUsecase_ReadById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadByID'
 type MockUserUsecase_ReadById_Call struct {
 	*mock.Call
 }
@@ -98,7 +98,7 @@ type MockUserUsecase_ReadById_Call struct {
 //   - ctx context.Context
 //   - dto userusecase.ReadByIDRequest
 func (_e *MockUserUsecase_Expecter) ReadById(ctx interface{}, dto interface{}) *MockUserUsecase_ReadById_Call {
-	return &MockUserUsecase_ReadById_Call{Call: _e.mock.On("ReadById", ctx, dto)}
+	return &MockUserUsecase_ReadById_Call{Call: _e.mock.On("ReadByID", ctx, dto)}
 }
 
 func (_c *MockUserUsecase_ReadById_Call) Run(run func(ctx context.Context, dto userusecase.ReadByIDRequest)) *MockUserUsecase_ReadById_Call {
@@ -132,7 +132,7 @@ func (_m *MockUserUsecase) UpdateById(ctx context.Context, dto userusecase.Updat
 	return r0
 }
 
-// MockUserUsecase_UpdateById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateById'
+// MockUserUsecase_UpdateById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateByID'
 type MockUserUsecase_UpdateById_Call struct {
 	*mock.Call
 }
@@ -141,7 +141,7 @@ type MockUserUsecase_UpdateById_Call struct {
 //   - ctx context.Context
 //   - dto userusecase.UpdateByIDRequest
 func (_e *MockUserUsecase_Expecter) UpdateById(ctx interface{}, dto interface{}) *MockUserUsecase_UpdateById_Call {
-	return &MockUserUsecase_UpdateById_Call{Call: _e.mock.On("UpdateById", ctx, dto)}
+	return &MockUserUsecase_UpdateById_Call{Call: _e.mock.On("UpdateByID", ctx, dto)}
 }
 
 func (_c *MockUserUsecase_UpdateById_Call) Run(run func(ctx context.Context, dto userusecase.UpdateByIDRequest)) *MockUserUsecase_UpdateById_Call {

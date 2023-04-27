@@ -1,6 +1,12 @@
 package userstorage
 
-import "time"
+import (
+	"time"
+
+	"backend/internal/domain/models"
+	"backend/internal/exceptions"
+	"backend/pkg/beda"
+)
 
 type UserDB struct {
 	ID             string
@@ -15,4 +21,32 @@ type UserDB struct {
 	Gender         *string
 	CreateAt       time.Time
 	ModifyAt       time.Time
+}
+
+func (userDB *UserDB) ToUser() (models.User, error) {
+	user := models.User{
+		ID:             userDB.ID,
+		Email:          userDB.Email,
+		EmailIsConfirm: userDB.EmailIsConfirm,
+		PasswordHash:   userDB.PasswordHash,
+		Salt:           userDB.Salt,
+		FirstName:      userDB.FirstName,
+		SecondName:     userDB.SecondName,
+		AvatarURL:      userDB.AvatarURL,
+		DateOfBirth:    userDB.DateOfBirth,
+		Gender:         nil,
+		CreateAt:       userDB.CreateAt,
+		ModifyAt:       userDB.ModifyAt,
+	}
+
+	if userDB.Gender != nil {
+		tmp, err := models.ParseGender(*userDB.Gender)
+		if err != nil {
+			return models.User{}, beda.Wrap("ParseGender", exceptions.ErrDatabase)
+		}
+
+		user.Gender = &tmp
+	}
+
+	return user, nil
 }

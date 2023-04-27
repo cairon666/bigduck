@@ -7,11 +7,10 @@ import (
 )
 
 type Repository interface {
-	ReadByEmail(ctx context.Context, email string) (models.User, error)
-	ReadById(ctx context.Context, id string) (models.User, error)
+	ReadOne(ctx context.Context, filter map[string]any) (models.User, error)
 	Create(ctx context.Context, user models.User) error
-	UpdateById(ctx context.Context, id string, data map[string]any) error
-	DeleteById(ctx context.Context, id string) error
+	UpdateByID(ctx context.Context, id string, data map[string]any) error
+	DeleteByID(ctx context.Context, id string) error
 }
 
 type UserService struct {
@@ -25,11 +24,11 @@ func NewUserService(repo Repository) *UserService {
 }
 
 func (s *UserService) ReadByEmail(ctx context.Context, email string) (models.User, error) {
-	return s.repo.ReadByEmail(ctx, email)
+	return s.repo.ReadOne(ctx, map[string]any{"email": email})
 }
 
 func (s *UserService) ReadByID(ctx context.Context, id string) (models.User, error) {
-	return s.repo.ReadById(ctx, id)
+	return s.repo.ReadOne(ctx, map[string]any{"id": id})
 }
 
 func (s *UserService) Create(ctx context.Context, user models.User) error {
@@ -37,9 +36,9 @@ func (s *UserService) Create(ctx context.Context, user models.User) error {
 }
 
 func (s *UserService) UpdateByID(ctx context.Context, id string, data map[string]any) error {
-	return s.repo.UpdateById(ctx, id, data)
+	return s.repo.UpdateByID(ctx, id, data)
 }
 
 func (s *UserService) DeleteByID(ctx context.Context, id string) error {
-	return s.repo.DeleteById(ctx, id)
+	return s.repo.DeleteByID(ctx, id)
 }

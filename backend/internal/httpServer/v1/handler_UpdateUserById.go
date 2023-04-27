@@ -34,7 +34,7 @@ func (s *Server) updateUserByID(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := s.userUsecase.UpdateById(r.Context(), userusecase.UpdateByIDRequest{
+	err := s.userUsecase.UpdateByID(r.Context(), userusecase.UpdateByIDRequest{
 		IDUser:      IDUser,
 		FirstName:   reqDTO.FirstName,
 		SecondName:  reqDTO.SecondName,

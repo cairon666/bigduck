@@ -8,3 +8,5 @@ gci:
 	gci -w ./
 test:
 	go test ./...
+#	CGO_ENABLED=1 \
+#		go test ./... -race

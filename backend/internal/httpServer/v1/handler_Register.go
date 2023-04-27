@@ -42,7 +42,6 @@ func (s *Server) registerHandler(rw http.ResponseWriter, req *http.Request) {
 
 	if err := s.authUsecase.Register(req.Context(), dto); err != nil {
 		s.handleError(rw, beda.Wrap("Register", err))
-
 		return
 	}
 

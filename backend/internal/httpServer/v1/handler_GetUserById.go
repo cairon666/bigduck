@@ -26,14 +26,12 @@ func (s *Server) getUserByID(rw http.ResponseWriter, r *http.Request) {
 
 	if err := shouldEqualIDUserOrAdmin(r, IDUser); err != nil {
 		s.handleError(rw, beda.Wrap("shouldEqualIDUserOrAdmin", err))
-
 		return
 	}
 
-	resp, err := s.userUsecase.ReadById(r.Context(), userusecase.ReadByIDRequest{IDUser: IDUser})
+	resp, err := s.userUsecase.ReadByID(r.Context(), userusecase.ReadByIDRequest{IDUser: IDUser})
 	if err != nil {
 		s.handleError(rw, beda.Wrap("ReadByID", err))
-
 		return
 	}
 

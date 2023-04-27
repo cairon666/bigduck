@@ -9,6 +9,7 @@ import (
 	"backend/internal/repositories/userstorage"
 	"backend/pkg/database/postgres"
 	"backend/pkg/logger"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/spf13/cobra"
 	"go.uber.org/dig"
 )
@@ -30,8 +31,8 @@ var serverCmd = cobra.Command{
 		}
 
 		// db
-		err = c.Provide(func(log logger.Logger, conf *config.Config) (postgres.Client, error) {
-			return postgres.NewPostgresClient(log, conf.Postgres)
+		err = c.Provide(func(log logger.Logger, conf *config.Config) (*pgxpool.Pool, error) {
+			return postgres.NewPostgresClient(conf.Postgres, postgres.WithLogger(log))
 		})
 		if err != nil {
 			panic(err)
@@ -65,7 +66,8 @@ var serverCmd = cobra.Command{
 			panic(err)
 		}
 
-		err = c.Invoke(func(server Server) error {
+		err = c.Invoke(func(server Server, log logger.Logger) error {
+			log.Info("Start app!")
 			return server.Run()
 		})
 		if err != nil {

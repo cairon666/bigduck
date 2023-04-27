@@ -16,9 +16,9 @@ import (
 
 //go:generate mockery --name UserUsecase
 type UserUsecase interface {
-	ReadById(ctx context.Context, dto userusecase.ReadByIDRequest) (userusecase.ReadByIDResponse, error)
-	UpdateById(ctx context.Context, dto userusecase.UpdateByIDRequest) error
-	DeleteById(ctx context.Context, dto userusecase.DeleteByIDRequest) error
+	ReadByID(ctx context.Context, dto userusecase.ReadByIDRequest) (userusecase.ReadByIDResponse, error)
+	UpdateByID(ctx context.Context, dto userusecase.UpdateByIDRequest) error
+	DeleteByID(ctx context.Context, dto userusecase.DeleteByIDRequest) error
 }
 
 //go:generate mockery --name AuthUsecase
@@ -65,7 +65,6 @@ func (s *Server) Run() error {
 		ReadHeaderTimeout: s.conf.App.ReadHeaderTimeout,
 		WriteTimeout:      s.conf.App.WriteTimeout,
 		IdleTimeout:       s.conf.App.IdleTimeout,
-		//ErrorLog:                     nil,
 	}
 
 	if err := server.ListenAndServe(); err != nil {

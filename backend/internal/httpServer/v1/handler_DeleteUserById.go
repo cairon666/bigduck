@@ -17,7 +17,7 @@ func (s *Server) deleteUserByID(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := s.userUsecase.DeleteById(r.Context(), userusecase.DeleteByIDRequest{IDUser: IDUser})
+	err := s.userUsecase.DeleteByID(r.Context(), userusecase.DeleteByIDRequest{IDUser: IDUser})
 	if err != nil {
 		s.handleError(rw, beda.Wrap("DeleteByID", err))
 

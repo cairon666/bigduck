@@ -1,193 +1,126 @@
 package userstorage
 
 import (
-	"bytes"
 	"context"
-	"fmt"
 
 	"backend/internal/domain/models"
 	"backend/internal/exceptions"
 	"backend/pkg/beda"
-	"backend/pkg/database/postgres"
-	"backend/pkg/logger"
+	"backend/pkg/qb"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserStorage struct {
-	client postgres.Client
-	log    logger.Logger
+	client *pgxpool.Pool
 }
 
-func NewUserStorage(log logger.Logger, client postgres.Client) *UserStorage {
+func NewUserStorage(client *pgxpool.Pool) *UserStorage {
 	return &UserStorage{
 		client: client,
-		log:    log,
 	}
 }
 
-func (s *UserStorage) ReadByID(ctx context.Context, id string) (models.User, error) {
-	query := `select (id, email, email_is_confirm, password_hash, salt, first_name, second_name, avatar_url,
-        day_of_birth, gender, create_at, modify_at) 
-from public.user 
-where id = $1`
+func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (models.User, error) {
+	builder := qb.Select(
+		"id",
+		"email",
+		"email_is_confirm",
+		"password_hash",
+		"salt", "first_name",
+		"second_name",
+		"avatar_url",
+		"day_of_birth",
+		"gender",
+		"create_at",
+		"modify_at",
+	).
+		From("public.user")
 
-	rows, err := s.client.Query(ctx, query, id)
+	if value, ok := filter["id"]; ok {
+		builder = builder.AndWhere(qb.Eql("id", value))
+	}
+
+	if value, ok := filter["email"]; ok {
+		builder = builder.AndWhere(qb.Eql("email", value))
+	}
+
+	query, args := builder.ToSQL()
+
+	rows, err := s.client.Query(ctx, query, args...)
 	if err != nil {
-		s.log.Error("Query", logger.Error(err))
-
-		return models.User{}, exceptions.ErrDatabase
-	}
-	defer rows.Close()
-
-	if !rows.Next() {
-		s.log.Error("Next")
-
-		return models.User{}, exceptions.ErrNotFound
-	}
-
-	var userDB UserDB
-	if err := rows.Scan(&userDB); err != nil {
-		s.log.Error("Scan", logger.Error(err))
-
-		return models.User{}, beda.Wrap("Scan", exceptions.ErrDatabase)
-	}
-
-	user := models.User{
-		ID:             userDB.ID,
-		Email:          userDB.Email,
-		EmailIsConfirm: userDB.EmailIsConfirm,
-		PasswordHash:   userDB.PasswordHash,
-		Salt:           userDB.Salt,
-		FirstName:      userDB.FirstName,
-		SecondName:     userDB.SecondName,
-		AvatarURL:      userDB.AvatarURL,
-		DateOfBirth:    userDB.DateOfBirth,
-		Gender:         nil,
-		CreateAt:       userDB.CreateAt,
-		ModifyAt:       userDB.ModifyAt,
-	}
-
-	if userDB.Gender != nil {
-		tmp, err := models.ParseGender(*userDB.Gender)
-		if err != nil {
-			return models.User{}, beda.Wrap("ParseGender", exceptions.ErrDatabase)
-		}
-
-		user.Gender = &tmp
-	}
-
-	return user, nil
-}
-
-func (s *UserStorage) ReadByEmail(ctx context.Context, email string) (models.User, error) {
-	query := `select (id, email, email_is_confirm, password_hash, salt, first_name, second_name, avatar_url, 
-        day_of_birth, gender, create_at, modify_at) 
-from public.user 
-where email = $1`
-
-	rows, err := s.client.Query(ctx, query, email)
-	if err != nil {
-		s.log.Error("Query", logger.Error(err))
-
 		return models.User{}, beda.Wrap("Query", exceptions.ErrDatabase)
 	}
 	defer rows.Close()
 
 	if !rows.Next() {
-		s.log.Error("Next")
-
 		return models.User{}, beda.Wrap("Next", exceptions.ErrNotFound)
 	}
 
 	var userDB UserDB
 	if err := rows.Scan(&userDB); err != nil {
-		s.log.Error("Scan", logger.Error(err))
-
 		return models.User{}, beda.Wrap("Scan", exceptions.ErrDatabase)
 	}
 
-	user := models.User{
-		ID:             userDB.ID,
-		Email:          userDB.Email,
-		EmailIsConfirm: userDB.EmailIsConfirm,
-		PasswordHash:   userDB.PasswordHash,
-		Salt:           userDB.Salt,
-		FirstName:      userDB.FirstName,
-		SecondName:     userDB.SecondName,
-		AvatarURL:      userDB.AvatarURL,
-		DateOfBirth:    userDB.DateOfBirth,
-		Gender:         nil,
-		CreateAt:       userDB.CreateAt,
-		ModifyAt:       userDB.ModifyAt,
-	}
-
-	if userDB.Gender != nil {
-		tmp, err := models.ParseGender(*userDB.Gender)
-		if err != nil {
-			return models.User{}, beda.Wrap("ParseGender", exceptions.ErrDatabase)
-		}
-
-		user.Gender = &tmp
+	user, err := userDB.ToUser()
+	if err != nil {
+		return models.User{}, beda.Wrap("ToUser", err)
 	}
 
 	return user, nil
 }
 
 func (s *UserStorage) Create(ctx context.Context, user models.User) error {
-	query := `insert into public.user(id, email, email_is_confirm, password_hash, salt, first_name, second_name, 
-                        avatar_url, day_of_birth, gender, create_at, modify_at) 
-values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,  $11, $12)`
+	query, args := qb.Insert(
+		"public.user",
+		"id",
+		"email",
+		"email_is_confirm",
+		"password_hash",
+		"salt",
+		"first_name",
+		"second_name",
+		"avatar_url",
+		"day_of_birth",
+		"gender",
+		"create_at",
+		"modify_at").
+		Values(
+			user.ID,
+			user.Email,
+			user.EmailIsConfirm,
+			user.PasswordHash,
+			user.Salt,
+			user.FirstName,
+			user.SecondName,
+			user.AvatarURL,
+			user.DateOfBirth,
+			user.Gender,
+			user.CreateAt,
+			user.ModifyAt,
+		).
+		ToSQL()
 
-	_, err := s.client.Exec(ctx, query,
-		user.ID,
-		user.Email,
-		user.EmailIsConfirm,
-		user.PasswordHash,
-		user.Salt,
-		user.FirstName,
-		user.SecondName,
-		user.AvatarURL,
-		user.DateOfBirth,
-		user.Gender,
-		user.CreateAt,
-		user.ModifyAt,
-	)
+	_, err := s.client.Exec(ctx, query, args...)
 	if err != nil {
-		s.log.Error("Exec", logger.Error(err))
-
-		return exceptions.ErrDatabase
+		return beda.Wrap("Exec", exceptions.ErrDatabase)
 	}
 
 	return nil
 }
 
 func (s *UserStorage) UpdateByID(ctx context.Context, id string, data map[string]any) error {
-	var query bytes.Buffer
-
-	count := 1
-	args := make([]any, 0)
-	_, _ = query.WriteString("update public.user ")
-	_, _ = query.WriteString("set ")
-
-	isFirst := true
+	builder := qb.Update("public.user")
 
 	for key, value := range data {
-		if isFirst {
-			isFirst = false
-		} else {
-			query.WriteString("and ")
-		}
-
-		query.WriteString(fmt.Sprintf("%s = $%d ", key, count))
-		count++
-		args = append(args, value) //nolint:wsl
+		builder = builder.Set(qb.Eql(key, value))
 	}
 
-	args = append(args, id)
-	query.WriteString(fmt.Sprintf("where id = $%d ", count)) //nolint:wsl
+	query, args := builder.
+		AndWhere(qb.Eql("id", id)).
+		Limit(1).
+		ToSQL()
 
-	if _, err := s.client.Exec(ctx, query.String(), args...); err != nil {
-		s.log.Error("Exec", logger.Error(err))
-
+	if _, err := s.client.Exec(ctx, query, args...); err != nil {
 		return beda.Wrap("Exec", exceptions.ErrDatabase)
 	}
 
@@ -198,9 +131,7 @@ func (s *UserStorage) DeleteByID(ctx context.Context, id string) error {
 	query := "delete from public.user where id = $1"
 
 	if _, err := s.client.Exec(ctx, query, id); err != nil {
-		s.log.Error("Exec", logger.Error(err))
-
-		return exceptions.ErrDatabase
+		return beda.Wrap("Exec", exceptions.ErrDatabase)
 	}
 
 	return nil

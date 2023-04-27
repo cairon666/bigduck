@@ -8,44 +8,41 @@ import (
 	"backend/pkg/logger"
 )
 
-var (
-	unhandledErr = customErr{
-		Error: "unhandled error",
-	}
-)
-
-type customErr struct {
-	Error string `json:"error"`
-}
-
-type validateErr struct {
+type httpErr struct {
 	Error  string   `json:"error"`
-	Errors []string `json:"errors,omitempty"`
+	Errors []string `json:"errors"`
 }
 
-func (s *Server) handleError(w http.ResponseWriter, err error) {
+func (s *Server) handleError(rw http.ResponseWriter, err error) {
 	s.log.Error("handle error", logger.Error(err))
 
 	// go to non unwrap error
-	for x, ok := err.(interface{ Unwrap() error }); ok; {
-		err = x.Unwrap()
+	for {
+		if x, ok := err.(interface{ Unwrap() error }); ok {
+			err = x.Unwrap()
+			continue
+		}
+
+		break
 	}
 
-	switch someErr := err.(type) {
+	switch err := err.(type) {
 	case *exceptions.ValidateError:
-		s.sendJSON(w, validateErr{
-			Error:  someErr.Message(),
-			Errors: someErr.Errors(),
+		s.sendJSON(rw, httpErr{
+			Error:  err.Message(),
+			Errors: err.Errors(),
 		}, http.StatusBadRequest)
 	case *exceptions.CustomError:
-		s.sendJSON(w, customErr{
-			Error: someErr.Error(),
-		}, someErr.GetCode())
+		s.sendJSON(rw, httpErr{
+			Error: err.Error(),
+		}, err.GetCode())
 	case *json.UnmarshalTypeError:
-		s.sendJSON(w, customErr{
-			Error: someErr.Error(),
+		s.sendJSON(rw, httpErr{
+			Error: err.Error(),
 		}, http.StatusBadRequest)
 	default:
-		s.sendJSON(w, unhandledErr, http.StatusInternalServerError)
+		s.sendJSON(rw, httpErr{
+			Error: "unhandled error",
+		}, http.StatusInternalServerError)
 	}
 }

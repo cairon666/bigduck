@@ -2,6 +2,8 @@ package userusecase
 
 import (
 	"time"
+
+	"backend/internal/validate"
 )
 
 // --------------------- READ -----------------
@@ -11,7 +13,9 @@ type ReadByIDRequest struct {
 }
 
 func (dto *ReadByIDRequest) IsValid() error {
-	return nil
+	return validate.Test(
+		validate.UUIDSimple(dto.IDUser),
+	)
 }
 
 type ReadByIDResponse struct {
@@ -38,7 +42,11 @@ type UpdateByIDRequest struct {
 }
 
 func (dto *UpdateByIDRequest) IsValid() error {
-	return nil
+	return validate.Test(
+		validate.UUIDSimple(dto.IDUser),
+		validate.FirstNameSimple(dto.FirstName),
+		validate.SecondNameSimple(dto.SecondName),
+	)
 }
 
 // --------------------- DELETE -----------------
@@ -48,5 +56,7 @@ type DeleteByIDRequest struct {
 }
 
 func (dto *DeleteByIDRequest) IsValid() error {
-	return nil
+	return validate.Test(
+		validate.UUIDSimple(dto.IDUser),
+	)
 }

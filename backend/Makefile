@@ -8,7 +8,7 @@ lint:
 	golangci-lint run ./...
 
 gci:
-	gci -w ./
+	gci write ./
 
 generate:
 	go generate ./...

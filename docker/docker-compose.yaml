@@ -45,7 +45,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
       #      - ../database/postgres/dump.sql:/docker-entrypoint-initdb.d/dummy_dump.sql
       - ../database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ../database/postgres/z_for_testing.sql:/docker-entrypoint-initdb.d/z_for_testing.sql
   #  database_pgadmin:
   #    image: dpage/pgadmin4
   #    environment:

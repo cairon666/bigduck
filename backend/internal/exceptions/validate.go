@@ -1,44 +1,58 @@
 package exceptions
 
 import (
-	"bytes"
+	"net/http"
+	"strings"
 )
 
 type ValidateError struct {
-	message string
-	errors  []string
+	HTTPError
+	Details []string `json:"details"`
 }
 
-func NewValidate(message string) *ValidateError {
+func NewValidateError() *ValidateError {
 	return &ValidateError{
-		message: message,
+		HTTPError: HTTPError{
+			Message: "validate",
+			code:    http.StatusBadRequest,
+		},
+		Details: nil,
 	}
 }
 
 func (v *ValidateError) Error() string {
-	buf := new(bytes.Buffer)
+	buf := new(strings.Builder)
 
-	_, _ = buf.WriteString(v.message)
-	_, _ = buf.WriteString(": ")
+	buf.WriteString("validate error: ")
 
-	for index, err := range v.errors {
-		_, _ = buf.WriteString(err)
-		if index != len(v.errors)-1 {
-			_, _ = buf.WriteString(", ")
+	for index, err := range v.Details {
+		buf.WriteString(err)
+
+		if index != len(v.Details)-1 {
+			buf.WriteString(", ")
 		}
 	}
 
 	return buf.String()
 }
 
-func (v *ValidateError) Message() string {
-	return v.message
-}
-
-func (v *ValidateError) AddErrors(errs ...string) {
-	v.errors = append(v.errors, errs...)
+func (v *ValidateError) AddError(err error) {
+	if err != nil {
+		v.Details = append(v.Details, err.Error())
+	}
 }
 
 func (v *ValidateError) Errors() []string {
-	return v.errors
+	return v.Details
+}
+func (v *ValidateError) IsEmpty() bool {
+	return len(v.Details) == 0
+}
+
+func (v *ValidateError) GetCode() int {
+	return v.code
+}
+
+func (v *ValidateError) GetData() any {
+	return v
 }

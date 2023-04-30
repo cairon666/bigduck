@@ -7,7 +7,6 @@ import (
 
 	"backend/internal/domain/models"
 	"backend/internal/exceptions"
-	"backend/pkg/beda"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
 )
@@ -57,7 +56,7 @@ func TestUserUsecase_ReadById(t *testing.T) {
 			Return(models.User{}, exceptions.ErrNotFound)
 
 		if _, err = userUsecase.ReadByID(ctx, dto); !errors.Is(err, exceptions.ErrNotFound) {
-			t.Fatal(beda.Wrap("should be error not found, err:", err))
+			t.Fatal("should be error 'not found', err:" + err.Error())
 		}
 	})
 }

@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"backend/internal/domain/models"
-	"backend/pkg/beda"
 )
 
 //go:generate mockery --name=UserService --outpkg=userusecase_test
@@ -32,7 +31,7 @@ func (u *UserUsecase) ReadByID(ctx context.Context, dto ReadByIDRequest) (ReadBy
 
 	user, err := u.userService.ReadByID(ctx, dto.IDUser)
 	if err != nil {
-		return ReadByIDResponse{}, beda.Wrap("Read", err)
+		return ReadByIDResponse{}, err
 	}
 
 	resp := ReadByIDResponse{
@@ -60,18 +59,14 @@ func (u *UserUsecase) UpdateByID(ctx context.Context, dto UpdateByIDRequest) err
 		return err
 	}
 
-	if err := u.userService.UpdateByID(ctx, dto.IDUser, map[string]any{
+	return u.userService.UpdateByID(ctx, dto.IDUser, map[string]any{
 		"modify_at":     time.Now(),
 		"first_name":    dto.FirstName,
 		"second_name":   dto.SecondName,
 		"gender":        dto.Gender,
 		"date_of_birth": dto.DateOfBirth,
 		"avatar_url":    dto.AvatarURL,
-	}); err != nil {
-		return beda.Wrap("UpdateByID.Update", err)
-	}
-
-	return nil
+	})
 }
 
 func (u *UserUsecase) DeleteByID(ctx context.Context, dto DeleteByIDRequest) error {
@@ -79,9 +74,5 @@ func (u *UserUsecase) DeleteByID(ctx context.Context, dto DeleteByIDRequest) err
 		return err
 	}
 
-	if err := u.userService.DeleteByID(ctx, dto.IDUser); err != nil {
-		return beda.Wrap("DeleteByID.Delete", err)
-	}
-
-	return nil
+	return u.userService.DeleteByID(ctx, dto.IDUser)
 }

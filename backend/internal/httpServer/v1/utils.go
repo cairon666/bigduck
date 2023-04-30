@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"backend/internal/exceptions"
-	"backend/pkg/beda"
 	"backend/pkg/logger"
 )
 
@@ -14,14 +13,14 @@ func (s *Server) sendJSON(rw http.ResponseWriter, data any, status int) {
 	rw.WriteHeader(status)
 
 	if err := json.NewEncoder(rw).Encode(data); err != nil {
-		s.log.Error("sendJSON", logger.Error(beda.Wrap("Encode", err)))
+		s.log.Error("sendJSON", logger.Error(err))
 	}
 }
 
 func shouldEqualIDUserOrAdmin(r *http.Request, id string) error {
 	ctxIDUser, ok := r.Context().Value(idUserKey).(string)
 	if !ok || ctxIDUser != id {
-		return beda.Wrap("Value", exceptions.ErrForbidden)
+		return exceptions.ErrForbidden
 	}
 
 	return nil

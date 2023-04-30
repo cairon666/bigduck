@@ -3,8 +3,6 @@ package authhelper
 import (
 	"net/http"
 	"time"
-
-	"backend/pkg/beda"
 )
 
 const (
@@ -20,7 +18,7 @@ func (h *helper) SetRefreshCookie(rw http.ResponseWriter, refresh string) error 
 func (h *helper) GetRefreshCookie(r *http.Request) (string, error) {
 	cookie, err := r.Cookie(refreshNameCookie)
 	if err != nil {
-		return "", beda.Wrap("Cookie", err)
+		return "", err
 	}
 
 	return cookie.Value, nil

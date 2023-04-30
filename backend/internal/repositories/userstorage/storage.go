@@ -6,7 +6,6 @@ import (
 
 	"backend/internal/domain/models"
 	"backend/internal/exceptions"
-	"backend/pkg/beda"
 	"backend/pkg/database/postgres"
 	"backend/pkg/qb"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -51,12 +50,12 @@ func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (model
 
 	rows, err := s.client.Query(ctx, query, args...)
 	if err != nil {
-		return models.User{}, beda.Wrap("Query", exceptions.ErrDatabase)
+		return models.User{}, exceptions.ErrDatabase
 	}
 	defer rows.Close()
 
 	if !rows.Next() {
-		return models.User{}, beda.Wrap("Next", exceptions.ErrNotFound)
+		return models.User{}, exceptions.ErrNotFound
 	}
 
 	var userDB UserDB
@@ -74,12 +73,12 @@ func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (model
 		&userDB.CreateAt,
 		&userDB.ModifyAt,
 	); err != nil {
-		return models.User{}, beda.Wrap("Scan", exceptions.ErrDatabase)
+		return models.User{}, exceptions.ErrDatabase
 	}
 
 	user, err := userDB.ToUser()
 	if err != nil {
-		return models.User{}, beda.Wrap("ToUser", err)
+		return models.User{}, err
 	}
 
 	return user, nil
@@ -121,9 +120,9 @@ func (s *UserStorage) Create(ctx context.Context, user models.User) error {
 		if pgErr := new(pgconn.PgError); errors.As(err, &pgErr) {
 			switch pgErr.ConstraintName {
 			case "credential_email_uniq":
-				return beda.Wrap("Exec", exceptions.ErrEmailAlreadyExist)
+				return exceptions.ErrEmailAlreadyExist
 			default:
-				return beda.Wrap("Exec", exceptions.ErrDatabase)
+				return exceptions.ErrDatabase
 			}
 		}
 	}
@@ -144,7 +143,7 @@ func (s *UserStorage) UpdateByID(ctx context.Context, id string, data map[string
 		ToSQL()
 
 	if _, err := s.client.Exec(ctx, query, args...); err != nil {
-		return beda.Wrap("Exec", exceptions.ErrDatabase)
+		return exceptions.ErrDatabase
 	}
 
 	return nil
@@ -154,7 +153,7 @@ func (s *UserStorage) DeleteByID(ctx context.Context, id string) error {
 	query := "delete from public.user where id = $1"
 
 	if _, err := s.client.Exec(ctx, query, id); err != nil {
-		return beda.Wrap("Exec", exceptions.ErrDatabase)
+		return exceptions.ErrDatabase
 	}
 
 	return nil

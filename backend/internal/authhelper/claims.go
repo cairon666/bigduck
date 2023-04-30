@@ -3,7 +3,6 @@ package authhelper
 import (
 	"time"
 
-	"backend/pkg/beda"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
@@ -16,7 +15,7 @@ type Claims struct {
 func (h *helper) newAccessClaims(id string) (Claims, error) {
 	genID, err := uuid.NewUUID()
 	if err != nil {
-		return Claims{}, beda.Wrap("NewUUID", err)
+		return Claims{}, err
 	}
 
 	return Claims{
@@ -35,7 +34,7 @@ func (h *helper) newAccessClaims(id string) (Claims, error) {
 func (h *helper) newRefreshClaims(id string) (Claims, error) {
 	genID, err := uuid.NewUUID()
 	if err != nil {
-		return Claims{}, beda.Wrap("NewUUID", err)
+		return Claims{}, err
 	}
 
 	return Claims{

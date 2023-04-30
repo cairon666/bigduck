@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"backend/internal/domain/models"
-	"backend/pkg/beda"
 )
 
 //go:generate mockery --name UserService
@@ -25,16 +24,16 @@ func NewAuthUsecase(userService UserService) *Usecase {
 
 func (u *Usecase) Login(ctx context.Context, dto LoginRequest) (LoginResponse, error) {
 	if err := dto.IsValid(); err != nil {
-		return LoginResponse{}, beda.Wrap("IsValid", err)
+		return LoginResponse{}, err
 	}
 
 	user, err := u.userService.ReadByEmail(ctx, dto.Email)
 	if err != nil {
-		return LoginResponse{}, beda.Wrap("Read", err)
+		return LoginResponse{}, err
 	}
 
 	if err := checkPasswordHash(dto.Password, user.Salt, user.PasswordHash); err != nil {
-		return LoginResponse{}, beda.Wrap("checkPasswordHash", err)
+		return LoginResponse{}, err
 	}
 
 	return LoginResponse{
@@ -44,22 +43,22 @@ func (u *Usecase) Login(ctx context.Context, dto LoginRequest) (LoginResponse, e
 
 func (u *Usecase) Register(ctx context.Context, dto RegisterRequest) error {
 	if err := dto.IsValid(); err != nil {
-		return beda.Wrap("IsValid", err)
+		return err
 	}
 
 	uuid, err := generateUUID()
 	if err != nil {
-		return beda.Wrap("generateUUID", err)
+		return err
 	}
 
 	salt, err := generateSalt()
 	if err != nil {
-		return beda.Wrap("generateSalt", err)
+		return err
 	}
 
 	hash, err := hashPassword(dto.Password, salt)
 	if err != nil {
-		return beda.Wrap("hashPassword", err)
+		return err
 	}
 
 	now := time.Now()
@@ -82,15 +81,11 @@ func (u *Usecase) Register(ctx context.Context, dto RegisterRequest) error {
 	if dto.Gender != nil {
 		tmp, err := models.ParseGender(*dto.Gender)
 		if err != nil {
-			return beda.Wrap("ParseGender", err)
+			return err
 		}
 
 		user.Gender = &tmp
 	}
 
-	if err := u.userService.Create(ctx, user); err != nil {
-		return beda.Wrap("Create", err)
-	}
-
-	return nil
+	return u.userService.Create(ctx, user)
 }

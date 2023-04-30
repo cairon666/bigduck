@@ -5,7 +5,6 @@ import (
 
 	"backend/internal/domain/models"
 	"backend/internal/exceptions"
-	"backend/pkg/beda"
 )
 
 type UserDB struct {
@@ -42,7 +41,7 @@ func (userDB *UserDB) ToUser() (models.User, error) {
 	if userDB.Gender != nil {
 		tmp, err := models.ParseGender(*userDB.Gender)
 		if err != nil {
-			return models.User{}, beda.Wrap("ParseGender", exceptions.ErrDatabase)
+			return models.User{}, exceptions.ErrDatabase
 		}
 
 		user.Gender = &tmp

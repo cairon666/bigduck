@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strings"
 
-	"backend/pkg/beda"
 	"backend/pkg/logger"
 )
 
@@ -21,7 +20,7 @@ func (s *Server) authenticationMiddleware(h http.Handler) http.Handler {
 		if authHeader != "" {
 			claims, err := s.authHelper.ParseToken(strings.TrimPrefix(authHeader, "Bearer "))
 			if err != nil {
-				s.handleError(rw, beda.Wrap("ParseToken", err))
+				s.handleError(rw, err)
 
 				return
 			}

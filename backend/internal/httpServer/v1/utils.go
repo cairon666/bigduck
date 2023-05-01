@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"backend/internal/authhelper"
 	"backend/internal/exceptions"
 	"backend/pkg/logger"
 )
@@ -18,8 +19,8 @@ func (s *Server) sendJSON(rw http.ResponseWriter, data any, status int) {
 }
 
 func shouldEqualIDUserOrAdmin(r *http.Request, id string) error {
-	ctxIDUser, ok := r.Context().Value(idUserKey).(string)
-	if !ok || ctxIDUser != id {
+	ctxIDUser := authhelper.GetClaims(r.Context())
+	if ctxIDUser == nil || ctxIDUser.IDUser != id {
 		return exceptions.ErrForbidden
 	}
 

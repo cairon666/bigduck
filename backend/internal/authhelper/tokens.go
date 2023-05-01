@@ -9,7 +9,7 @@ const (
 	refreshNameToken = "Refresh-Token"
 )
 
-func (h *helper) NewTokens(id string) (string, string, error) {
+func (h *Helper) NewTokens(id string) (string, string, error) {
 	accessClaims, err := h.newAccessClaims(id)
 	if err != nil {
 		return "", "", err
@@ -36,7 +36,7 @@ func (h *helper) NewTokens(id string) (string, string, error) {
 	return access, refresh, nil
 }
 
-func (h *helper) UpdateTokens(refresh string) (string, string, error) {
+func (h *Helper) UpdateTokens(refresh string) (string, string, error) {
 	id, err := h.ParseToken(refresh)
 	if err != nil {
 		return "", "", err
@@ -50,7 +50,7 @@ func (h *helper) UpdateTokens(refresh string) (string, string, error) {
 	return newAccess, newRefresh, nil
 }
 
-func (h *helper) ParseToken(tokenString string) (*Claims, error) {
+func (h *Helper) ParseToken(tokenString string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return h.private, nil
 	})

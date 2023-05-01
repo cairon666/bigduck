@@ -30,7 +30,7 @@ type AuthUsecase interface {
 type Server struct {
 	log         logger.Logger
 	conf        *config.Config
-	authHelper  authhelper.Helper
+	authHelper  *authhelper.Helper
 	authUsecase AuthUsecase
 	userUsecase UserUsecase
 }

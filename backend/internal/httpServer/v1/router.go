@@ -3,18 +3,16 @@ package v1
 import (
 	"net/http"
 
+	"backend/pkg/middleware"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 )
 
 func (s *Server) router() http.Handler {
 	r := chi.NewMux()
 
 	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
-	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(s.authenticationMiddleware)
+	r.Use(s.authHelper.AuthorizationMiddleware)
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Route("/auth", func(r chi.Router) {

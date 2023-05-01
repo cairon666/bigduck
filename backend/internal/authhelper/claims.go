@@ -7,12 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type Claims struct {
-	IDUser string `json:"id_user"`
-	jwt.RegisteredClaims
-}
-
-func (h *helper) newAccessClaims(id string) (Claims, error) {
+func (h *Helper) newAccessClaims(id string) (Claims, error) {
 	genID, err := uuid.NewUUID()
 	if err != nil {
 		return Claims{}, err
@@ -31,7 +26,7 @@ func (h *helper) newAccessClaims(id string) (Claims, error) {
 	}, nil
 }
 
-func (h *helper) newRefreshClaims(id string) (Claims, error) {
+func (h *Helper) newRefreshClaims(id string) (Claims, error) {
 	genID, err := uuid.NewUUID()
 	if err != nil {
 		return Claims{}, err

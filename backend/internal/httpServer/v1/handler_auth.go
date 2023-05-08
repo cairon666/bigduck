@@ -110,7 +110,6 @@ func (s *Server) registerHandler(rw http.ResponseWriter, req *http.Request) {
 	var reqDTO registerRequest
 	if err := json.NewDecoder(req.Body).Decode(&reqDTO); err != nil {
 		s.handleError(rw, err)
-
 		return
 	}
 

@@ -10,6 +10,7 @@ import (
 func (s *Server) router() http.Handler {
 	r := chi.NewMux()
 
+	r.Use(middleware.BodyCloser)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Recoverer)
 	r.Use(s.authHelper.AuthorizationMiddleware)

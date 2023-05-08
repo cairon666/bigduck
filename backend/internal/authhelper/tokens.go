@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	accessNameToken  = "Access-Token"
-	refreshNameToken = "Refresh-Token"
+	AccessNameToken  = "Access-Token"
+	RefreshNameToken = "Refresh-Token"
 )
 
 func (h *Helper) NewTokens(id string) (string, string, error) {

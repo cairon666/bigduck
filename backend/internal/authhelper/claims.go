@@ -16,8 +16,8 @@ func (h *Helper) newAccessClaims(id string) (Claims, error) {
 	return Claims{
 		IDUser: id,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "",
-			Subject:   accessNameToken,
+			Issuer:    h.issuer,
+			Subject:   AccessNameToken,
 			Audience:  nil,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(h.ttlAccess)),
 			IssuedAt:  nil,
@@ -35,8 +35,8 @@ func (h *Helper) newRefreshClaims(id string) (Claims, error) {
 	return Claims{
 		IDUser: id,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "",
-			Subject:   refreshNameToken,
+			Issuer:    h.issuer,
+			Subject:   RefreshNameToken,
 			Audience:  nil,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(h.ttlRefresh)),
 			IssuedAt:  nil,

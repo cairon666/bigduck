@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is build backend
 on: [push]
 
 jobs:
-  Test-Backend:
+  Backend:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -14,26 +14,5 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.19.x'
-      - name: Install dependencies
-        run: make dependence
-      - name: Generate code
-        run: make generate
-      - name: Test code
-        run: make test
-  Build-Backend:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.19.x'
-      - name: Install dependencies
-        run: make dependence
-      - name: Generate code
-        run: make generate
-      - name: Build bin
-        run: make build
+      - name: Audit code
+        run: make audit

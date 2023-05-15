@@ -26,11 +26,14 @@ confirm:
 no-dirty:
 	git diff --exit-code
 
-.PHONY: install-golangci-lint
-install-golangci-lint:
-	@if [ "$(which golangci-lint)" != "" ]; then \
-		echo '${WARNING} start golangci-lint install ${ENDCOLOR}' ; \
-		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b $(go env GOPATH)/bin v1.52.2 ; \
+## golangci-lint-check: check golangci-lint and install if not exist
+.PHONY: golangci-lint-check
+golangci-lint-check:
+	@if [ "$(shell golangci-lint --version 2>/dev/null)" != "" ]; then\
+		echo 'golangci-lint is found!'; \
+	else\
+		echo '${WARNING} start golangci-lint install ${ENDCOLOR}'; \
+		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b $(go env GOPATH)/bin latest; \
 	fi
 
 # ==================================================================================== #
@@ -47,7 +50,7 @@ tidy:
 
 ## audit: run quality control checks
 .PHONY: audit
-audit: install-golangci-lint
+audit: golangci-lint-check
 	go mod verify
 	go vet ./...
 	golangci-lint run ./...

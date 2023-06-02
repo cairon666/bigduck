@@ -5,6 +5,9 @@ FROM golang:1.19-alpine as build
 
 WORKDIR /app
 
+# install make
+RUN apk add --no-cache make
+
 COPY go.mod ./
 COPY go.sum ./
 
@@ -12,15 +15,13 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o main main.go
+RUN make build
 
 ## Deploy
 FROM alpine
 
-WORKDIR /app
-
-COPY --from=build /app/main /app/main
+COPY --from=build /tmp/bin/main /tmp/bin/main
 
 EXPOSE $APP_PORT
 
-CMD ["./main", "server"]
+CMD ["/tmp/bin/main"]

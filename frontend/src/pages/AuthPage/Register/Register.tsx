@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Button, Checkbox, DatePicker, Input, Label } from '../../../components/ui';
 import { useRegisterForm } from './useRegisterForm';
 
+const now = new Date(0);
+
 export function Register() {
     const { register, onSubmit, errors, onChangeDate, isLoading } = useRegisterForm();
 
@@ -65,11 +67,16 @@ export function Register() {
                     {...register('second_name')}
                 />
                 <DatePicker
+                    position={{
+                        X: 'right',
+                        Y: 'center',
+                    }}
                     error={errors?.date_of_birth?.message}
                     label={'День рождения'}
                     placeholder={'День рождения'}
                     {...register('date_of_birth')}
                     onChange={onChangeDate}
+                    maxDate={now}
                 />
                 <div>
                     <Label label={'Пол'} />

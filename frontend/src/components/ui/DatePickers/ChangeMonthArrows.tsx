@@ -7,7 +7,6 @@ export interface ChangeMonthArrowsProps {
 }
 
 export const ChangeMonthArrows = memo(function ChangeMonthArrows(props: ChangeMonthArrowsProps) {
-    // TODO сейчас датапике скачет при выборе другоого месяца если число недель больше/меньше
     return (
         <div className={'flex items-center gap-2'}>
             <RiArrowLeftSLine

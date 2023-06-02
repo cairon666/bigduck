@@ -1,10 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { object, string } from 'yup';
 
-import { authSlice, fetchLogin, useAppDispatch, useAppSelector } from '../../../_redux';
+import { authSlice, fetchRegister, useAppDispatch, useAppSelector } from '../../../_redux';
 
 const registerScheme = object({
     login: string().required('Логин обязательное поле'),
@@ -47,12 +47,12 @@ export function useRegisterForm() {
             return;
         }
 
-        dispatch(fetchLogin());
+        dispatch(fetchRegister());
     });
 
-    const onChangeDate = (date: Date | null) => {
+    const onChangeDate = useCallback((date: Date | null) => {
         setValue('date_of_birth', date);
-    };
+    }, []);
 
     useEffect(() => {
         if (authStorage.isSuccess) {

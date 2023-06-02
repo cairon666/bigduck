@@ -5,7 +5,9 @@ import { AiOutlineLoading } from 'react-icons/all';
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     theme?: 'contained' | 'outlined' | 'text' | 'gray';
     isLoading?: boolean;
+    className?: string;
     containerClassName?: string;
+    // set padding from x-2 y-1 to xy-1
     onlyIcon?: boolean;
 };
 

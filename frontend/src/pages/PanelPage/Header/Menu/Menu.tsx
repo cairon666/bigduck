@@ -1,8 +1,8 @@
 import { Transition } from '@headlessui/react';
 import { Fragment, useCallback, useRef, useState } from 'react';
 
-import { useOnClickOutside } from '../../../../hooks';
 import { Button, Card } from '../../../../components/ui';
+import { useOnClickOutside } from '../../../../hooks';
 
 export function Menu() {
     const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +48,7 @@ export function Menu() {
                 <Card
                     ref={ref}
                     className={
-                        'p-2 shadow scrollbar absolute left-0 top-[calc(100%+0.25rem)] z-20 flex max-h-72 w-56 flex-col gap-1 overflow-y-auto '
+                        'scrollbar absolute left-0 top-[calc(100%+0.25rem)] z-20 flex max-h-72 w-56 flex-col gap-1 overflow-y-auto p-2 shadow '
                     }
                 >
                     <div>какая-то информация</div>

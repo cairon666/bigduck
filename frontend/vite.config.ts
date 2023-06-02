@@ -1,5 +1,4 @@
 import * as dns from 'dns';
-import fs from 'fs';
 import * as path from 'path';
 
 import image from '@rollup/plugin-image';
@@ -31,6 +30,11 @@ export default defineConfig((configEnv) => ({
             enforce: 'pre',
         },
     ],
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, './src'),
+        },
+    },
     root: src,
     appType: 'spa',
     server: {

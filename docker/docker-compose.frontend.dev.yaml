@@ -1,0 +1,64 @@
+version: "3"
+
+services:
+  proxy:
+    container_name: proxy
+    image: nginx:stable
+    restart: unless-stopped
+    ports:
+      - 3000:80
+    networks:
+      - network
+    volumes:
+      - ./nginx.frontend.dev.conf:/etc/nginx/nginx.conf
+  postgres:
+    container_name: postgres
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: root
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      #      - ../database/postgres/dump.sql:/docker-entrypoint-initdb.d/dummy_dump.sql
+      - ../database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+  backend:
+    container_name: backend
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - network
+    depends_on:
+      - postgres
+    environment:
+      - APP_PORT=8081
+      - POSTGRESQL_URL=postgresql://admin:admin@postgres:5432/root
+    volumes:
+      - ../backend:/app
+  frontend:
+    container_name: frontend
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ../frontend:/app
+      - frontend_node_modules:/app/node_modules
+    networks:
+      network:
+
+
+volumes:
+  postgres_data:
+  frontend_node_modules:
+
+networks:
+  network:

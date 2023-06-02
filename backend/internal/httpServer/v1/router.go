@@ -14,6 +14,7 @@ func (s *Server) router() http.Handler {
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Recoverer)
 	r.Use(s.authHelper.AuthorizationMiddleware)
+	r.Use(s.CorsMiddleware)
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Route("/auth", func(r chi.Router) {

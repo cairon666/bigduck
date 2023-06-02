@@ -1,9 +1,10 @@
-import { Transition } from '@headlessui/react';
 import classNames from 'classnames';
-import { Fragment, useCallback, useRef, useState } from 'react';
+import { memo, useCallback, useRef } from 'react';
 import { RiArrowDownSLine } from 'react-icons/ri';
 
 import { useOnClickOutside } from '../../../hooks';
+import styles from './Datapicker.module.scss';
+import { useModal } from './useModal';
 
 const possibleMonths = [
     'Январь',
@@ -25,54 +26,43 @@ interface ChooseMonthProps {
     onSelect: (month: number) => void;
 }
 
-export function ChooseMonth(props: ChooseMonthProps) {
-    const [isOpen, setIsOpen] = useState(false);
+export const ChooseMonth = memo(function ChooseMonth(props: ChooseMonthProps) {
+    const { isOpen, onOpen, onClose } = useModal();
     const refCard = useRef(null);
-
-    const onOpenClick = useCallback(() => {
-        setIsOpen(true);
-    }, []);
 
     const onSelectClick = useCallback(
         (month: number) => () => {
             props.onSelect(month);
-            setIsOpen(false);
+            onClose();
         },
         [props.onSelect],
     );
 
     useOnClickOutside(refCard, () => {
-        setIsOpen(false);
+        onClose();
     });
 
     return (
         <div className={'absolute left-2/4 -translate-x-2/4'}>
-            <div
+            <button
+                type={'button'}
                 className={'flex w-24 cursor-pointer items-center justify-center gap-1 font-medium'}
-                onClick={onOpenClick}
+                onClick={onOpen}
             >
                 <div>{possibleMonths[props.current.getMonth()]}</div>
                 <RiArrowDownSLine className={'h-4 w-4 text-gray-700'} />
-            </div>
-            <Transition
-                show={isOpen}
-                as={Fragment}
-                enter='ease-out duration-300'
-                enterFrom='opacity-0'
-                enterTo='opacity-100'
-                leave='ease-in duration-200'
-                leaveFrom='opacity-100'
-                leaveTo='opacity-0'
-            >
+            </button>
+            <div className={classNames(styles.start, isOpen ? styles.end : '')}>
                 <div
                     ref={refCard}
                     className={
-                        'scrollbar absolute left-2/4 h-32 w-24 -translate-x-2/4 overflow-y-auto rounded border border-gray-100 bg-white text-center'
+                        'scrollbar absolute left-2/4 flex h-32 w-24 -translate-x-2/4 flex-col overflow-y-auto rounded border border-gray-100 bg-white text-center'
                     }
                 >
                     {possibleMonths.map((item, index) => {
                         return (
-                            <div
+                            <button
+                                type={'button'}
                                 className={classNames(
                                     'cursor-pointer hover:bg-gray-100',
                                     index === props.current.getMonth() ? 'bg-gray-200 hover:bg-gray-300' : '',
@@ -81,11 +71,11 @@ export function ChooseMonth(props: ChooseMonthProps) {
                                 key={item}
                             >
                                 {item}
-                            </div>
+                            </button>
                         );
                     })}
                 </div>
-            </Transition>
+            </div>
         </div>
     );
-}
+});

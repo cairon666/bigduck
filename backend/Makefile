@@ -1,10 +1,3 @@
-
-# colors
-ERROR="\e[31m"
-OK="\e[32m"
-WARNING="\e[33m"
-ENDCOLOR="\e[0m"
-
 BINARY_NAME := main
 MAIN_PACKAGE_PATH := ./cmd/server.go
 
@@ -20,7 +13,7 @@ help:
 
 .PHONY: confirm
 confirm:
-	@echo -n '${WARNING} Are you sure? [y/N] ${ENDCOLOR}' && read ans && [ $${ans:-N} = y ]
+	@echo -n 'Are you sure? [y/N]' && read ans && [ $${ans:-N} = y ]
 
 .PHONY: no-dirty
 no-dirty:
@@ -29,12 +22,7 @@ no-dirty:
 ## golangci-lint-check: check golangci-lint and install if not exist
 .PHONY: golangci-lint-check
 golangci-lint-check:
-	@if [ "$(shell golangci-lint --version 2>/dev/null)" != "" ]; then\
-		echo 'golangci-lint is found!'; \
-	else\
-		echo '${WARNING} start golangci-lint install ${ENDCOLOR}'; \
-		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b $(go env GOPATH)/bin latest; \
-	fi
+	bash ./scripts/golangci-lint-check.sh
 
 # ==================================================================================== #
 # QUALITY CONTROL
@@ -52,8 +40,7 @@ tidy:
 .PHONY: audit
 audit: golangci-lint-check
 	go mod verify
-	go vet ./...
-	golangci-lint run ./...
+	golangci-lint run ./... --fix
 	CC=gcc CGO_ENABLED=1 go test -race -buildvcs -vet=off ./...
 
 # ==================================================================================== #

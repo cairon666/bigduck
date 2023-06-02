@@ -1,5 +1,3 @@
-import './App.scss';
-
 import React, { StrictMode, Suspense, lazy } from 'react';
 import { Provider } from 'react-redux';
 import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
@@ -14,7 +12,7 @@ const router = createBrowserRouter([
     {
         path: '/auth/*',
         element: (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader size={'large'} />}>
                 <AuthPage />
             </Suspense>
         ),
@@ -22,7 +20,7 @@ const router = createBrowserRouter([
     {
         path: '/panel/*',
         element: (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader size={'large'} />}>
                 <PanelPage />
             </Suspense>
         ),

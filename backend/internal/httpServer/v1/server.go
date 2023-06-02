@@ -10,7 +10,6 @@ import (
 	"backend/internal/domain/usecases/authusecase"
 	"backend/internal/domain/usecases/userusecase"
 	"backend/pkg/logger"
-	"github.com/pkg/errors"
 	"go.uber.org/dig"
 )
 
@@ -49,7 +48,7 @@ func NewServer(log logger.Logger, conf *config.Config, params ServerParams) *Ser
 		authUsecase: params.AuthUsecase,
 		userUsecase: params.UserUsecase,
 		authHelper: authhelper.NewHelper(authhelper.HelperProps{
-			Issuer:     conf.App.Domain,
+			Issuer:     conf.HTTP.Domain,
 			Private:    []byte(conf.JWT.Private),
 			TTLAccess:  conf.JWT.TTLAccess,
 			TTLRefresh: conf.JWT.TTLRefresh,
@@ -59,17 +58,13 @@ func NewServer(log logger.Logger, conf *config.Config, params ServerParams) *Ser
 
 func (s *Server) Run() error {
 	server := http.Server{
-		Addr:              fmt.Sprintf("%s:%s", s.conf.App.Address, s.conf.App.Port),
+		Addr:              fmt.Sprintf("%s:%s", s.conf.HTTP.Address, s.conf.HTTP.Port),
 		Handler:           s.router(),
-		ReadTimeout:       s.conf.App.ReadTimeout,
-		ReadHeaderTimeout: s.conf.App.ReadHeaderTimeout,
-		WriteTimeout:      s.conf.App.WriteTimeout,
-		IdleTimeout:       s.conf.App.IdleTimeout,
+		ReadTimeout:       s.conf.HTTP.ReadTimeout,
+		ReadHeaderTimeout: s.conf.HTTP.ReadHeaderTimeout,
+		WriteTimeout:      s.conf.HTTP.WriteTimeout,
+		IdleTimeout:       s.conf.HTTP.IdleTimeout,
 	}
 
-	if err := server.ListenAndServe(); err != nil {
-		return errors.Wrap(err, "Serve: ")
-	}
-
-	return nil
+	return server.ListenAndServe()
 }

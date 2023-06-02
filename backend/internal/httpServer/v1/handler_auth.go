@@ -103,9 +103,6 @@ type registerRequest struct {
 	AvatarURL   *string    `json:"avatar_url,omitempty"`
 }
 
-type registerResponse struct {
-}
-
 func (s *Server) registerHandler(rw http.ResponseWriter, req *http.Request) {
 	var reqDTO registerRequest
 	if err := json.NewDecoder(req.Body).Decode(&reqDTO); err != nil {
@@ -128,5 +125,5 @@ func (s *Server) registerHandler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	s.sendJSON(rw, registerResponse{}, http.StatusOK)
+	rw.WriteHeader(http.StatusNoContent)
 }

@@ -10,7 +10,7 @@ help:
 
 .PHONY: no-dirty
 no-dirty:
-	git diff --exit-code	
+	git diff --exit-code
 
 # ==================================================================================== #
 # QUALITY CONTROL

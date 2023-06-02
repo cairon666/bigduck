@@ -42,7 +42,7 @@ export function useRegisterForm() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const onSubmit = handleSubmit((form) => {
+    const onSubmit = handleSubmit(() => {
         if (authStorage.isLoading) {
             return;
         }

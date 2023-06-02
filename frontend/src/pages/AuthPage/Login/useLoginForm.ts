@@ -28,7 +28,7 @@ export function useLoginForm() {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
-    const onSubmit = handleSubmit((data) => {
+    const onSubmit = handleSubmit(() => {
         if (authStorage.isLoading) {
             return;
         }

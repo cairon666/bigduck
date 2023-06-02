@@ -2,7 +2,7 @@ import { Transition } from '@headlessui/react';
 import classNames from 'classnames';
 import { Fragment, useMemo } from 'react';
 import { AiOutlineSetting } from 'react-icons/ai';
-import { BiExit, BiSupport, MdOutlineKeyboardArrowRight, RxAvatar } from 'react-icons/all';
+import { BiExit, BiSupport, MdOutlineKeyboardArrowRight } from 'react-icons/all';
 import { RiArrowDownSLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 

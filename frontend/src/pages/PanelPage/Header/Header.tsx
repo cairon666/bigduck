@@ -2,7 +2,6 @@ import { GiPlasticDuck } from 'react-icons/gi';
 import { Link } from 'react-router-dom';
 
 import { History } from './History';
-import { Menu } from './Menu';
 import { Notify } from './Notify';
 import { Profile } from './Profile';
 

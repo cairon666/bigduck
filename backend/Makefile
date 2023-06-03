@@ -22,7 +22,7 @@ no-dirty:
 ## golangci-lint-check: check golangci-lint and install if not exist
 .PHONY: golangci-lint-check
 golangci-lint-check:
-	bash ./scripts/golangci-lint-check.sh
+	bash ./scripts/golangci-lint-check.bash
 
 # ==================================================================================== #
 # QUALITY CONTROL
@@ -34,13 +34,6 @@ tidy:
 	go fmt ./...
 	go mod tidy -v
 	go run github.com/daixiang0/gci@latest write ./
-
-## audit/fix: run quality control checks
-.PHONY: audit/fix
-audit/fix: golangci-lint-check
-	go mod verify
-	golangci-lint run ./... --fix
-	CC=gcc CGO_ENABLED=1 go test -race -buildvcs -vet=off ./...
 
 ## audit: run quality control checks
 .PHONY: audit

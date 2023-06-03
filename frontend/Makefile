@@ -19,7 +19,13 @@ no-dirty:
 ## audit: run quality control checks
 .PHONY: audit
 audit:
-	npx prettier ./src --write;
+	npx prettier ./src --check;
+	npx eslint ./src --fix;
+
+## audit/fix: run quality control checks !WITH FIX!
+.PHONY: audit/fix
+audit/fix:
+	npx prettier ./src --check --write;
 	npx eslint ./src --fix;
 
 ## preview: preview

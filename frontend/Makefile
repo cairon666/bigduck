@@ -20,7 +20,7 @@ no-dirty:
 .PHONY: audit
 audit:
 	npx prettier ./src --check;
-	npx eslint ./src --fix;
+	npx eslint ./src;
 
 ## audit/fix: run quality control checks !WITH FIX!
 .PHONY: audit/fix
@@ -38,20 +38,20 @@ preview:
 # ==================================================================================== #
 
 ## storybook: run storybook server
-.PHONY: storybook
-storybook:
+.PHONY: run/storybook
+run/storybook:
 	npx storybook dev --config-dir .storybook;
 
 ## run/dev: run server with dev
 .PHONY: run/dev
-dev:
+run/dev:
 	export NODE_ENV development;
-	vite serve --config vite.config.ts;
+	npx vite serve --config vite.config.ts;
 
 .PHONY: build
 build:
 	export NODE_ENV production;
-	vite build;
+	npx vite build;
 
 # ==================================================================================== #
 # OPERATIONS

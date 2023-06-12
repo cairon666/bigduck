@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"backend/internal/exceptions"
 	"github.com/google/uuid"
 )
 
@@ -13,7 +14,7 @@ type testCase[T any] struct {
 	Value  T
 }
 
-func Testing[T any](t *testing.T, cases []testCase[T], f func(T) error) {
+func Testing[T any](t *testing.T, cases []testCase[T], f func(T) exceptions.Error) {
 	for index, test := range cases {
 		err := f(test.Value)
 
@@ -36,7 +37,7 @@ func TestEmailSimple(t *testing.T) {
 			Value:  "example@example.com",
 		},
 		{
-			Should: ErrBadEmail,
+			Should: exceptions.ErrBadEmail,
 			Value:  "",
 		},
 	}
@@ -52,7 +53,7 @@ func TestPasswordSimple(t *testing.T) {
 			Value:  "12345678",
 		},
 		{
-			Should: ErrShortPassword,
+			Should: exceptions.ErrShortPassword,
 			Value:  "",
 		},
 	}
@@ -68,7 +69,7 @@ func TestFirstNameSimple(t *testing.T) {
 			Value:  "name",
 		},
 		{
-			Should: ErrShortFirstName,
+			Should: exceptions.ErrShortFirstName,
 			Value:  "",
 		},
 	}
@@ -84,7 +85,7 @@ func TestSecondNameSimple(t *testing.T) {
 			Value:  "name",
 		},
 		{
-			Should: ErrShortSecondName,
+			Should: exceptions.ErrShortSecondName,
 			Value:  "",
 		},
 	}
@@ -97,10 +98,10 @@ func TestDayOfBirth(t *testing.T) {
 	cases := []testCase[time.Time]{
 		{
 			Should: nil,
-			Value:  time.Now(),
+			Value:  time.Now().Add(-time.Hour),
 		},
 		{
-			Should: ErrBadData,
+			Should: exceptions.ErrDateOfBirthFromFeature,
 			Value:  time.Now().Add(time.Hour),
 		},
 	}
@@ -116,7 +117,7 @@ func TestAvatarURL(t *testing.T) {
 			Value:  "https://example.com",
 		},
 		{
-			Should: ErrBadAvatarURL,
+			Should: exceptions.ErrBadAvatarURL,
 			Value:  "",
 		},
 	}
@@ -136,7 +137,7 @@ func TestGender(t *testing.T) {
 			Value:  "female",
 		},
 		{
-			Should: ErrUnknownGender,
+			Should: exceptions.ErrUnknownGender,
 			Value:  "",
 		},
 	}
@@ -152,7 +153,7 @@ func TestUUIDSimple(t *testing.T) {
 			Value:  uuid.New().String(),
 		},
 		{
-			Should: ErrBadUUID,
+			Should: exceptions.ErrBadUUID,
 			Value:  "",
 		},
 	}

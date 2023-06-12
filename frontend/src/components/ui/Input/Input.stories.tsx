@@ -28,13 +28,13 @@ export const WithLabel: Story = {
 
 export const WithError: Story = {
     args: {
-        error: 'example',
+        errorLabel: 'example',
     },
 };
 
 export const WithErrorAndLabel: Story = {
     args: {
         label: 'example',
-        error: 'example',
+        errorLabel: 'example',
     },
 };

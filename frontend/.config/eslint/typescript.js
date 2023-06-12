@@ -10,6 +10,6 @@ module.exports = {
         '@typescript-eslint/semi': 'off',
         '@typescript-eslint/space-before-function-paren': 'off',
         '@typescript-eslint/type-annotation-spacing': 'off',
-        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-unused-vars": 0,
     },
 };

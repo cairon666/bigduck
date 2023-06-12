@@ -1,68 +1,12 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-interface NotifyMessage {
-    id: string;
-    date?: Date;
-    title: string;
-    description: string;
-    unviewed: boolean;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface State {}
 
-interface State {
-    notifies?: NotifyMessage[];
-    has_unviewed: boolean;
-    isLoading: boolean;
-}
-
-const initialState: State = {
-    has_unviewed: false,
-    isLoading: true,
-};
+const initialState: State = {};
 
 export const notifySlice = createSlice({
     name: 'notify',
     initialState,
-    reducers: {
-        START: (state: State) => {
-            state.isLoading = true;
-        },
-        END_SUCCESS: (state: State, action: PayloadAction<NotifyMessage[]>) => {
-            state.isLoading = false;
-
-            state.notifies = action.payload;
-            state.has_unviewed = hasUnviewed(state.notifies);
-        },
-        END_READ_ALL_SUCCESS: (state: State) => {
-            state.isLoading = false;
-            state.notifies = state.notifies?.map((notify) => ({
-                ...notify,
-                unviewed: false,
-            }));
-            state.has_unviewed = false;
-        },
-        END_FAILED: (state: State) => {
-            state.isLoading = false;
-        },
-        ADD_NOTIFY: (state: State, action: PayloadAction<NotifyMessage>) => {
-            if (state.notifies) {
-                state.notifies.push(action.payload);
-            } else {
-                state.notifies = [action.payload];
-            }
-
-            state.has_unviewed = hasUnviewed(state.notifies);
-        },
-    },
+    reducers: {},
 });
-
-function hasUnviewed(notifies?: NotifyMessage[]): boolean {
-    if (notifies) {
-        for (let i = 0; i < notifies.length; i++) {
-            if (notifies[i].unviewed) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}

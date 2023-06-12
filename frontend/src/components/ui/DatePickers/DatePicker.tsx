@@ -74,8 +74,7 @@ export const DatePicker = forwardRef(function DataTimePicker(
     useImperativeHandle(ref, () => refInput.current);
 
     return (
-        <div ref={refBlock} className={'relative flex flex-col'}>
-            {/* input */}
+        <div ref={refBlock} className={'relative flex flex-col gap-1'}>
             <Label label={label} required={required} />
             <label className={'relative w-full'}>
                 <input

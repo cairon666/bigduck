@@ -4,7 +4,7 @@ import (
 	"backend/internal/exceptions"
 )
 
-func TestPointer[T any](param *T, f func(T) error) error {
+func TestPointer[T any](param *T, f func(T) exceptions.Error) exceptions.Error {
 	if param != nil {
 		return f(*param)
 	}
@@ -12,18 +12,18 @@ func TestPointer[T any](param *T, f func(T) error) error {
 	return nil
 }
 
-func Test(errs ...error) error {
-	validErr := exceptions.NewValidateError()
+func Test(errs ...exceptions.Error) error {
+	appErr := exceptions.NewAppError()
 
 	for _, err := range errs {
 		if err != nil {
-			validErr.AddError(err)
+			appErr.Add(err)
 		}
 	}
 
-	if validErr.IsEmpty() {
+	if appErr.IsEmpty() {
 		return nil
 	}
 
-	return validErr
+	return appErr
 }

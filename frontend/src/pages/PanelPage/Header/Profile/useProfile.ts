@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-import { fetchUser, useAppDispatch, useAppSelector } from '../../../../_redux';
+import { useAppDispatch, useAppSelector } from '../../../../_redux';
 import { useOnClickOutside } from '../../../../hooks';
 
 export function useProfile() {
@@ -21,9 +21,9 @@ export function useProfile() {
         onClose();
     });
 
-    useEffect(() => {
-        dispatch(fetchUser());
-    }, []);
+    // useEffect(() => {
+    //     dispatch(fetchUser());
+    // }, []);
 
     return {
         isOpen,

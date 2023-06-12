@@ -36,15 +36,15 @@ export function usePosition({ refCalendar, refInput, position }: usePositionProp
                 refInput.current.getBoundingClientRect(),
             ),
         );
-    }, [position, refCalendar, refInput]);
+    }, [position, refCalendar.current, refInput.current]);
 
     // for dynamic update
     useEventListener('resize', calculate);
 
     // initial set style
-    useLayoutEffect(() => calculate, [calculate]);
+    useLayoutEffect(calculate, [calculate]);
 
-    return { style };
+    return { style, calculate };
 }
 
 function calculateStyle(position: positionProps, rectCalendar: DOMRect, rectInput: DOMRect): CSSProperties {
@@ -53,7 +53,7 @@ function calculateStyle(position: positionProps, rectCalendar: DOMRect, rectInpu
     switch (position.X) {
         case 'left': {
             if (rectInput.left > rectCalendar.width) {
-                style.right = '100%';
+                style.right = 'calc(100% + 0.5rem)';
             } else {
                 style.left = -rectInput.left;
             }
@@ -64,7 +64,7 @@ function calculateStyle(position: positionProps, rectCalendar: DOMRect, rectInpu
             // right - от конца элемента
             const right = rectInput.right - rectInput.width;
             if (right > rectCalendar.width) {
-                style.left = '100%';
+                style.left = 'calc(100% + 0.5rem)';
             } else {
                 style.right = -right;
             }
@@ -79,11 +79,11 @@ function calculateStyle(position: positionProps, rectCalendar: DOMRect, rectInpu
     // vertical
     switch (position.Y) {
         case 'top': {
-            style.bottom = '100%';
+            style.bottom = 'calc(100% + 0.5rem)';
             break;
         }
         case 'bottom': {
-            style.top = '100%';
+            style.top = 'calc(100% + 0.5rem)';
             break;
         }
         case 'center': {

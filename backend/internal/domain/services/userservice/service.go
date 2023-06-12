@@ -2,6 +2,7 @@ package userservice
 
 import (
 	"context"
+	"time"
 
 	"backend/internal/domain/models"
 )
@@ -37,6 +38,14 @@ func (s *UserService) Create(ctx context.Context, user models.User) error {
 
 func (s *UserService) UpdateByID(ctx context.Context, id string, data map[string]any) error {
 	return s.repo.UpdateByID(ctx, id, data)
+}
+
+func (s *UserService) UpdatePasswordByID(ctx context.Context, id, hash, salt string) error {
+	return s.repo.UpdateByID(ctx, id, map[string]any{
+		"password_hash": hash,
+		"salt":          salt,
+		"modify_at":     time.Now(),
+	})
 }
 
 func (s *UserService) DeleteByID(ctx context.Context, id string) error {

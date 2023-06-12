@@ -1,69 +1,55 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Button, Checkbox, DatePicker, Input, Label } from '../../../components/ui';
+import _i18n from '../../../_i18n';
+import { Button, Checkbox, DatePicker, Error, Input, Label } from '../../../components/ui';
 import { useRegisterForm } from './useRegisterForm';
-
-const now = new Date(0);
 
 export function Register() {
     const { register, onSubmit, errors, onChangeDate, isLoading } = useRegisterForm();
 
+    useEffect(() => {
+        document.title = _i18n.auth.Register;
+    }, []);
+
     return (
         <>
-            <h1 className={'text-center text-xl font-medium'}>Регистрация</h1>
+            <h1 className={'text-center text-xl font-medium'}>{_i18n.auth.Register}</h1>
             <form onSubmit={onSubmit} className={'flex flex-col gap-2'}>
                 <Input
                     fullWidth
-                    error={errors?.username?.message}
+                    errorLabel={errors?.email?.message}
                     type={'text'}
-                    placeholder={'Никнейм'}
+                    placeholder={_i18n.auth.Mail}
                     required
-                    label={'Никнейм'}
-                    {...register('username')}
-                />
-                <Input
-                    fullWidth
-                    error={errors?.login?.message}
-                    type={'text'}
-                    placeholder={'Логин'}
-                    required
-                    label={'Логин'}
-                    {...register('login')}
-                />
-                <Input
-                    fullWidth
-                    error={errors?.password?.message}
-                    type={'password'}
-                    placeholder={'Пароль'}
-                    required
-                    label={'Пароль'}
-                    {...register('password')}
-                />
-                <Input
-                    fullWidth
-                    error={errors?.email?.message}
-                    type={'text'}
-                    placeholder={'Почта'}
-                    required
-                    label={'Почта'}
+                    label={_i18n.auth.Mail}
                     {...register('email')}
                 />
                 <Input
                     fullWidth
-                    error={errors?.first_name?.message}
-                    type={'text'}
-                    placeholder={'Имя'}
+                    errorLabel={errors?.password?.message}
+                    type={'password'}
+                    placeholder={_i18n.auth.Password}
                     required
-                    label={'Имя'}
+                    label={_i18n.auth.Password}
+                    {...register('password')}
+                />
+                <Input
+                    fullWidth
+                    errorLabel={errors?.first_name?.message}
+                    type={'text'}
+                    placeholder={_i18n.auth.Name}
+                    required
+                    label={_i18n.auth.Name}
                     {...register('first_name')}
                 />
                 <Input
                     fullWidth
-                    error={errors?.second_name?.message}
+                    errorLabel={errors?.second_name?.message}
                     type={'text'}
-                    placeholder={'Фамилия'}
+                    placeholder={_i18n.auth.SecondName}
                     required
-                    label={'Фамилия'}
+                    label={_i18n.auth.SecondName}
                     {...register('second_name')}
                 />
                 <DatePicker
@@ -72,27 +58,27 @@ export function Register() {
                         Y: 'center',
                     }}
                     error={errors?.date_of_birth?.message}
-                    label={'День рождения'}
-                    placeholder={'День рождения'}
+                    label={_i18n.auth.DateOfBirth}
+                    placeholder={_i18n.auth.DateOfBirth}
                     {...register('date_of_birth')}
                     onChange={onChangeDate}
-                    maxDate={now}
                 />
-                <div>
-                    <Label label={'Пол'} />
+                <div className={'flex flex-col gap-1'}>
+                    <Label label={_i18n.auth.Gender} />
                     <div className={'flex items-center gap-2'}>
-                        <Checkbox value='male' type='radio' {...register('gender')} label={'Мужчина'} />
-                        <Checkbox value='female' type='radio' {...register('gender')} label={'Женщина'} />
+                        <Checkbox value='male' type='radio' {...register('gender')} label={_i18n.auth.Male} />
+                        <Checkbox value='female' type='radio' {...register('gender')} label={_i18n.auth.Female} />
                     </div>
+                    <Error error={errors.gender?.message} />
                 </div>
-                <Button isLoading={isLoading} type={'submit'}>
-                    Создать
+                <Button disabled={isLoading} isLoading={isLoading} type={'submit'}>
+                    {_i18n.auth.Create}
                 </Button>
             </form>
             <p className={'mt-1 text-center text-sm font-light'}>
-                Уже есть аккаунт?{' '}
+                <span>{_i18n.auth.AlreadyHasAccount} </span>
                 <Link className={'text-yellow-500 hover:underline'} to='/auth/login'>
-                    Войти
+                    {_i18n.auth.SigIn}
                 </Link>
             </p>
         </>

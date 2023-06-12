@@ -1,9 +1,21 @@
-import { FetchLoginRequest, FetchRegisterRequest, authTypes } from '../types';
+import { createAction } from '@reduxjs/toolkit';
 
-export const fetchLogin = (): FetchLoginRequest => ({
-    type: authTypes.FETCH_LOGIN,
-});
+import {
+    fetchLoginRequest,
+    fetchLoginResponse,
+    fetchRecoverPasswordConfirmRequest,
+    fetchRecoverPasswordSendRequest,
+    fetchRecoverPasswordUpdateRequest,
+    fetchRegisterRequest,
+} from '../../_api';
+import { fetchAction } from './types';
 
-export const fetchRegister = (): FetchRegisterRequest => ({
-    type: authTypes.FETCH_REGISTER,
-});
+export const LoginAction = createAction<fetchAction<fetchLoginRequest, fetchLoginResponse>>('LoginAction');
+export const RegisterAction = createAction<fetchAction<fetchRegisterRequest, unknown>>('RegisterAction');
+
+export const RecoverPasswordSendAction =
+    createAction<fetchAction<fetchRecoverPasswordSendRequest, unknown>>('RecoverPasswordSendAction');
+export const RecoverPasswordConfirmAction =
+    createAction<fetchAction<fetchRecoverPasswordConfirmRequest, unknown>>('RecoverPasswordConfirmAction');
+export const RecoverPasswordUpdateAction =
+    createAction<fetchAction<fetchRecoverPasswordUpdateRequest, unknown>>('RecoverPasswordUpdateAction');

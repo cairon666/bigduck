@@ -7,8 +7,8 @@ import (
 type Gender string
 
 var (
-	GenderMale   Gender = "MALE"
-	GenderFemale Gender = "FEMALE"
+	GenderMale   Gender = "male"
+	GenderFemale Gender = "female"
 )
 
 func ParseGender(g string) (Gender, error) {
@@ -20,14 +20,6 @@ func ParseGender(g string) (Gender, error) {
 	default:
 		return "", exceptions.ErrGenderNotFound
 	}
-}
-
-func NewMaleGender() Gender {
-	return GenderMale
-}
-
-func NewFemaleGender() Gender {
-	return GenderFemale
 }
 
 func (g Gender) ToString() string {

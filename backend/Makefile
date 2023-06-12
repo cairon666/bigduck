@@ -88,9 +88,9 @@ push: tidy audit no-dirty
 #    # Include additional deployment steps here...
 
 
-#generate:
-#	go generate ./...
-#
+generate:
+	go generate ./...
+
 #dependence:
 #	go get .; \
 #	go install github.com/vektra/mockery/v2@v2.20.0

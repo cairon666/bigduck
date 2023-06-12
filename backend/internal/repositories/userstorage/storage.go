@@ -50,7 +50,7 @@ func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (model
 
 	rows, err := s.client.Query(ctx, query, args...)
 	if err != nil {
-		return models.User{}, exceptions.ErrDatabase
+		return models.User{}, err
 	}
 	defer rows.Close()
 
@@ -73,7 +73,7 @@ func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (model
 		&userDB.CreateAt,
 		&userDB.ModifyAt,
 	); err != nil {
-		return models.User{}, exceptions.ErrDatabase
+		return models.User{}, err
 	}
 
 	user, err := userDB.ToUser()
@@ -122,7 +122,7 @@ func (s *UserStorage) Create(ctx context.Context, user models.User) error {
 			case "credential_email_uniq":
 				return exceptions.ErrEmailAlreadyExist
 			default:
-				return exceptions.ErrDatabase
+				return err
 			}
 		}
 	}
@@ -139,11 +139,10 @@ func (s *UserStorage) UpdateByID(ctx context.Context, id string, data map[string
 
 	query, args := builder.
 		AndWhere(qb.Eql("id", id)).
-		Limit(1).
 		ToSQL()
 
 	if _, err := s.client.Exec(ctx, query, args...); err != nil {
-		return exceptions.ErrDatabase
+		return err
 	}
 
 	return nil
@@ -153,7 +152,7 @@ func (s *UserStorage) DeleteByID(ctx context.Context, id string) error {
 	query := "delete from public.user where id = $1"
 
 	if _, err := s.client.Exec(ctx, query, id); err != nil {
-		return exceptions.ErrDatabase
+		return err
 	}
 
 	return nil

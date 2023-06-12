@@ -3,6 +3,7 @@ package validate
 import (
 	"time"
 
+	"backend/internal/exceptions"
 	"github.com/google/uuid"
 )
 
@@ -12,66 +13,74 @@ const (
 	MilLenSecondName = 3
 )
 
-func EmailSimple(email string) error {
+func EmailSimple(email string) exceptions.Error {
 	if ok := regexpEmailSimple.MatchString(email); !ok {
-		return ErrBadEmail
+		return exceptions.ErrBadEmail
 	}
 
 	return nil
 }
 
-func PasswordSimple(password string) error {
+func PasswordSimple(password string) exceptions.Error {
 	if len(password) < MinLenPassword {
-		return ErrShortPassword
+		return exceptions.ErrShortPassword
 	}
 
 	return nil
 }
 
-func FirstNameSimple(firstName string) error {
+func FirstNameSimple(firstName string) exceptions.Error {
 	if len(firstName) < MilLenFirstName {
-		return ErrShortFirstName
+		return exceptions.ErrShortFirstName
 	}
 
 	return nil
 }
 
-func SecondNameSimple(secondName string) error {
+func SecondNameSimple(secondName string) exceptions.Error {
 	if len(secondName) < MilLenSecondName {
-		return ErrShortSecondName
+		return exceptions.ErrShortSecondName
 	}
 
 	return nil
 }
 
-func DayOfBirth(date time.Time) error {
+func RecoverCodeSimple(code string) exceptions.Error {
+	if ok := regexpRecoverCodeSimple.MatchString(code); !ok {
+		return exceptions.ErrNotValidRecoverCode
+	}
+
+	return nil
+}
+
+func DayOfBirth(date time.Time) exceptions.Error {
 	if date.After(time.Now()) {
-		return ErrBadData
+		return exceptions.ErrDateOfBirthFromFeature
 	}
 
 	return nil
 }
 
-func AvatarURL(url string) error {
+func AvatarURL(url string) exceptions.Error {
 	if ok := regexpURLSimple.MatchString(url); !ok {
-		return ErrBadAvatarURL
+		return exceptions.ErrBadAvatarURL
 	}
 
 	return nil
 }
 
-func Gender(gender string) error {
+func Gender(gender string) exceptions.Error {
 	if gender == "male" ||
 		gender == "female" {
 		return nil
 	}
 
-	return ErrUnknownGender
+	return exceptions.ErrUnknownGender
 }
 
-func UUIDSimple(id string) error {
+func UUIDSimple(id string) exceptions.Error {
 	if _, err := uuid.Parse(id); err != nil {
-		return ErrBadUUID
+		return exceptions.ErrBadUUID
 	}
 
 	return nil

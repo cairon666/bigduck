@@ -46,18 +46,18 @@ export function Notify() {
                                 <NotifyBlockSkeleton />
                             </>
                         )}
-                        {notifies &&
-                            notifies.map((notify) => {
-                                return (
-                                    <NotifyBlock
-                                        key={notify.id}
-                                        date={notify.date}
-                                        title={notify.title}
-                                        description={notify.description}
-                                        unviewed={notify.unviewed}
-                                    />
-                                );
-                            })}
+                        {/*{notifies &&*/}
+                        {/*    notifies.map((notify) => {*/}
+                        {/*        return (*/}
+                        {/*            <NotifyBlock*/}
+                        {/*                key={notify.id}*/}
+                        {/*                date={notify.date}*/}
+                        {/*                title={notify.title}*/}
+                        {/*                description={notify.description}*/}
+                        {/*                unviewed={notify.unviewed}*/}
+                        {/*            />*/}
+                        {/*        );*/}
+                        {/*    })}*/}
                     </div>
                     <div className={'flex items-center justify-end border-t-2 border-gray-80 py-1 px-2'}>
                         <Button disabled={!hasUnViewed} isLoading={isLoading} onClick={onReadAll} theme={'text'}>

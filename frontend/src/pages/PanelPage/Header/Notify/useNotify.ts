@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-import { fetchNotifies, readAllNotifies, useAppDispatch, useAppSelector } from '../../../../_redux';
+import { useAppDispatch, useAppSelector } from '../../../../_redux';
 import { useOnClickOutside } from '../../../../hooks';
 
 export function useNotify() {
@@ -21,12 +21,12 @@ export function useNotify() {
         onClose();
     });
 
-    useEffect(() => {
-        dispatch(fetchNotifies());
-    }, []);
+    // useEffect(() => {
+    //     dispatch(fetchNotifies());
+    // }, []);
 
     const onReadAll = useCallback(() => {
-        dispatch(readAllNotifies());
+        // dispatch(readAllNotifies());
     }, []);
 
     return {

@@ -122,6 +122,10 @@ linters:
     - unused
   fast: true
 linters-settings:
+  revive:
+    rules:
+      - name: unexported-return
+        disabled: true
   errorlint:
     asserts: false
   depguard:

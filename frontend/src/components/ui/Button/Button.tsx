@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes, ForwardedRef, forwardRef } from 'react';
 import { AiOutlineLoading } from 'react-icons/all';
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -11,7 +11,10 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     onlyIcon?: boolean;
 };
 
-export function Button(props: ButtonProps) {
+export const Button = forwardRef(function Button(
+    props: ButtonProps,
+    forwardRef: ForwardedRef<HTMLButtonElement | null>,
+) {
     const {
         className,
         theme = 'contained',
@@ -26,6 +29,7 @@ export function Button(props: ButtonProps) {
     return (
         <button
             {...otherProps}
+            ref={forwardRef}
             onClick={isLoading ? undefined : onClick}
             className={classNames(
                 className,
@@ -66,4 +70,4 @@ export function Button(props: ButtonProps) {
             )}
         </button>
     );
-}
+});

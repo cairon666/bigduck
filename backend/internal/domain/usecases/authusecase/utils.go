@@ -4,6 +4,8 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"io"
+	"math/big"
+	"strings"
 
 	"backend/internal/exceptions"
 	"github.com/google/uuid"
@@ -46,4 +48,41 @@ func generateUUID() (string, error) {
 	}
 
 	return genUUID.String(), nil
+}
+
+func generateHashPassword(password string) (string, string, error) {
+	salt, err := generateSalt()
+	if err != nil {
+		return "", "", err
+	}
+
+	hash, err := hashPassword(password, salt)
+	if err != nil {
+		return "", "", err
+	}
+
+	return hash, salt, nil
+}
+
+const (
+	CodeLength = 4
+	maxCode
+)
+
+var max = big.NewInt(maxCode)
+
+func generateCode() (string, error) {
+	codeBuilder := strings.Builder{}
+	codeBuilder.Grow(CodeLength)
+
+	for i := 0; i < CodeLength; i++ {
+		randInt, err := rand.Int(rand.Reader, max)
+		if err != nil {
+			return "", err
+		}
+
+		_, _ = codeBuilder.WriteString(randInt.String())
+	}
+
+	return codeBuilder.String(), nil
 }

@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"backend/internal/domain/models"
-	"backend/internal/exceptions"
 )
 
 type UserDB struct {
@@ -41,7 +40,7 @@ func (userDB *UserDB) ToUser() (models.User, error) {
 	if userDB.Gender != nil {
 		tmp, err := models.ParseGender(*userDB.Gender)
 		if err != nil {
-			return models.User{}, exceptions.ErrDatabase
+			return models.User{}, err
 		}
 
 		user.Gender = &tmp

@@ -3,11 +3,10 @@ import { logger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 
 import { rootSaga } from './sagas';
-import { authSlice, notifySlice, userSlice } from './slices';
+import { notifySlice, userSlice } from './slices';
 
 const sagaMiddleware = createSagaMiddleware();
 export const rootReducer = combineReducers({
-    auth: authSlice.reducer,
     user: userSlice.reducer,
     notify: notifySlice.reducer,
 });
@@ -17,7 +16,9 @@ const middlewares = [logger, sagaMiddleware];
 export const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) => {
-        return getDefaultMiddleware().concat(middlewares);
+        return getDefaultMiddleware({
+            serializableCheck: false,
+        }).concat(middlewares);
     },
 });
 

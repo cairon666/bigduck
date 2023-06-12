@@ -3,9 +3,9 @@
 package authusecase
 
 import (
+	models "backend/internal/domain/models"
 	context "context"
 
-	models "backend/internal/domain/models"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -114,6 +114,51 @@ func (_c *MockUserService_ReadByEmail_Call) Return(_a0 models.User, _a1 error) *
 }
 
 func (_c *MockUserService_ReadByEmail_Call) RunAndReturn(run func(context.Context, string) (models.User, error)) *MockUserService_ReadByEmail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdatePasswordByID provides a mock function with given fields: ctx, id, hash, salt
+func (_m *MockUserService) UpdatePasswordByID(ctx context.Context, id string, hash string, salt string) error {
+	ret := _m.Called(ctx, id, hash, salt)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) error); ok {
+		r0 = rf(ctx, id, hash, salt)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockUserService_UpdatePasswordByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdatePasswordByID'
+type MockUserService_UpdatePasswordByID_Call struct {
+	*mock.Call
+}
+
+// UpdatePasswordByID is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id string
+//   - hash string
+//   - salt string
+func (_e *MockUserService_Expecter) UpdatePasswordByID(ctx interface{}, id interface{}, hash interface{}, salt interface{}) *MockUserService_UpdatePasswordByID_Call {
+	return &MockUserService_UpdatePasswordByID_Call{Call: _e.mock.On("UpdatePasswordByID", ctx, id, hash, salt)}
+}
+
+func (_c *MockUserService_UpdatePasswordByID_Call) Run(run func(ctx context.Context, id string, hash string, salt string)) *MockUserService_UpdatePasswordByID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(string))
+	})
+	return _c
+}
+
+func (_c *MockUserService_UpdatePasswordByID_Call) Return(_a0 error) *MockUserService_UpdatePasswordByID_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockUserService_UpdatePasswordByID_Call) RunAndReturn(run func(context.Context, string, string, string) error) *MockUserService_UpdatePasswordByID_Call {
 	_c.Call.Return(run)
 	return _c
 }

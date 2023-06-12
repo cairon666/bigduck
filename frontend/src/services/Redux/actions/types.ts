@@ -1,4 +1,4 @@
-import { ApiError } from '../../_api';
+import { ApiError } from '../../Api';
 
 export interface fetchAction<FetchData, SuccessData> {
     data: FetchData;

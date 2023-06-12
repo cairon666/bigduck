@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../../../../_redux';
 import { useOnClickOutside } from '../../../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../../services/Redux';
 
 export function useNotify() {
     const [isOpen, setIsOpen] = useState(false);

@@ -48,6 +48,7 @@ services:
     environment:
       - APP_PORT=8081
       - POSTGRESQL_URL=postgresql://admin:admin@postgres:5432/root
+      - JWT_TTL_ACCESS=1m
     volumes:
       - ../backend:/app
   frontend:

@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 
-import { ApiErrorCodes } from '../../../../_api';
-import _i18n from '../../../../_i18n';
-import { RecoverPasswordConfirmAction, RecoverPasswordSendAction, useAppDispatch } from '../../../../_redux';
 import { Button, Info, Input } from '../../../../components/ui';
+import { ApiErrorCodes } from '../../../../services/Api';
+import _i18n from '../../../../services/i18n';
+import { RecoverPasswordConfirmAction, RecoverPasswordSendAction, useAppDispatch } from '../../../../services/Redux';
 import { TimerBlock } from './TimerBlock';
 import { useConfirmCodeStage } from './useConfirmCodeStage';
 

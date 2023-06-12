@@ -1,4 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit/src/createAction';
 
 import {
     fetchLoginRequest,
@@ -7,7 +8,7 @@ import {
     fetchRecoverPasswordSendRequest,
     fetchRecoverPasswordUpdateRequest,
     fetchRegisterRequest,
-} from '../../_api';
+} from '../../Api';
 import { fetchAction } from './types';
 
 export const LoginAction = createAction<fetchAction<fetchLoginRequest, fetchLoginResponse>>('LoginAction');
@@ -19,3 +20,7 @@ export const RecoverPasswordConfirmAction =
     createAction<fetchAction<fetchRecoverPasswordConfirmRequest, unknown>>('RecoverPasswordConfirmAction');
 export const RecoverPasswordUpdateAction =
     createAction<fetchAction<fetchRecoverPasswordUpdateRequest, unknown>>('RecoverPasswordUpdateAction');
+
+export const RefreshTokensAction = createAction<{
+    action: PayloadAction<unknown>;
+}>('RefreshTokensAction');

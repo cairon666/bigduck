@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { object, string } from 'yup';
 
-import { ApiErrorCodes } from '../../../_api';
-import _i18n from '../../../_i18n';
-import _localstorage from '../../../_localstorage';
-import { LoginAction, useAppDispatch } from '../../../_redux';
+import { ApiErrorCodes } from '../../../services/Api';
+import _localstorage from '../../../services/AsyncStorage';
+import _i18n from '../../../services/i18n';
+import { LoginAction, useAppDispatch } from '../../../services/Redux';
 import { LoginErrorStatus } from './ErrorWindowContent';
 
 interface LoginForm {

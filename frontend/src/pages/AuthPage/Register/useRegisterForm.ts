@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { object, string } from 'yup';
 
-import { ApiErrorCodes } from '../../../_api';
-import _i18n from '../../../_i18n';
-import { RegisterAction, useAppDispatch } from '../../../_redux';
+import { ApiErrorCodes } from '../../../services/Api';
+import _i18n from '../../../services/i18n';
+import { RegisterAction, useAppDispatch } from '../../../services/Redux';
 
 const registerScheme = object({
     email: string().email(_i18n.auth.EmailBadFormat).required(_i18n.auth.EmailRequired),

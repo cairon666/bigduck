@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import _i18n from '../../../_i18n';
+import _i18n from '../../../services/i18n';
 import { ConfirmCodeStage } from './ConfirmCodeStage';
 import { SendEmailStage } from './SendEmailStage';
 import { UpdatePasswordStage } from './UpdatePasswordStage';

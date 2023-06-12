@@ -3,10 +3,10 @@ import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { object, ref, string } from 'yup';
 
-import { ApiErrorCodes } from '../../../../_api';
-import _i18n from '../../../../_i18n';
-import { RecoverPasswordUpdateAction, useAppDispatch } from '../../../../_redux';
 import { Button, Input } from '../../../../components/ui';
+import { ApiErrorCodes } from '../../../../services/Api';
+import _i18n from '../../../../services/i18n';
+import { RecoverPasswordUpdateAction, useAppDispatch } from '../../../../services/Redux';
 import { ErrorBlock, ErrorsTypes } from './ErrorBlock';
 
 interface UpdatePasswordStageProps {

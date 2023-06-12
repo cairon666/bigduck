@@ -1,8 +1,8 @@
 import ky, { HTTPError as KyHTTPError } from 'ky';
 import { KyInstance } from 'ky/distribution/types/ky';
 
+import { BadRequest, Forbidden, Internal, Unauthorized, Unknown } from '../errors';
 import { ApiOptions, HTTPClient } from './HTTPClient';
-import { HTTPError } from './HTTPError';
 
 export interface KyApiClientOptions {
     prefixUrl?: string;
@@ -37,7 +37,18 @@ export class KyHTTPClient implements HTTPClient {
             })(endpoint)
             .catch((e: unknown) => {
                 if (e instanceof KyHTTPError) {
-                    throw new HTTPError(e.response, e.request);
+                    switch (e.response.status) {
+                        case 400:
+                            throw new BadRequest(e.response, e.request);
+                        case 401:
+                            throw new Unauthorized(e.response, e.request);
+                        case 403:
+                            throw new Forbidden(e.response, e.request);
+                        case 500:
+                            throw new Internal(e.response, e.request);
+                        default:
+                            throw new Unknown(e.response, e.request);
+                    }
                 }
 
                 throw new Error('Unhandled error when call request!');

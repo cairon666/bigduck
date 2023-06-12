@@ -2,8 +2,8 @@ import React, { StrictMode, Suspense, lazy } from 'react';
 import { Provider } from 'react-redux';
 import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import { store } from '../_redux';
 import { Loader } from '../components/ui';
+import { store } from '../services/Redux';
 
 const AuthPage = lazy(() => import('../pages/AuthPage'));
 const PanelPage = lazy(() => import('../pages/PanelPage'));

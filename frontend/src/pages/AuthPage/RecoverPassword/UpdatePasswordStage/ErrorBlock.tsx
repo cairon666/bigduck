@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
-import _i18n from '../../../../_i18n';
 import { Info } from '../../../../components/ui';
+import _i18n from '../../../../services/i18n';
 
 export enum ErrorsTypes {
     EmailNotConfirm = 1,

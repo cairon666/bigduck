@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
 import { object, string } from 'yup';
 
-import { ApiErrorCodes } from '../../../../_api';
-import _i18n from '../../../../_i18n';
-import { RecoverPasswordSendAction, useAppDispatch } from '../../../../_redux';
 import { Button, Info, Input } from '../../../../components/ui';
+import { ApiErrorCodes } from '../../../../services/Api';
+import _i18n from '../../../../services/i18n';
+import { RecoverPasswordSendAction, useAppDispatch } from '../../../../services/Redux';
 
 interface SendEmailStageProps {
     setEmail: (email: string) => void;

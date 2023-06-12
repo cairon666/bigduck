@@ -1,33 +1,24 @@
 import { useCallback, useRef, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../../../../_redux';
 import { useOnClickOutside } from '../../../../hooks';
+import { useAppSelector } from '../../../../services/Redux';
 
 export function useProfile() {
     const userStorage = useAppSelector((state) => state.user);
     const [isOpen, setIsOpen] = useState(false);
     const ref = useRef(null);
-    const dispatch = useAppDispatch();
 
-    const onOpen = useCallback(() => {
-        setIsOpen(true);
-    }, []);
-
-    const onClose = useCallback(() => {
-        setIsOpen(false);
+    const onClick = useCallback(() => {
+        setIsOpen((prev) => !prev);
     }, []);
 
     useOnClickOutside(ref, () => {
-        onClose();
+        setIsOpen(false);
     });
-
-    // useEffect(() => {
-    //     dispatch(fetchUser());
-    // }, []);
 
     return {
         isOpen,
-        onOpen,
+        onClick,
         ref,
         user: userStorage.user,
         isLoading: userStorage.isLoading,

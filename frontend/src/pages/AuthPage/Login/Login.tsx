@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { IoWarningOutline } from 'react-icons/all';
 import { Link } from 'react-router-dom';
 
-import _i18n from '../../../_i18n';
 import { Button, Input } from '../../../components/ui';
+import _i18n from '../../../services/i18n';
 import { ErrorWindowContent } from './ErrorWindowContent';
 import { useLogin } from './useLogin';
 

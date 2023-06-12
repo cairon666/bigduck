@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import _i18n from '../../../_i18n';
 import { Button, Checkbox, DatePicker, Error, Input, Label } from '../../../components/ui';
+import _i18n from '../../../services/i18n';
 import { useRegisterForm } from './useRegisterForm';
 
 export function Register() {

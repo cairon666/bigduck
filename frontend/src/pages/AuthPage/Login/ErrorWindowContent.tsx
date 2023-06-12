@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import _i18n from '../../../_i18n';
+import _i18n from '../../../services/i18n';
 
 export enum LoginErrorStatus {
     EmailNotFound = 'EmailNotFound',

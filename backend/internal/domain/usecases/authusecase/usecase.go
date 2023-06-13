@@ -2,95 +2,72 @@ package authusecase
 
 import (
 	"context"
-	"time"
 
 	"backend/internal/domain/models"
-	"backend/pkg/beda"
+	"go.uber.org/dig"
 )
 
 //go:generate mockery --name UserService
 type UserService interface {
-	ReadByEmail(ctx context.Context, email string) (models.User, error)
 	Create(ctx context.Context, user models.User) error
 }
+
+//go:generate mockery --name CredentialService
+type CredentialService interface {
+	Create(ctx context.Context, credential models.Credential) error
+	ReadByEmail(ctx context.Context, email string) (models.Credential, error)
+	ReadByID(ctx context.Context, id string) (models.Credential, error)
+	UpdatePasswordByID(ctx context.Context, id, hash, salt string) error
+	UpdateEmailByID(ctx context.Context, id string, email string) error
+	ConfirmEmailByID(ctx context.Context, id string) error
+}
+
+//go:generate mockery --name MailService
+type MailService interface {
+	SendRecoverPasswordCode(ctx context.Context, email, code string)
+	SendSomebodyLogin(ctx context.Context, email string)
+	SendSomebodyTryLogin(ctx context.Context, email string)
+	SendPasswordWasUpdate(ctx context.Context, email string)
+	SendEmailWasUpdate(ctx context.Context, email string)
+	SendEmailConfirmCode(ctx context.Context, email, code string)
+}
+
+//go:generate mockery --name RecoverPasswordCodeService
+type RecoverPasswordCodeService interface {
+	Get(ctx context.Context, email string) (models.RecoverPassword, error)
+	Set(ctx context.Context, email string, data models.RecoverPassword) error
+}
+
+//go:generate mockery --name ConfirmEmailCodeService
+type ConfirmEmailCodeService interface {
+	Get(ctx context.Context, idUser string) (models.ConfirmEmail, error)
+	Set(ctx context.Context, idUser string, data models.ConfirmEmail) error
+}
+
 type Usecase struct {
-	userService UserService
+	userService                UserService
+	mailService                MailService
+	recoverPasswordCodeService RecoverPasswordCodeService
+	credentialService          CredentialService
+	confirmEmailCodeService    ConfirmEmailCodeService
 }
 
-func NewAuthUsecase(userService UserService) *Usecase {
+type Props struct {
+	dig.In
+
+	UserService                UserService
+	MailService                MailService
+	RecoverPasswordCodeService RecoverPasswordCodeService
+	CredentialService          CredentialService
+	ConfirmEmailCodeService    ConfirmEmailCodeService
+}
+
+func NewAuthUsecase(props Props) *Usecase {
 	return &Usecase{
-		userService: userService,
+		userService:                props.UserService,
+		mailService:                props.MailService,
+		recoverPasswordCodeService: props.RecoverPasswordCodeService,
+		credentialService:          props.CredentialService,
+		confirmEmailCodeService:    props.ConfirmEmailCodeService,
 	}
-}
-
-func (u *Usecase) Login(ctx context.Context, dto LoginRequest) (LoginResponse, error) {
-	if err := dto.IsValid(); err != nil {
-		return LoginResponse{}, beda.Wrap("IsValid", err)
-	}
-
-	user, err := u.userService.ReadByEmail(ctx, dto.Email)
-	if err != nil {
-		return LoginResponse{}, beda.Wrap("Read", err)
-	}
-
-	if err := checkPasswordHash(dto.Password, user.Salt, user.PasswordHash); err != nil {
-		return LoginResponse{}, beda.Wrap("checkPasswordHash", err)
-	}
-
-	return LoginResponse{
-		IDUser: user.ID,
-	}, nil
-}
-
-func (u *Usecase) Register(ctx context.Context, dto RegisterRequest) error {
-	if err := dto.IsValid(); err != nil {
-		return beda.Wrap("IsValid", err)
-	}
-
-	uuid, err := generateUUID()
-	if err != nil {
-		return beda.Wrap("generateUUID", err)
-	}
-
-	salt, err := generateSalt()
-	if err != nil {
-		return beda.Wrap("generateSalt", err)
-	}
-
-	hash, err := hashPassword(dto.Password, salt)
-	if err != nil {
-		return beda.Wrap("hashPassword", err)
-	}
-
-	now := time.Now()
-
-	user := models.User{
-		ID:             uuid,
-		Email:          dto.Email,
-		EmailIsConfirm: false,
-		PasswordHash:   hash,
-		Salt:           salt,
-		FirstName:      dto.FirstName,
-		SecondName:     dto.SecondName,
-		AvatarURL:      dto.AvatarURL,
-		DateOfBirth:    dto.DateOfBirth,
-		Gender:         nil,
-		CreateAt:       now,
-		ModifyAt:       now,
-	}
-
-	if dto.Gender != nil {
-		tmp, err := models.ParseGender(*dto.Gender)
-		if err != nil {
-			return beda.Wrap("ParseGender", err)
-		}
-
-		user.Gender = &tmp
-	}
-
-	if err := u.userService.Create(ctx, user); err != nil {
-		return beda.Wrap("Create", err)
-	}
-
-	return nil
 }

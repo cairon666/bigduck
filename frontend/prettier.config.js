@@ -1,6 +1,4 @@
-const path = require('path');
-
-module.exports = {
+const config = {
     singleQuote: true,
     trailingComma: 'all',
     quoteProps: 'consistent',
@@ -13,7 +11,7 @@ module.exports = {
     semi: true,
     printWidth: 120,
     plugins: [require('prettier-plugin-tailwindcss')],
-    tailwindConfig: path.join(process.cwd(), 'tailwind.config.js'),
+    // tailwindConfig: path.join(process.cwd(), "tailwind.config.*"),
     overrides: [
         {
             files: '*.json',
@@ -29,3 +27,5 @@ module.exports = {
         },
     ],
 };
+
+module.exports = config;

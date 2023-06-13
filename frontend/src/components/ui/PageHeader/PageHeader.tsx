@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 export type PageHeaderProps = {
-    icon?: JSX.Element | ReactNode;
-    label?: string;
-    right?: JSX.Element | ReactNode;
+    icon?: ReactNode;
+    label: string;
+    right?: ReactNode;
 };
 
 export function PageHeader({ icon, label, right }: PageHeaderProps) {

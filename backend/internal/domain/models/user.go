@@ -5,16 +5,13 @@ import (
 )
 
 type User struct {
-	ID             string
-	Email          string
-	EmailIsConfirm bool
-	PasswordHash   string
-	Salt           string
-	FirstName      string
-	SecondName     string
-	AvatarURL      *string
-	DateOfBirth    *time.Time
-	Gender         *Gender
-	CreateAt       time.Time
-	ModifyAt       time.Time
+	ID          string
+	Email       string
+	FirstName   string
+	SecondName  string
+	UserName    string
+	DateOfBirth *time.Time
+	AvatarURL   *string
+	Gender      *Gender
+	CreateAt    time.Time
 }

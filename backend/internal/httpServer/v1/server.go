@@ -1,75 +1,79 @@
 package v1
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
-	"backend/internal/authhelper"
 	"backend/internal/config"
 	"backend/internal/domain/usecases/authusecase"
 	"backend/internal/domain/usecases/userusecase"
+	"backend/internal/httpServer/v1/authcontroller"
+	"backend/internal/httpServer/v1/authhelper"
+	"backend/internal/httpServer/v1/httphelper"
+	"backend/internal/httpServer/v1/usercontroller"
 	"backend/pkg/logger"
-	"github.com/pkg/errors"
+	"github.com/go-chi/chi/v5"
 	"go.uber.org/dig"
 )
 
-//go:generate mockery --name UserUsecase
-type UserUsecase interface {
-	ReadByID(ctx context.Context, dto userusecase.ReadByIDRequest) (userusecase.ReadByIDResponse, error)
-	UpdateByID(ctx context.Context, dto userusecase.UpdateByIDRequest) error
-	DeleteByID(ctx context.Context, dto userusecase.DeleteByIDRequest) error
+type AuthHelper interface {
+	AuthorizationMiddleware(next http.Handler) http.Handler
 }
 
-//go:generate mockery --name AuthUsecase
-type AuthUsecase interface {
-	Login(ctx context.Context, dto authusecase.LoginRequest) (authusecase.LoginResponse, error)
-	Register(ctx context.Context, dto authusecase.RegisterRequest) error
+type Controller interface {
+	RegisterRouter(r chi.Router)
 }
 
-type Server struct {
-	log         logger.Logger
-	conf        *config.Config
-	authHelper  authhelper.Helper
-	authUsecase AuthUsecase
-	userUsecase UserUsecase
+type server struct {
+	conf           *config.Config
+	authController Controller
+	userController Controller
+	authHelper     AuthHelper
 }
 
-type ServerParams struct {
+type Params struct {
 	dig.In
 
-	AuthUsecase AuthUsecase
-	UserUsecase UserUsecase
+	Log         logger.Logger
+	Conf        *config.Config
+	AuthUsecase *authusecase.Usecase
+	UserUsecase *userusecase.Usecase
 }
 
-func NewServer(log logger.Logger, conf *config.Config, params ServerParams) *Server {
-	return &Server{
-		conf:        conf,
-		log:         log,
-		authUsecase: params.AuthUsecase,
-		userUsecase: params.UserUsecase,
-		authHelper: authhelper.NewHelper(authhelper.HelperProps{
-			Issuer:     conf.App.Domain,
-			Private:    []byte(conf.JWT.Private),
-			TTLAccess:  conf.JWT.TTLAccess,
-			TTLRefresh: conf.JWT.TTLRefresh,
+func NewServer(params Params) *server {
+	httpHelper := httphelper.NewHTTPHelper(params.Log, params.Conf)
+	authHelper := authhelper.NewAuthHelper(authhelper.Props{
+		Issuer:     params.Conf.HTTP.Domain,
+		Private:    []byte(params.Conf.JWT.Private),
+		TTLAccess:  params.Conf.JWT.TTLAccess,
+		TTLRefresh: params.Conf.JWT.TTLRefresh,
+	})
+
+	return &server{
+		conf:       params.Conf,
+		authHelper: authHelper,
+		authController: authcontroller.NewAuthController(authcontroller.Params{
+			AuthUsecase: params.AuthUsecase,
+			HTTPHelper:  httpHelper,
+			AuthHelper:  authHelper,
+		}),
+		userController: usercontroller.NewUserController(usercontroller.Params{
+			UserUsecase: params.UserUsecase,
+			HTTPHelper:  httpHelper,
+			AuthHelper:  authHelper,
 		}),
 	}
 }
 
-func (s *Server) Run() error {
+func (s *server) Run() error {
 	server := http.Server{
-		Addr:              fmt.Sprintf("%s:%s", s.conf.App.Address, s.conf.App.Port),
+		Addr:              fmt.Sprintf("%s:%s", s.conf.HTTP.Address, s.conf.HTTP.Port),
 		Handler:           s.router(),
-		ReadTimeout:       s.conf.App.ReadTimeout,
-		ReadHeaderTimeout: s.conf.App.ReadHeaderTimeout,
-		WriteTimeout:      s.conf.App.WriteTimeout,
-		IdleTimeout:       s.conf.App.IdleTimeout,
+		ReadTimeout:       s.conf.HTTP.ReadTimeout,
+		ReadHeaderTimeout: s.conf.HTTP.ReadHeaderTimeout,
+		WriteTimeout:      s.conf.HTTP.WriteTimeout,
+		IdleTimeout:       s.conf.HTTP.IdleTimeout,
 	}
 
-	if err := server.ListenAndServe(); err != nil {
-		return errors.Wrap(err, "Serve: ")
-	}
-
-	return nil
+	return server.ListenAndServe()
 }

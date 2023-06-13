@@ -1,31 +1,30 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect } from 'react';
+import dayjs from 'dayjs';
+import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { object, string } from 'yup';
 
-import { authSlice, fetchLogin, useAppDispatch, useAppSelector } from '../../../_redux';
+import { ApiErrorCodes } from '../../../services/Api';
+import _i18n from '../../../services/i18n';
+import { RegisterAction, useAppDispatch } from '../../../services/Redux';
 
 const registerScheme = object({
-    login: string().required('Логин обязательное поле'),
-    password: string().required('Пароль обязательное поле'),
-    email: string().email('Плохой формат почты').required('Почта обязательное поле'),
-    first_name: string().required('Имя обязательное поле'),
-    second_name: string().required('Фамилия обязательное поле'),
-    username: string().required('Никнейм обязательное поле'),
+    email: string().email(_i18n.auth.EmailBadFormat).required(_i18n.auth.EmailRequired),
+    password: string().required(_i18n.auth.PasswordRequired),
+    first_name: string().required(_i18n.auth.FirstNameRequired),
+    second_name: string().required(_i18n.auth.SecondNameRequired),
     date_of_birth: string().nullable(),
     gender: string().nullable().oneOf(['male', 'female', null]),
 });
 
 interface RegisterForm {
-    login: string;
-    password: string;
     email: string;
+    password: string;
     first_name: string;
     second_name: string;
-    username: string;
-    date_of_birth: Date | null;
-    gender: 'male' | 'female';
+    date_of_birth?: Date | null;
+    gender?: 'male' | 'female';
 }
 
 export function useRegisterForm() {
@@ -35,38 +34,72 @@ export function useRegisterForm() {
         formState: { errors },
         setValue,
         getValues,
+        setError,
     } = useForm<RegisterForm>({
         resolver: yupResolver(registerScheme),
     });
-    const authStorage = useAppSelector((state) => state.auth);
+    const [isLoading, setIsLoading] = useState(false);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const onSubmit = handleSubmit((form) => {
-        if (authStorage.isLoading) {
-            return;
-        }
+    const onSubmit = useCallback((data: RegisterForm) => {
+        setIsLoading(true);
 
-        dispatch(fetchLogin());
-    });
+        dispatch(
+            RegisterAction({
+                data: {
+                    ...data,
+                    date_of_birth: data.date_of_birth
+                        ? dayjs(data.date_of_birth).format('YYYY-MM-DDTHH:mm:ssZ')
+                        : undefined,
+                },
+                onError: (apiErr) => {
+                    for (const err of apiErr.errors) {
+                        switch (err.code) {
+                            case ApiErrorCodes.CodeEmailAlreadyExist:
+                                setError('email', { message: _i18n.auth.EmailAlreadyExist });
+                                break;
+                            case ApiErrorCodes.CodeBadEmail:
+                                setError('email', { message: _i18n.auth.EmailBadFormat });
+                                break;
+                            case ApiErrorCodes.CodeShortPassword:
+                                setError('password', { message: _i18n.auth.ShortPasswordMessage });
+                                break;
+                            case ApiErrorCodes.CodeShortFirstName:
+                                setError('first_name', { message: _i18n.auth.FirstNameShort });
+                                break;
+                            case ApiErrorCodes.CodeShortSecondName:
+                                setError('second_name', { message: _i18n.auth.SecondNameShort });
+                                break;
+                            case ApiErrorCodes.CodeGenderNotFound:
+                                setError('gender', { message: _i18n.auth.SecondNameShort });
+                                break;
+                            case ApiErrorCodes.CodeDateOfBirthFromFeature:
+                                setError('date_of_birth', { message: _i18n.auth.DateFromFeature });
+                                break;
+                        }
+                    }
+                },
+                onSuccess: () => {
+                    const values = getValues();
+                    navigate(`/auth/login?email=${values.email}&password=${values.password}`);
+                },
+                onEnd: () => {
+                    setIsLoading(false);
+                },
+            }),
+        );
+    }, []);
 
-    const onChangeDate = (date: Date | null) => {
+    const onChangeDate = useCallback((date: Date | null) => {
         setValue('date_of_birth', date);
-    };
-
-    useEffect(() => {
-        if (authStorage.isSuccess) {
-            dispatch(authSlice.actions.CLEAR());
-            const values = getValues();
-            navigate(`/auth/login?login=${values.login}&password=${values.password}`);
-        }
-    }, [authStorage.isSuccess]);
+    }, []);
 
     return {
         register,
-        onSubmit,
+        onSubmit: handleSubmit(onSubmit),
         errors,
         onChangeDate,
-        isLoading: authStorage.isLoading,
+        isLoading,
     };
 }

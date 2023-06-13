@@ -1,4 +1,5 @@
 import { Transition } from '@headlessui/react';
+import classNames from 'classnames';
 import { Fragment } from 'react';
 import { MdOutlineNotificationsNone } from 'react-icons/md';
 
@@ -9,32 +10,35 @@ export function Notify() {
     const { isOpen, ref, onOpen, hasUnViewed, isLoading, notifies, onReadAll } = useNotify();
 
     return (
-        <div className={'relative flex flex h-full items-center justify-center'}>
-            <div>
-                <Button onClick={onOpen} onFocus={onOpen} theme={'gray'} onlyIcon>
-                    <MdOutlineNotificationsNone className={'h-5 w-5 text-gray-400'} />
-                    {hasUnViewed && (
-                        <>
-                            <div className={'absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-800'} />
-                            <div className={'absolute -top-1 -right-1 h-2 w-2 animate-ping rounded-full bg-red-800'} />
-                        </>
-                    )}
-                </Button>
-            </div>
+        <div
+            ref={ref}
+            className={classNames(
+                'relative flex h-full items-center justify-center px-2 py-2 hover:bg-gray-20',
+                isOpen ? 'bg-gray-20' : '',
+            )}
+        >
+            <Button onClick={onOpen} onFocus={onOpen} theme={'gray'} onlyIcon>
+                <MdOutlineNotificationsNone className={'h-5 w-5 text-gray-400'} />
+                {hasUnViewed && (
+                    <>
+                        <div className={'absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-800'} />
+                        <div className={'absolute -top-1 -right-1 h-2 w-2 animate-ping rounded-full bg-red-800'} />
+                    </>
+                )}
+            </Button>
             <Transition
                 show={isOpen}
                 as={Fragment}
-                enter='ease-out duration-300'
-                enterFrom='opacity-0'
-                enterTo='opacity-100'
-                leave='ease-in duration-200'
-                leaveFrom='opacity-100'
-                leaveTo='opacity-0'
+                enter='ease-out duration-150'
+                enterFrom='opacity-0 translate-y-2'
+                enterTo='opacity-100 translate-y-0'
+                leave='ease-in duration-150'
+                leaveFrom='opacity-100 translate-y-0'
+                leaveTo='opacity-0 translate-y-2'
             >
                 <Card
-                    ref={ref}
                     className={
-                        'absolute right-0 top-full z-20 flex w-72 flex-col flex-col overflow-hidden !rounded-t-none font-light shadow'
+                        'absolute right-0 top-full z-20 flex w-72 flex-col overflow-hidden !rounded-t-none font-light shadow'
                     }
                 >
                     <div className={'bg-gray-40 py-1 px-4 text-lg font-normal'}>Уведомления</div>
@@ -46,18 +50,18 @@ export function Notify() {
                                 <NotifyBlockSkeleton />
                             </>
                         )}
-                        {notifies &&
-                            notifies.map((notify) => {
-                                return (
-                                    <NotifyBlock
-                                        key={notify.id}
-                                        date={notify.date}
-                                        title={notify.title}
-                                        description={notify.description}
-                                        unviewed={notify.unviewed}
-                                    />
-                                );
-                            })}
+                        {/*{notifies &&*/}
+                        {/*    notifies.map((notify) => {*/}
+                        {/*        return (*/}
+                        {/*            <NotifyBlock*/}
+                        {/*                key={notify.id}*/}
+                        {/*                date={notify.date}*/}
+                        {/*                title={notify.title}*/}
+                        {/*                description={notify.description}*/}
+                        {/*                unviewed={notify.unviewed}*/}
+                        {/*            />*/}
+                        {/*        );*/}
+                        {/*    })}*/}
                     </div>
                     <div className={'flex items-center justify-end border-t-2 border-gray-80 py-1 px-2'}>
                         <Button disabled={!hasUnViewed} isLoading={isLoading} onClick={onReadAll} theme={'text'}>
@@ -80,9 +84,10 @@ interface NotifyBlockProps {
 function NotifyBlock(props: NotifyBlockProps) {
     return (
         <div
-            className={
-                'w-full cursor-pointer border border-r-transparent border-l-transparent border-b-transparent border-t-gray-100 py-2 px-4 text-sm font-light duration-75 ease-linear hover:border-yellow-500'
-            }
+            className={`w-full cursor-pointer border border-r-transparent 
+                border-l-transparent border-b-transparent border-t-gray-100 
+                py-2 px-4 text-sm font-light duration-75 ease-linear 
+                hover:border-yellow-500`}
         >
             <h4 className={'w-full rounded font-normal'}>{props.title || ''}</h4>
             <p className={'w-full rounded line-clamp-4'}>{props.description || ''}</p>

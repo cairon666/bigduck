@@ -122,5 +122,29 @@ linters:
     - unused
   fast: true
 linters-settings:
+  revive:
+    rules:
+      - name: unexported-return
+        disabled: true
   errorlint:
     asserts: false
+  depguard:
+    rules:
+      pkg:
+        files:
+          - backend/pkg/**/*.go
+        deny:
+          - pkg: backend/internal/*
+            desc: pkg directory cant import internal
+#      main:
+#        files:
+#          - $all
+#        deny:
+#          - pkg: github.com/pkg/errors
+#            desc: Should be replaced by standard lib errors package
+#      tests:
+#        files:
+#          - $test
+#        deny:
+#          - pkg: github.com/stretchr/testify
+#            desc: Please use standard library for tests

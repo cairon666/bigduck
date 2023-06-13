@@ -1,7 +1,9 @@
+import { memo } from 'react';
+
 export interface ErrorProps {
     error?: string;
 }
 
-export function Error({ error }: ErrorProps) {
-    return error ? <div className={'text-xs font-normal text-red-800'}>{error}</div> : null;
-}
+export const Error = memo(function Error({ error }: ErrorProps) {
+    return error ? <span className={'text-xs font-normal leading-3 text-red-800'}>{error}</span> : null;
+});

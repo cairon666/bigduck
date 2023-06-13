@@ -1,15 +1,30 @@
 package models
 
 import (
-	"backend/internal/exceptions"
+	"backend/internal/domain/exceptions"
 )
 
 type Gender string
 
 var (
-	GenderMale   Gender = "MALE"
-	GenderFemale Gender = "FEMALE"
+	GenderMale   Gender = "male"
+	GenderFemale Gender = "female"
 )
+
+func MustParseGenderPoint(g *string) *Gender {
+	if g == nil {
+		return nil
+	}
+
+	gender, _ := ParseGender(*g)
+
+	return &gender
+}
+
+func MustParseGender(g string) Gender {
+	gender, _ := ParseGender(g)
+	return gender
+}
 
 func ParseGender(g string) (Gender, error) {
 	switch Gender(g) {
@@ -20,14 +35,6 @@ func ParseGender(g string) (Gender, error) {
 	default:
 		return "", exceptions.ErrGenderNotFound
 	}
-}
-
-func NewMaleGender() Gender {
-	return GenderMale
-}
-
-func NewFemaleGender() Gender {
-	return GenderFemale
 }
 
 func (g Gender) ToString() string {

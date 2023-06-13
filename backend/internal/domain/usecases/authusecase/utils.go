@@ -4,9 +4,10 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"io"
+	"math/big"
+	"strings"
 
-	"backend/internal/exceptions"
-	"backend/pkg/beda"
+	"backend/internal/domain/exceptions"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -14,7 +15,7 @@ import (
 func hashPassword(password string, salt string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password+salt), bcrypt.DefaultCost)
 	if err != nil {
-		return "", beda.Wrap("GenerateFromPassword", err)
+		return "", err
 	}
 
 	return string(bytes), nil
@@ -23,7 +24,7 @@ func hashPassword(password string, salt string) (string, error) {
 func checkPasswordHash(password, salt, hash string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password+salt))
 	if err != nil {
-		return beda.Wrap("CompareHashAndPassword", exceptions.ErrBadPassword)
+		return exceptions.ErrBadPassword
 	}
 
 	return nil
@@ -34,7 +35,7 @@ func generateSalt() (string, error) {
 
 	_, err := io.ReadFull(rand.Reader, salt)
 	if err != nil {
-		return "", beda.Wrap("ReadFull", err)
+		return "", err
 	}
 
 	return base64.StdEncoding.EncodeToString(salt), err
@@ -43,8 +44,45 @@ func generateSalt() (string, error) {
 func generateUUID() (string, error) {
 	genUUID, err := uuid.NewUUID()
 	if err != nil {
-		return "", beda.Wrap("NewUUID", err)
+		return "", err
 	}
 
 	return genUUID.String(), nil
+}
+
+func generateHashPassword(password string) (string, string, error) {
+	salt, err := generateSalt()
+	if err != nil {
+		return "", "", err
+	}
+
+	hash, err := hashPassword(password, salt)
+	if err != nil {
+		return "", "", err
+	}
+
+	return hash, salt, nil
+}
+
+const (
+	CodeLength = 4
+	maxCode
+)
+
+var max = big.NewInt(maxCode)
+
+func generateCode() (string, error) {
+	codeBuilder := strings.Builder{}
+	codeBuilder.Grow(CodeLength)
+
+	for i := 0; i < CodeLength; i++ {
+		randInt, err := rand.Int(rand.Reader, max)
+		if err != nil {
+			return "", err
+		}
+
+		_, _ = codeBuilder.WriteString(randInt.String())
+	}
+
+	return codeBuilder.String(), nil
 }

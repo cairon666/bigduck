@@ -68,7 +68,7 @@ export function History() {
     }, [location]);
 
     return (
-        <div className={'ml-5 flex items-center gap-4'}>
+        <div className={'ml-4 flex items-center gap-4'}>
             {list.map((item, index) => {
                 return (
                     <Link

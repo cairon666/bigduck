@@ -1,5 +1,4 @@
 import * as dns from 'dns';
-import fs from 'fs';
 import * as path from 'path';
 
 import image from '@rollup/plugin-image';
@@ -15,7 +14,7 @@ const src = path.join(process.cwd(), 'src');
 const build = path.join(process.cwd(), 'build');
 
 // https://vitejs.dev/config/
-export default defineConfig((configEnv) => ({
+export default defineConfig(() => ({
     base: '/',
     plugins: [
         react(),
@@ -31,10 +30,15 @@ export default defineConfig((configEnv) => ({
             enforce: 'pre',
         },
     ],
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, './src'),
+        },
+    },
     root: src,
     appType: 'spa',
     server: {
-        host: 'localhost',
+        host: '0.0.0.0',
         port: 8080,
         // https: {
         //     key: fs.readFileSync(path.join(process.cwd(), '.config', 'cert', 'example.com+5-key.pem')),

@@ -8,3 +8,4 @@ export * from './Card';
 export * from './PageHeader';
 export * from './Loader';
 export * from './Switch';
+export * from './Info';

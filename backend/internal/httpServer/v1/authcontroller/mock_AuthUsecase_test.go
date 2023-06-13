@@ -3,9 +3,9 @@
 package authcontroller
 
 import (
-	authusecase "backend/internal/domain/usecases/authusecase"
 	context "context"
 
+	authusecase "backend/internal/domain/usecases/authusecase"
 	mock "github.com/stretchr/testify/mock"
 )
 

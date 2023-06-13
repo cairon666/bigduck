@@ -3,9 +3,9 @@
 package authusecase
 
 import (
-	models "backend/internal/domain/models"
 	context "context"
 
+	models "backend/internal/domain/models"
 	mock "github.com/stretchr/testify/mock"
 )
 

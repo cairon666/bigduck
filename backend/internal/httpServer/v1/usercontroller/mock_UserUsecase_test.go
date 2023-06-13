@@ -3,9 +3,9 @@
 package usercontroller
 
 import (
-	userusecase "backend/internal/domain/usecases/userusecase"
 	context "context"
 
+	userusecase "backend/internal/domain/usecases/userusecase"
 	mock "github.com/stretchr/testify/mock"
 )
 

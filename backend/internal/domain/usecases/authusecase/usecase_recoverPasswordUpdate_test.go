@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
+	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
-	"backend/internal/exceptions"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
 )
@@ -33,12 +33,18 @@ func TestRecoverPasswordUpdate_Success(t *testing.T) {
 		ID:           uuid.New().String(),
 	}
 
-	props.CodeService.
-		On("GetCodeByEmail", mock.Anything, dto.Email).
+	props.RecoverPasswordCodeService.
+		On("Get", mock.Anything, dto.Email).
 		Return(data, nil)
 
-	props.UserService.
-		On("UpdatePasswordByID", mock.Anything, data.ID, mock.Anything, mock.Anything).
+	props.CredentialService.
+		On(
+			"UpdatePasswordByID",
+			mock.Anything,
+			data.ID,
+			mock.AnythingOfType("string"),
+			mock.AnythingOfType("string"),
+		).
 		Return(nil)
 
 	err = usecase.RecoverPasswordUpdate(context.Background(), dto)
@@ -69,8 +75,8 @@ func TestRecoverPasswordUpdate_EmailNotConfirm(t *testing.T) {
 		ID:           uuid.New().String(),
 	}
 
-	props.CodeService.
-		On("GetCodeByEmail", mock.Anything, dto.Email).
+	props.RecoverPasswordCodeService.
+		On("Get", mock.Anything, dto.Email).
 		Return(data, nil)
 
 	err = usecase.RecoverPasswordUpdate(context.Background(), dto)
@@ -101,8 +107,8 @@ func TestRecoverPasswordUpdate_NewPasswordEqualOldPassword(t *testing.T) {
 		ID:           uuid.New().String(),
 	}
 
-	props.CodeService.
-		On("GetCodeByEmail", mock.Anything, dto.Email).
+	props.RecoverPasswordCodeService.
+		On("Get", mock.Anything, dto.Email).
 		Return(data, nil)
 
 	err = usecase.RecoverPasswordUpdate(context.Background(), dto)

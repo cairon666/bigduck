@@ -3,8 +3,8 @@ package authusecase
 import (
 	"context"
 
-	"backend/internal/exceptions"
-	"backend/internal/validate"
+	"backend/internal/domain/exceptions"
+	validate2 "backend/internal/domain/validate"
 )
 
 type RecoverPasswordConfirmRequest struct {
@@ -13,9 +13,9 @@ type RecoverPasswordConfirmRequest struct {
 }
 
 func (dto *RecoverPasswordConfirmRequest) IsValid() error {
-	return validate.Test(
-		validate.EmailSimple(dto.Email),
-		validate.RecoverCodeSimple(dto.Code),
+	return validate2.Test(
+		validate2.EmailSimple(dto.Email),
+		validate2.RecoverPasswordCodeSimple(dto.Code),
 	)
 }
 
@@ -25,7 +25,7 @@ func (u *Usecase) RecoverPasswordConfirm(ctx context.Context, req RecoverPasswor
 	}
 
 	// create code
-	data, err := u.codeService.GetCodeByEmail(ctx, req.Email)
+	data, err := u.recoverPasswordCodeService.Get(ctx, req.Email)
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func (u *Usecase) RecoverPasswordConfirm(ctx context.Context, req RecoverPasswor
 
 	data.IsConfirm = true
 
-	if err := u.codeService.SetCode(ctx, data); err != nil {
+	if err := u.recoverPasswordCodeService.Set(ctx, data.Email, data); err != nil {
 		return err
 	}
 

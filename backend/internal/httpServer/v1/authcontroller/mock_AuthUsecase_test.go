@@ -22,6 +22,178 @@ func (_m *MockAuthUsecase) EXPECT() *MockAuthUsecase_Expecter {
 	return &MockAuthUsecase_Expecter{mock: &_m.Mock}
 }
 
+// ChangeEmail provides a mock function with given fields: ctx, dto
+func (_m *MockAuthUsecase) ChangeEmail(ctx context.Context, dto authusecase.ChangeEmailRequest) error {
+	ret := _m.Called(ctx, dto)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, authusecase.ChangeEmailRequest) error); ok {
+		r0 = rf(ctx, dto)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAuthUsecase_ChangeEmail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ChangeEmail'
+type MockAuthUsecase_ChangeEmail_Call struct {
+	*mock.Call
+}
+
+// ChangeEmail is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dto authusecase.ChangeEmailRequest
+func (_e *MockAuthUsecase_Expecter) ChangeEmail(ctx interface{}, dto interface{}) *MockAuthUsecase_ChangeEmail_Call {
+	return &MockAuthUsecase_ChangeEmail_Call{Call: _e.mock.On("ChangeEmail", ctx, dto)}
+}
+
+func (_c *MockAuthUsecase_ChangeEmail_Call) Run(run func(ctx context.Context, dto authusecase.ChangeEmailRequest)) *MockAuthUsecase_ChangeEmail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(authusecase.ChangeEmailRequest))
+	})
+	return _c
+}
+
+func (_c *MockAuthUsecase_ChangeEmail_Call) Return(_a0 error) *MockAuthUsecase_ChangeEmail_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAuthUsecase_ChangeEmail_Call) RunAndReturn(run func(context.Context, authusecase.ChangeEmailRequest) error) *MockAuthUsecase_ChangeEmail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ChangePassword provides a mock function with given fields: ctx, dto
+func (_m *MockAuthUsecase) ChangePassword(ctx context.Context, dto authusecase.ChangePasswordRequest) error {
+	ret := _m.Called(ctx, dto)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, authusecase.ChangePasswordRequest) error); ok {
+		r0 = rf(ctx, dto)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAuthUsecase_ChangePassword_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ChangePassword'
+type MockAuthUsecase_ChangePassword_Call struct {
+	*mock.Call
+}
+
+// ChangePassword is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dto authusecase.ChangePasswordRequest
+func (_e *MockAuthUsecase_Expecter) ChangePassword(ctx interface{}, dto interface{}) *MockAuthUsecase_ChangePassword_Call {
+	return &MockAuthUsecase_ChangePassword_Call{Call: _e.mock.On("ChangePassword", ctx, dto)}
+}
+
+func (_c *MockAuthUsecase_ChangePassword_Call) Run(run func(ctx context.Context, dto authusecase.ChangePasswordRequest)) *MockAuthUsecase_ChangePassword_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(authusecase.ChangePasswordRequest))
+	})
+	return _c
+}
+
+func (_c *MockAuthUsecase_ChangePassword_Call) Return(_a0 error) *MockAuthUsecase_ChangePassword_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAuthUsecase_ChangePassword_Call) RunAndReturn(run func(context.Context, authusecase.ChangePasswordRequest) error) *MockAuthUsecase_ChangePassword_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ConfirmEmailConfirm provides a mock function with given fields: ctx, dto
+func (_m *MockAuthUsecase) ConfirmEmailConfirm(ctx context.Context, dto authusecase.ConfirmEmailConfirmRequest) error {
+	ret := _m.Called(ctx, dto)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, authusecase.ConfirmEmailConfirmRequest) error); ok {
+		r0 = rf(ctx, dto)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAuthUsecase_ConfirmEmailConfirm_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ConfirmEmailConfirm'
+type MockAuthUsecase_ConfirmEmailConfirm_Call struct {
+	*mock.Call
+}
+
+// ConfirmEmailConfirm is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dto authusecase.ConfirmEmailConfirmRequest
+func (_e *MockAuthUsecase_Expecter) ConfirmEmailConfirm(ctx interface{}, dto interface{}) *MockAuthUsecase_ConfirmEmailConfirm_Call {
+	return &MockAuthUsecase_ConfirmEmailConfirm_Call{Call: _e.mock.On("ConfirmEmailConfirm", ctx, dto)}
+}
+
+func (_c *MockAuthUsecase_ConfirmEmailConfirm_Call) Run(run func(ctx context.Context, dto authusecase.ConfirmEmailConfirmRequest)) *MockAuthUsecase_ConfirmEmailConfirm_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(authusecase.ConfirmEmailConfirmRequest))
+	})
+	return _c
+}
+
+func (_c *MockAuthUsecase_ConfirmEmailConfirm_Call) Return(_a0 error) *MockAuthUsecase_ConfirmEmailConfirm_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAuthUsecase_ConfirmEmailConfirm_Call) RunAndReturn(run func(context.Context, authusecase.ConfirmEmailConfirmRequest) error) *MockAuthUsecase_ConfirmEmailConfirm_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ConfirmEmailSend provides a mock function with given fields: ctx, dto
+func (_m *MockAuthUsecase) ConfirmEmailSend(ctx context.Context, dto authusecase.ConfirmEmailSendRequest) error {
+	ret := _m.Called(ctx, dto)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, authusecase.ConfirmEmailSendRequest) error); ok {
+		r0 = rf(ctx, dto)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAuthUsecase_ConfirmEmailSend_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ConfirmEmailSend'
+type MockAuthUsecase_ConfirmEmailSend_Call struct {
+	*mock.Call
+}
+
+// ConfirmEmailSend is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dto authusecase.ConfirmEmailSendRequest
+func (_e *MockAuthUsecase_Expecter) ConfirmEmailSend(ctx interface{}, dto interface{}) *MockAuthUsecase_ConfirmEmailSend_Call {
+	return &MockAuthUsecase_ConfirmEmailSend_Call{Call: _e.mock.On("ConfirmEmailSend", ctx, dto)}
+}
+
+func (_c *MockAuthUsecase_ConfirmEmailSend_Call) Run(run func(ctx context.Context, dto authusecase.ConfirmEmailSendRequest)) *MockAuthUsecase_ConfirmEmailSend_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(authusecase.ConfirmEmailSendRequest))
+	})
+	return _c
+}
+
+func (_c *MockAuthUsecase_ConfirmEmailSend_Call) Return(_a0 error) *MockAuthUsecase_ConfirmEmailSend_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAuthUsecase_ConfirmEmailSend_Call) RunAndReturn(run func(context.Context, authusecase.ConfirmEmailSendRequest) error) *MockAuthUsecase_ConfirmEmailSend_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Login provides a mock function with given fields: ctx, dto
 func (_m *MockAuthUsecase) Login(ctx context.Context, dto authusecase.LoginRequest) (authusecase.LoginResponse, error) {
 	ret := _m.Called(ctx, dto)

@@ -3,7 +3,7 @@ package userusecase
 import (
 	"context"
 
-	"backend/internal/validate"
+	validate2 "backend/internal/domain/validate"
 )
 
 type DeleteByIDRequest struct {
@@ -11,8 +11,8 @@ type DeleteByIDRequest struct {
 }
 
 func (dto *DeleteByIDRequest) IsValid() error {
-	return validate.Test(
-		validate.UUIDSimple(dto.IDUser),
+	return validate2.Test(
+		validate2.UUIDSimple(dto.IDUser),
 	)
 }
 

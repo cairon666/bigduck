@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"backend/internal/domain/models"
-	"backend/internal/validate"
+	validate2 "backend/internal/domain/validate"
 )
 
 type RecoverPasswordSendRequest struct {
@@ -12,8 +12,8 @@ type RecoverPasswordSendRequest struct {
 }
 
 func (dto *RecoverPasswordSendRequest) IsValid() error {
-	return validate.Test(
-		validate.EmailSimple(dto.Email),
+	return validate2.Test(
+		validate2.EmailSimple(dto.Email),
 	)
 }
 
@@ -25,7 +25,7 @@ func (u *Usecase) RecoverPasswordSend(ctx context.Context, req RecoverPasswordSe
 	}
 
 	// check what email is exist
-	user, err := u.userService.ReadByEmail(ctx, req.Email)
+	credential, err := u.credentialService.ReadByEmail(ctx, req.Email)
 	if err != nil {
 		return err
 	}
@@ -37,23 +37,21 @@ func (u *Usecase) RecoverPasswordSend(ctx context.Context, req RecoverPasswordSe
 	}
 
 	data := models.RecoverPassword{
-		Email:        user.Email,
-		ID:           user.ID,
+		Email:        credential.Email,
+		ID:           credential.ID,
 		IsConfirm:    false,
 		Code:         code,
-		PasswordHash: user.PasswordHash,
-		Salt:         user.Salt,
+		PasswordHash: credential.PasswordHash,
+		Salt:         credential.Salt,
 	}
 
 	// set code
-	if err := u.codeService.SetCode(ctx, data); err != nil {
+	if err := u.recoverPasswordCodeService.Set(ctx, credential.Email, data); err != nil {
 		return err
 	}
 
 	// send email with code
-	if err := u.mailService.SendRecoverPasswordCode(ctx, data); err != nil {
-		return err
-	}
+	u.mailService.SendRecoverPasswordCode(ctx, data.Email, data.Code)
 
 	return nil
 }

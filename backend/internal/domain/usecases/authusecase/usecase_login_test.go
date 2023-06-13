@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
+	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
-	"backend/internal/exceptions"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -78,15 +78,18 @@ func TestLogin_Success(t *testing.T) {
 		t.Fatal("should generate hash", err)
 	}
 
-	user := models.User{
+	credential := models.Credential{
 		Email:        dto.Email,
 		PasswordHash: hash,
 		Salt:         salt,
 	}
 
-	params.UserService.
+	params.CredentialService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(user, nil)
+		Return(credential, nil)
+
+	params.MailService.
+		On("SendSomebodyLogin", mock.Anything, dto.Email)
 
 	_, err = usecase.Login(context.Background(), dto)
 	if err != nil {
@@ -96,7 +99,6 @@ func TestLogin_Success(t *testing.T) {
 
 func TestLogin_EmailNotFound(t *testing.T) {
 	t.Parallel()
-
 	usecase, params := NewMockAuthUsecase(t)
 
 	dto := LoginRequest{
@@ -104,9 +106,9 @@ func TestLogin_EmailNotFound(t *testing.T) {
 		Password: "12345678",
 	}
 
-	params.UserService.
+	params.CredentialService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(models.User{}, exceptions.ErrNotFound)
+		Return(models.Credential{}, exceptions.ErrNotFound)
 
 	_, err := usecase.Login(context.Background(), dto)
 	if !errors.Is(err, exceptions.ErrNotFound) {
@@ -129,15 +131,18 @@ func TestLogin_WrongPassword(t *testing.T) {
 		t.Fatal("should generate hash", err)
 	}
 
-	user := models.User{
+	credential := models.Credential{
 		Email:        dto.Email,
 		PasswordHash: hash,
 		Salt:         "1234567", // random salt
 	}
 
-	params.UserService.
+	params.CredentialService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(user, nil)
+		Return(credential, nil)
+
+	params.MailService.
+		On("SendSomebodyTryLogin", mock.Anything, dto.Email)
 
 	_, err = usecase.Login(context.Background(), dto)
 	if !errors.Is(err, exceptions.ErrBadPassword) {

@@ -3,13 +3,16 @@ package main
 import (
 	"backend/internal/adapters/mailadapter"
 	"backend/internal/config"
-	"backend/internal/domain/services/codeservice"
+	confirmemailcodeservice "backend/internal/domain/services/confirmEmailCodeService"
+	"backend/internal/domain/services/credentialservice"
 	"backend/internal/domain/services/mailservice"
+	recoverpasswordcodeservice "backend/internal/domain/services/recoverPasswordCodeService"
 	"backend/internal/domain/services/userservice"
 	"backend/internal/domain/usecases/authusecase"
 	"backend/internal/domain/usecases/userusecase"
 	httpServer "backend/internal/httpServer/v1"
-	"backend/internal/repositories/codestorage"
+	"backend/internal/repositories/credentialstorage"
+	"backend/internal/repositories/kvstorage"
 	"backend/internal/repositories/userstorage"
 	"backend/pkg/database/postgres"
 	"backend/pkg/logger"
@@ -21,6 +24,10 @@ type Server interface {
 }
 
 func main() {
+	StartServer()
+}
+
+func StartServer() {
 	var err error
 
 	c := dig.New()
@@ -75,19 +82,41 @@ func RegisterStorages(c *dig.Container) {
 		panic(err)
 	}
 
-	err = c.Provide(codestorage.NewCodeStorage, dig.As(new(codeservice.CodeRepo)))
+	// for recover password kv store
+	err = c.Provide(kvstorage.NewKVStorage, dig.As(new(recoverpasswordcodeservice.KVRepo)))
+	if err != nil {
+		panic(err)
+	}
+
+	// for confirm email kv store
+	err = c.Provide(kvstorage.NewKVStorage, dig.As(new(confirmemailcodeservice.KVRepo)))
+	if err != nil {
+		panic(err)
+	}
+
+	err = c.Provide(credentialstorage.NewCredentialStorage, dig.As(new(credentialservice.CredentialRepository)))
 	if err != nil {
 		panic(err)
 	}
 }
 
 func RegisterServices(c *dig.Container) {
-	err := c.Provide(mailservice.NewMailService, dig.As(new(authusecase.MailService)))
+	err := c.Provide(confirmemailcodeservice.New, dig.As(new(authusecase.ConfirmEmailCodeService)))
 	if err != nil {
 		panic(err)
 	}
 
-	err = c.Provide(codeservice.NewCodeService, dig.As(new(authusecase.CodeService)))
+	err = c.Provide(recoverpasswordcodeservice.New, dig.As(new(authusecase.RecoverPasswordCodeService)))
+	if err != nil {
+		panic(err)
+	}
+
+	err = c.Provide(credentialservice.NewCredentialService, dig.As(new(authusecase.CredentialService)))
+	if err != nil {
+		panic(err)
+	}
+
+	err = c.Provide(mailservice.NewMailService, dig.As(new(authusecase.MailService)))
 	if err != nil {
 		panic(err)
 	}

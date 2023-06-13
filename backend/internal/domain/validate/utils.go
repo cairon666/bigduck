@@ -1,7 +1,7 @@
 package validate
 
 import (
-	"backend/internal/exceptions"
+	"backend/internal/domain/exceptions"
 )
 
 func TestPointer[T any](param *T, f func(T) exceptions.Error) exceptions.Error {

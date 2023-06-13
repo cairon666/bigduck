@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"backend/internal/validate"
+	validate2 "backend/internal/domain/validate"
 )
 
 type ReadByIDRequest struct {
@@ -12,8 +12,8 @@ type ReadByIDRequest struct {
 }
 
 func (dto *ReadByIDRequest) IsValid() error {
-	return validate.Test(
-		validate.UUIDSimple(dto.IDUser),
+	return validate2.Test(
+		validate2.UUIDSimple(dto.IDUser),
 	)
 }
 
@@ -22,11 +22,11 @@ type ReadByIDResponse struct {
 	Email       string
 	FirstName   string
 	SecondName  string
+	UserName    string
 	AvatarURL   *string
 	DateOfBirth *time.Time
 	Gender      *string
 	CreateAt    time.Time
-	ModifyAt    time.Time
 }
 
 func (u *Usecase) ReadByID(ctx context.Context, dto ReadByIDRequest) (ReadByIDResponse, error) {
@@ -44,11 +44,11 @@ func (u *Usecase) ReadByID(ctx context.Context, dto ReadByIDRequest) (ReadByIDRe
 		Email:       user.Email,
 		FirstName:   user.FirstName,
 		SecondName:  user.SecondName,
+		UserName:    user.UserName,
 		Gender:      nil,
 		DateOfBirth: user.DateOfBirth,
 		AvatarURL:   user.AvatarURL,
 		CreateAt:    user.CreateAt,
-		ModifyAt:    user.ModifyAt,
 	}
 
 	if user.Gender != nil {

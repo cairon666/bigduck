@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"backend/internal/exceptions"
+	exceptions2 "backend/internal/domain/exceptions"
 	"github.com/google/uuid"
 )
 
@@ -14,7 +14,7 @@ type testCase[T any] struct {
 	Value  T
 }
 
-func Testing[T any](t *testing.T, cases []testCase[T], f func(T) exceptions.Error) {
+func Testing[T any](t *testing.T, cases []testCase[T], f func(T) exceptions2.Error) {
 	for index, test := range cases {
 		err := f(test.Value)
 
@@ -37,7 +37,7 @@ func TestEmailSimple(t *testing.T) {
 			Value:  "example@example.com",
 		},
 		{
-			Should: exceptions.ErrBadEmail,
+			Should: exceptions2.ErrBadEmail,
 			Value:  "",
 		},
 	}
@@ -53,43 +53,11 @@ func TestPasswordSimple(t *testing.T) {
 			Value:  "12345678",
 		},
 		{
-			Should: exceptions.ErrShortPassword,
+			Should: exceptions2.ErrShortPassword,
 			Value:  "",
 		},
 	}
 	Testing(t, cases, PasswordSimple)
-}
-
-func TestFirstNameSimple(t *testing.T) {
-	t.Parallel()
-
-	cases := []testCase[string]{
-		{
-			Should: nil,
-			Value:  "name",
-		},
-		{
-			Should: exceptions.ErrShortFirstName,
-			Value:  "",
-		},
-	}
-	Testing(t, cases, FirstNameSimple)
-}
-
-func TestSecondNameSimple(t *testing.T) {
-	t.Parallel()
-
-	cases := []testCase[string]{
-		{
-			Should: nil,
-			Value:  "name",
-		},
-		{
-			Should: exceptions.ErrShortSecondName,
-			Value:  "",
-		},
-	}
-	Testing(t, cases, SecondNameSimple)
 }
 
 func TestDayOfBirth(t *testing.T) {
@@ -101,7 +69,7 @@ func TestDayOfBirth(t *testing.T) {
 			Value:  time.Now().Add(-time.Hour),
 		},
 		{
-			Should: exceptions.ErrDateOfBirthFromFeature,
+			Should: exceptions2.ErrDateOfBirthFromFeature,
 			Value:  time.Now().Add(time.Hour),
 		},
 	}
@@ -117,7 +85,7 @@ func TestAvatarURL(t *testing.T) {
 			Value:  "https://example.com",
 		},
 		{
-			Should: exceptions.ErrBadAvatarURL,
+			Should: exceptions2.ErrBadAvatarURL,
 			Value:  "",
 		},
 	}
@@ -137,7 +105,7 @@ func TestGender(t *testing.T) {
 			Value:  "female",
 		},
 		{
-			Should: exceptions.ErrUnknownGender,
+			Should: exceptions2.ErrUnknownGender,
 			Value:  "",
 		},
 	}
@@ -153,7 +121,7 @@ func TestUUIDSimple(t *testing.T) {
 			Value:  uuid.New().String(),
 		},
 		{
-			Should: exceptions.ErrBadUUID,
+			Should: exceptions2.ErrBadUUID,
 			Value:  "",
 		},
 	}

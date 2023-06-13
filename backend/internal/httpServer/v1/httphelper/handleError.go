@@ -3,7 +3,7 @@ package httphelper
 import (
 	"net/http"
 
-	"backend/internal/exceptions"
+	"backend/internal/domain/exceptions"
 	"backend/pkg/logger"
 )
 

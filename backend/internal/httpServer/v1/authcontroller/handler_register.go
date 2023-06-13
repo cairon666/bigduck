@@ -13,6 +13,7 @@ type registerRequest struct {
 	Password    string     `json:"password"`
 	FirstName   string     `json:"first_name"`
 	SecondName  string     `json:"second_name"`
+	UserName    string     `json:"user_name"`
 	Gender      *string    `json:"gender,omitempty"`
 	DateOfBirth *time.Time `json:"date_of_birth,omitempty"`
 	AvatarURL   *string    `json:"avatar_url,omitempty"`
@@ -30,6 +31,7 @@ func (c *controller) registerHandler(rw http.ResponseWriter, req *http.Request) 
 		Password:    reqDTO.Password,
 		FirstName:   reqDTO.FirstName,
 		SecondName:  reqDTO.SecondName,
+		UserName:    reqDTO.UserName,
 		Gender:      reqDTO.Gender,
 		DateOfBirth: reqDTO.DateOfBirth,
 		AvatarURL:   reqDTO.AvatarURL,

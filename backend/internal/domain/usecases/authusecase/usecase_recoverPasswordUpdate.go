@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"backend/internal/exceptions"
-	"backend/internal/validate"
+	"backend/internal/domain/exceptions"
+	validate2 "backend/internal/domain/validate"
 )
 
 type RecoverPasswordUpdateRequest struct {
@@ -14,9 +14,9 @@ type RecoverPasswordUpdateRequest struct {
 }
 
 func (dto *RecoverPasswordUpdateRequest) IsValid() error {
-	return validate.Test(
-		validate.EmailSimple(dto.Email),
-		validate.PasswordSimple(dto.Password),
+	return validate2.Test(
+		validate2.EmailSimple(dto.Email),
+		validate2.PasswordSimple(dto.Password),
 	)
 }
 
@@ -25,7 +25,7 @@ func (u *Usecase) RecoverPasswordUpdate(ctx context.Context, req RecoverPassword
 		return err
 	}
 
-	data, err := u.codeService.GetCodeByEmail(ctx, req.Email)
+	data, err := u.recoverPasswordCodeService.Get(ctx, req.Email)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func (u *Usecase) RecoverPasswordUpdate(ctx context.Context, req RecoverPassword
 	}
 
 	// update user password
-	if err := u.userService.UpdatePasswordByID(ctx, data.ID, hash, salt); err != nil {
+	if err := u.credentialService.UpdatePasswordByID(ctx, data.ID, hash, salt); err != nil {
 		return err
 	}
 

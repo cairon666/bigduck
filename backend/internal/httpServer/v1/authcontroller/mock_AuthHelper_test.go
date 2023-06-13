@@ -165,6 +165,58 @@ func (_c *MockAuthHelper_NewTokens_Call) RunAndReturn(run func(string) (string, 
 	return _c
 }
 
+// ParseIDUser provides a mock function with given fields: r
+func (_m *MockAuthHelper) ParseIDUser(r *http.Request) (string, bool) {
+	ret := _m.Called(r)
+
+	var r0 string
+	var r1 bool
+	if rf, ok := ret.Get(0).(func(*http.Request) (string, bool)); ok {
+		return rf(r)
+	}
+	if rf, ok := ret.Get(0).(func(*http.Request) string); ok {
+		r0 = rf(r)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	if rf, ok := ret.Get(1).(func(*http.Request) bool); ok {
+		r1 = rf(r)
+	} else {
+		r1 = ret.Get(1).(bool)
+	}
+
+	return r0, r1
+}
+
+// MockAuthHelper_ParseIDUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ParseIDUser'
+type MockAuthHelper_ParseIDUser_Call struct {
+	*mock.Call
+}
+
+// ParseIDUser is a helper method to define mock.On call
+//   - r *http.Request
+func (_e *MockAuthHelper_Expecter) ParseIDUser(r interface{}) *MockAuthHelper_ParseIDUser_Call {
+	return &MockAuthHelper_ParseIDUser_Call{Call: _e.mock.On("ParseIDUser", r)}
+}
+
+func (_c *MockAuthHelper_ParseIDUser_Call) Run(run func(r *http.Request)) *MockAuthHelper_ParseIDUser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*http.Request))
+	})
+	return _c
+}
+
+func (_c *MockAuthHelper_ParseIDUser_Call) Return(_a0 string, _a1 bool) *MockAuthHelper_ParseIDUser_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockAuthHelper_ParseIDUser_Call) RunAndReturn(run func(*http.Request) (string, bool)) *MockAuthHelper_ParseIDUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SetRefreshCookie provides a mock function with given fields: w, refresh
 func (_m *MockAuthHelper) SetRefreshCookie(w http.ResponseWriter, refresh string) error {
 	ret := _m.Called(w, refresh)

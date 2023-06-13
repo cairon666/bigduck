@@ -13,11 +13,11 @@ type getUserByIDResponse struct {
 	Email       string     `json:"email"`
 	FirstName   string     `json:"first_name"`
 	SecondName  string     `json:"second_name"`
+	UserName    string     `json:"user_name"`
 	AvatarURL   *string    `json:"avatar_url,omitempty"`
 	DateOfBirth *time.Time `json:"date_of_birth,omitempty"`
 	Gender      *string    `json:"gender,omitempty"`
 	CreateAt    time.Time  `json:"create_at"`
-	ModifyAt    time.Time  `json:"modify_at"`
 }
 
 func (c *controller) getUserByID(rw http.ResponseWriter, r *http.Request) {
@@ -39,10 +39,10 @@ func (c *controller) getUserByID(rw http.ResponseWriter, r *http.Request) {
 		Email:       resp.Email,
 		FirstName:   resp.FirstName,
 		SecondName:  resp.SecondName,
+		UserName:    resp.UserName,
 		AvatarURL:   resp.AvatarURL,
 		DateOfBirth: resp.DateOfBirth,
 		Gender:      resp.Gender,
 		CreateAt:    resp.CreateAt,
-		ModifyAt:    resp.ModifyAt,
 	}, http.StatusOK)
 }

@@ -10,11 +10,15 @@ import (
 
 //go:generate mockery --name AuthUsecase
 type AuthUsecase interface {
-	Login(ctx context.Context, dto authusecase.LoginRequest) (authusecase.LoginResponse, error)
+	ChangeEmail(ctx context.Context, dto authusecase.ChangeEmailRequest) error
 	Register(ctx context.Context, dto authusecase.RegisterRequest) error
-	RecoverPasswordSend(ctx context.Context, req authusecase.RecoverPasswordSendRequest) error
 	RecoverPasswordConfirm(ctx context.Context, req authusecase.RecoverPasswordConfirmRequest) error
+	RecoverPasswordSend(ctx context.Context, req authusecase.RecoverPasswordSendRequest) error
 	RecoverPasswordUpdate(ctx context.Context, req authusecase.RecoverPasswordUpdateRequest) error
+	Login(ctx context.Context, dto authusecase.LoginRequest) (authusecase.LoginResponse, error)
+	ChangePassword(ctx context.Context, dto authusecase.ChangePasswordRequest) error
+	ConfirmEmailSend(ctx context.Context, dto authusecase.ConfirmEmailSendRequest) error
+	ConfirmEmailConfirm(ctx context.Context, dto authusecase.ConfirmEmailConfirmRequest) error
 }
 
 //go:generate mockery --name HTTPHelper
@@ -30,6 +34,7 @@ type AuthHelper interface {
 	SetRefreshCookie(w http.ResponseWriter, refresh string) error
 	NewTokens(IDUser string) (string, string, error)
 	UpdateTokens(refresh string) (string, string, error)
+	ParseIDUser(r *http.Request) (string, bool)
 }
 
 type controller struct {
@@ -61,5 +66,10 @@ func (c *controller) RegisterRouter(r chi.Router) {
 		r.Post("/recover/password/send", c.recoverPasswordSend)       // send code to email
 		r.Post("/recover/password/confirm", c.recoverPasswordConfirm) // confirm code
 		r.Post("/recover/password/update", c.recoverPasswordUpdate)   // update password
+		r.Post("/change/email", c.changeEmailHandler)
+		r.Post("/change/password", c.changePasswordHandler)
+		r.Post("/confirm/email/send", c.confirmEmailSendHandler)       // send code to email
+		r.Post("/confirm/email/confirm", c.confirmEmailConfirmHandler) // confirm sent code
+		r.Post("/check/email/{Email} ", nil)                           // checking what email is available
 	})
 }

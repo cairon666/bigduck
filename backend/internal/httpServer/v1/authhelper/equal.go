@@ -24,3 +24,12 @@ func (h *helper) IsEqualIDUser(r *http.Request, id string) bool {
 
 	return false
 }
+
+func (h *helper) ParseIDUser(r *http.Request) (string, bool) {
+	ctxIDUser, ok := getClaims(r.Context())
+	if !ok {
+		return "", false
+	}
+
+	return ctxIDUser.IDUser, true
+}

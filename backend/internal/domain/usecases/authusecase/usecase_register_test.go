@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
+	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
-	"backend/internal/exceptions"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -21,19 +21,24 @@ func TestRegister_Success(t *testing.T) {
 	dto := RegisterRequest{
 		Email:       "example@example.com",
 		Password:    "12345678",
-		FirstName:   "12345",
-		SecondName:  "12345",
+		FirstName:   "sadsadsa",
+		SecondName:  "sadsadsa",
+		UserName:    "sadsadsa",
 		Gender:      nil,
 		DateOfBirth: nil,
 		AvatarURL:   nil,
 	}
 
-	props.UserService.
+	props.CredentialService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(models.User{}, exceptions.ErrNotFound)
+		Return(models.Credential{}, exceptions.ErrNotFound)
+
+	props.CredentialService.
+		On("Create", mock.Anything, mock.IsType(models.Credential{})).
+		Return(nil)
 
 	props.UserService.
-		On("Create", mock.Anything, mock.Anything).
+		On("Create", mock.Anything, mock.IsType(models.User{})).
 		Return(nil)
 
 	if err := usecase.Register(context.Background(), dto); err != nil {
@@ -49,16 +54,17 @@ func TestRegister_AlreadyExist(t *testing.T) {
 	dto := RegisterRequest{
 		Email:       "example@example.com",
 		Password:    "12345678",
-		FirstName:   "12345",
-		SecondName:  "12345",
+		FirstName:   "sadsadsa",
+		SecondName:  "sadsadsa",
+		UserName:    "sadsadsa",
 		Gender:      nil,
 		DateOfBirth: nil,
 		AvatarURL:   nil,
 	}
 
-	props.UserService.
+	props.CredentialService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(models.User{}, nil)
+		Return(models.Credential{}, nil)
 
 	err := usecase.Register(context.Background(), dto)
 	if !errors.Is(err, exceptions.ErrEmailAlreadyExist) {
@@ -74,16 +80,17 @@ func TestRegister_InternalError(t *testing.T) {
 	dto := RegisterRequest{
 		Email:       "example@example.com",
 		Password:    "12345678",
-		FirstName:   "12345",
-		SecondName:  "12345",
+		FirstName:   "sadsadsa",
+		SecondName:  "sadsadsa",
+		UserName:    "sadsadsa",
 		Gender:      nil,
 		DateOfBirth: nil,
 		AvatarURL:   nil,
 	}
 
-	props.UserService.
+	props.CredentialService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(models.User{}, errInternal)
+		Return(models.Credential{}, errInternal)
 
 	err := usecase.Register(context.Background(), dto)
 	if !errors.Is(err, errInternal) {

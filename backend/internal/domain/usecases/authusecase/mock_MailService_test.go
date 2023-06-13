@@ -3,7 +3,6 @@
 package authusecase
 
 import (
-	models "backend/internal/domain/models"
 	context "context"
 
 	mock "github.com/stretchr/testify/mock"
@@ -22,18 +21,112 @@ func (_m *MockMailService) EXPECT() *MockMailService_Expecter {
 	return &MockMailService_Expecter{mock: &_m.Mock}
 }
 
-// SendRecoverPasswordCode provides a mock function with given fields: ctx, data
-func (_m *MockMailService) SendRecoverPasswordCode(ctx context.Context, data models.RecoverPassword) error {
-	ret := _m.Called(ctx, data)
+// SendEmailConfirmCode provides a mock function with given fields: ctx, email, code
+func (_m *MockMailService) SendEmailConfirmCode(ctx context.Context, email string, code string) {
+	_m.Called(ctx, email, code)
+}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, models.RecoverPassword) error); ok {
-		r0 = rf(ctx, data)
-	} else {
-		r0 = ret.Error(0)
-	}
+// MockMailService_SendEmailConfirmCode_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SendEmailConfirmCode'
+type MockMailService_SendEmailConfirmCode_Call struct {
+	*mock.Call
+}
 
-	return r0
+// SendEmailConfirmCode is a helper method to define mock.On call
+//   - ctx context.Context
+//   - email string
+//   - code string
+func (_e *MockMailService_Expecter) SendEmailConfirmCode(ctx interface{}, email interface{}, code interface{}) *MockMailService_SendEmailConfirmCode_Call {
+	return &MockMailService_SendEmailConfirmCode_Call{Call: _e.mock.On("SendEmailConfirmCode", ctx, email, code)}
+}
+
+func (_c *MockMailService_SendEmailConfirmCode_Call) Run(run func(ctx context.Context, email string, code string)) *MockMailService_SendEmailConfirmCode_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockMailService_SendEmailConfirmCode_Call) Return() *MockMailService_SendEmailConfirmCode_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockMailService_SendEmailConfirmCode_Call) RunAndReturn(run func(context.Context, string, string)) *MockMailService_SendEmailConfirmCode_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SendEmailWasUpdate provides a mock function with given fields: ctx, email
+func (_m *MockMailService) SendEmailWasUpdate(ctx context.Context, email string) {
+	_m.Called(ctx, email)
+}
+
+// MockMailService_SendEmailWasUpdate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SendEmailWasUpdate'
+type MockMailService_SendEmailWasUpdate_Call struct {
+	*mock.Call
+}
+
+// SendEmailWasUpdate is a helper method to define mock.On call
+//   - ctx context.Context
+//   - email string
+func (_e *MockMailService_Expecter) SendEmailWasUpdate(ctx interface{}, email interface{}) *MockMailService_SendEmailWasUpdate_Call {
+	return &MockMailService_SendEmailWasUpdate_Call{Call: _e.mock.On("SendEmailWasUpdate", ctx, email)}
+}
+
+func (_c *MockMailService_SendEmailWasUpdate_Call) Run(run func(ctx context.Context, email string)) *MockMailService_SendEmailWasUpdate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockMailService_SendEmailWasUpdate_Call) Return() *MockMailService_SendEmailWasUpdate_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockMailService_SendEmailWasUpdate_Call) RunAndReturn(run func(context.Context, string)) *MockMailService_SendEmailWasUpdate_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SendPasswordWasUpdate provides a mock function with given fields: ctx, email
+func (_m *MockMailService) SendPasswordWasUpdate(ctx context.Context, email string) {
+	_m.Called(ctx, email)
+}
+
+// MockMailService_SendPasswordWasUpdate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SendPasswordWasUpdate'
+type MockMailService_SendPasswordWasUpdate_Call struct {
+	*mock.Call
+}
+
+// SendPasswordWasUpdate is a helper method to define mock.On call
+//   - ctx context.Context
+//   - email string
+func (_e *MockMailService_Expecter) SendPasswordWasUpdate(ctx interface{}, email interface{}) *MockMailService_SendPasswordWasUpdate_Call {
+	return &MockMailService_SendPasswordWasUpdate_Call{Call: _e.mock.On("SendPasswordWasUpdate", ctx, email)}
+}
+
+func (_c *MockMailService_SendPasswordWasUpdate_Call) Run(run func(ctx context.Context, email string)) *MockMailService_SendPasswordWasUpdate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockMailService_SendPasswordWasUpdate_Call) Return() *MockMailService_SendPasswordWasUpdate_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockMailService_SendPasswordWasUpdate_Call) RunAndReturn(run func(context.Context, string)) *MockMailService_SendPasswordWasUpdate_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SendRecoverPasswordCode provides a mock function with given fields: ctx, email, code
+func (_m *MockMailService) SendRecoverPasswordCode(ctx context.Context, email string, code string) {
+	_m.Called(ctx, email, code)
 }
 
 // MockMailService_SendRecoverPasswordCode_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SendRecoverPasswordCode'
@@ -43,24 +136,93 @@ type MockMailService_SendRecoverPasswordCode_Call struct {
 
 // SendRecoverPasswordCode is a helper method to define mock.On call
 //   - ctx context.Context
-//   - data models.RecoverPassword
-func (_e *MockMailService_Expecter) SendRecoverPasswordCode(ctx interface{}, data interface{}) *MockMailService_SendRecoverPasswordCode_Call {
-	return &MockMailService_SendRecoverPasswordCode_Call{Call: _e.mock.On("SendRecoverPasswordCode", ctx, data)}
+//   - email string
+//   - code string
+func (_e *MockMailService_Expecter) SendRecoverPasswordCode(ctx interface{}, email interface{}, code interface{}) *MockMailService_SendRecoverPasswordCode_Call {
+	return &MockMailService_SendRecoverPasswordCode_Call{Call: _e.mock.On("SendRecoverPasswordCode", ctx, email, code)}
 }
 
-func (_c *MockMailService_SendRecoverPasswordCode_Call) Run(run func(ctx context.Context, data models.RecoverPassword)) *MockMailService_SendRecoverPasswordCode_Call {
+func (_c *MockMailService_SendRecoverPasswordCode_Call) Run(run func(ctx context.Context, email string, code string)) *MockMailService_SendRecoverPasswordCode_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(models.RecoverPassword))
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
 	})
 	return _c
 }
 
-func (_c *MockMailService_SendRecoverPasswordCode_Call) Return(_a0 error) *MockMailService_SendRecoverPasswordCode_Call {
-	_c.Call.Return(_a0)
+func (_c *MockMailService_SendRecoverPasswordCode_Call) Return() *MockMailService_SendRecoverPasswordCode_Call {
+	_c.Call.Return()
 	return _c
 }
 
-func (_c *MockMailService_SendRecoverPasswordCode_Call) RunAndReturn(run func(context.Context, models.RecoverPassword) error) *MockMailService_SendRecoverPasswordCode_Call {
+func (_c *MockMailService_SendRecoverPasswordCode_Call) RunAndReturn(run func(context.Context, string, string)) *MockMailService_SendRecoverPasswordCode_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SendSomebodyLogin provides a mock function with given fields: ctx, email
+func (_m *MockMailService) SendSomebodyLogin(ctx context.Context, email string) {
+	_m.Called(ctx, email)
+}
+
+// MockMailService_SendSomebodyLogin_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SendSomebodyLogin'
+type MockMailService_SendSomebodyLogin_Call struct {
+	*mock.Call
+}
+
+// SendSomebodyLogin is a helper method to define mock.On call
+//   - ctx context.Context
+//   - email string
+func (_e *MockMailService_Expecter) SendSomebodyLogin(ctx interface{}, email interface{}) *MockMailService_SendSomebodyLogin_Call {
+	return &MockMailService_SendSomebodyLogin_Call{Call: _e.mock.On("SendSomebodyLogin", ctx, email)}
+}
+
+func (_c *MockMailService_SendSomebodyLogin_Call) Run(run func(ctx context.Context, email string)) *MockMailService_SendSomebodyLogin_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockMailService_SendSomebodyLogin_Call) Return() *MockMailService_SendSomebodyLogin_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockMailService_SendSomebodyLogin_Call) RunAndReturn(run func(context.Context, string)) *MockMailService_SendSomebodyLogin_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SendSomebodyTryLogin provides a mock function with given fields: ctx, email
+func (_m *MockMailService) SendSomebodyTryLogin(ctx context.Context, email string) {
+	_m.Called(ctx, email)
+}
+
+// MockMailService_SendSomebodyTryLogin_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SendSomebodyTryLogin'
+type MockMailService_SendSomebodyTryLogin_Call struct {
+	*mock.Call
+}
+
+// SendSomebodyTryLogin is a helper method to define mock.On call
+//   - ctx context.Context
+//   - email string
+func (_e *MockMailService_Expecter) SendSomebodyTryLogin(ctx interface{}, email interface{}) *MockMailService_SendSomebodyTryLogin_Call {
+	return &MockMailService_SendSomebodyTryLogin_Call{Call: _e.mock.On("SendSomebodyTryLogin", ctx, email)}
+}
+
+func (_c *MockMailService_SendSomebodyTryLogin_Call) Run(run func(ctx context.Context, email string)) *MockMailService_SendSomebodyTryLogin_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockMailService_SendSomebodyTryLogin_Call) Return() *MockMailService_SendSomebodyTryLogin_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockMailService_SendSomebodyTryLogin_Call) RunAndReturn(run func(context.Context, string)) *MockMailService_SendSomebodyTryLogin_Call {
 	_c.Call.Return(run)
 	return _c
 }

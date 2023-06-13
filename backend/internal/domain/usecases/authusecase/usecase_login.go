@@ -3,7 +3,7 @@ package authusecase
 import (
 	"context"
 
-	"backend/internal/validate"
+	validate2 "backend/internal/domain/validate"
 )
 
 type LoginRequest struct {
@@ -12,9 +12,9 @@ type LoginRequest struct {
 }
 
 func (dto *LoginRequest) IsValid() error {
-	return validate.Test(
-		validate.EmailSimple(dto.Email),
-		validate.PasswordSimple(dto.Password),
+	return validate2.Test(
+		validate2.EmailSimple(dto.Email),
+		validate2.PasswordSimple(dto.Password),
 	)
 }
 
@@ -27,14 +27,20 @@ func (u *Usecase) Login(ctx context.Context, dto LoginRequest) (LoginResponse, e
 		return LoginResponse{}, err
 	}
 
-	user, err := u.userService.ReadByEmail(ctx, dto.Email)
+	user, err := u.credentialService.ReadByEmail(ctx, dto.Email)
 	if err != nil {
 		return LoginResponse{}, err
 	}
 
 	if err := checkPasswordHash(dto.Password, user.Salt, user.PasswordHash); err != nil {
+		// send email what somebody try log in account
+		u.mailService.SendSomebodyTryLogin(ctx, dto.Email)
+
 		return LoginResponse{}, err
 	}
+
+	// send email what somebody log in account
+	u.mailService.SendSomebodyLogin(ctx, dto.Email)
 
 	return LoginResponse{
 		IDUser: user.ID,

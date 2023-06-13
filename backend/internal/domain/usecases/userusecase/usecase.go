@@ -7,7 +7,7 @@ import (
 	"go.uber.org/dig"
 )
 
-//go:generate mockery --name=UserService --outpkg=userusecase_test
+//go:generate mockery --name=UserService
 type UserService interface {
 	ReadByID(ctx context.Context, id string) (models.User, error)
 	UpdateByID(ctx context.Context, id string, data map[string]any) error

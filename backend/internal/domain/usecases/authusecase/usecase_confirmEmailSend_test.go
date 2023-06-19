@@ -20,20 +20,18 @@ func TestConfirmEmailSend_Success(t *testing.T) {
 		IDUser: uuid.New().String(),
 	}
 
-	data := models.Credential{
-		Email: "example@exmple.com",
-	}
+	credential := models.NewCredential("", "example@exmple.com", false, "", "")
 
 	params.CredentialService.
 		On("ReadByID", mock.Anything, req.IDUser).
-		Return(data, nil)
+		Return(credential, nil)
 
 	params.ConfirmEmailCodeService.
-		On("Set", mock.Anything, req.IDUser, mock.IsType(models.ConfirmEmail{})).
+		On("Set", mock.Anything, req.IDUser, mock.IsType("")).
 		Return(nil)
 
 	params.MailService.
-		On("SendEmailConfirmCode", mock.Anything, data.Email, mock.IsType("")).
+		On("SendEmailConfirmCode", mock.Anything, credential.Email, mock.IsType("")).
 		Return()
 
 	if err := usecase.ConfirmEmailSend(context.Background(), req); err != nil {

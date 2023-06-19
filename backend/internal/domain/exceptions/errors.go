@@ -46,7 +46,7 @@ var (
 	ErrBadRecoverCode                 = NewError("bad recover code", CodeBadRecoverCode)
 	ErrRecoverEmailNotConfirm         = NewError("email was not be confirm", CodeRecoverEmailNotConfirm)
 	ErrNotValidRecoverCode            = NewError("recover code not valid", CodeNotValidRecoverCode)
-	ErrNewPasswordEqualOldPassword    = NewError("recover code not valid", CodeNewPasswordEqualOldPassword)
+	ErrNewPasswordEqualOldPassword    = NewError("ErrNewPasswordEqualOldPassword", CodeNewPasswordEqualOldPassword)
 	ErrDateOfBirthFromFeature         = NewError("are u from feature?", CodeDateOfBirthFromFeature)
 	ErrShortUserName                  = NewError("ShortUserName", CodeShortUserName)
 	ErrLongUserName                   = NewError("LongUserName", CodeLongUserName)

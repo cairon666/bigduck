@@ -4,6 +4,7 @@ import (
 	"context"
 
 	validate2 "backend/internal/domain/validate"
+	"backend/pkg/tracing"
 )
 
 type LoginRequest struct {
@@ -11,11 +12,18 @@ type LoginRequest struct {
 	Password string
 }
 
-func (dto *LoginRequest) IsValid() error {
-	return validate2.Test(
-		validate2.EmailSimple(dto.Email),
-		validate2.PasswordSimple(dto.Password),
-	)
+func NewLoginRequest(email, password string) (LoginRequest, error) {
+	if err := validate2.Test(
+		validate2.EmailSimple(email),
+		validate2.PasswordSimple(password),
+	); err != nil {
+		return LoginRequest{}, err
+	}
+
+	return LoginRequest{
+		Email:    email,
+		Password: password,
+	}, nil
 }
 
 type LoginResponse struct {
@@ -23,9 +31,8 @@ type LoginResponse struct {
 }
 
 func (u *Usecase) Login(ctx context.Context, dto LoginRequest) (LoginResponse, error) {
-	if err := dto.IsValid(); err != nil {
-		return LoginResponse{}, err
-	}
+	ctx, span := tracing.Start(ctx, "authusecase.Login")
+	defer span.End()
 
 	user, err := u.credentialService.ReadByEmail(ctx, dto.Email)
 	if err != nil {

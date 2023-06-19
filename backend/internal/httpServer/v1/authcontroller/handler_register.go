@@ -26,15 +26,19 @@ func (c *controller) registerHandler(rw http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	dto := authusecase.RegisterRequest{
-		Email:       reqDTO.Email,
-		Password:    reqDTO.Password,
-		FirstName:   reqDTO.FirstName,
-		SecondName:  reqDTO.SecondName,
-		UserName:    reqDTO.UserName,
-		Gender:      reqDTO.Gender,
-		DateOfBirth: reqDTO.DateOfBirth,
-		AvatarURL:   reqDTO.AvatarURL,
+	dto, err := authusecase.NewRegisterRequest(
+		reqDTO.Email,
+		reqDTO.Password,
+		reqDTO.FirstName,
+		reqDTO.SecondName,
+		reqDTO.UserName,
+		reqDTO.Gender,
+		reqDTO.DateOfBirth,
+		reqDTO.AvatarURL,
+	)
+	if err != nil {
+		c.httpHelper.HandleError(rw, err)
+		return
 	}
 
 	if err := c.authUsecase.Register(req.Context(), dto); err != nil {
@@ -42,5 +46,5 @@ func (c *controller) registerHandler(rw http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	rw.WriteHeader(http.StatusNoContent)
+	rw.WriteHeader(http.StatusOK)
 }

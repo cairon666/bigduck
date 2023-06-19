@@ -24,13 +24,13 @@ func (c *controller) changeEmailHandler(rw http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	dto := authusecase.ChangeEmailRequest{
-		Email:  reqDTO.Email,
-		IDUser: IDUser,
+	dto, err := authusecase.NewChangeEmailRequest(reqDTO.Email, IDUser)
+	if err != nil {
+		c.httpHelper.HandleError(rw, err)
+		return
 	}
 
-	err := c.authUsecase.ChangeEmail(req.Context(), dto)
-	if err != nil {
+	if err := c.authUsecase.ChangeEmail(req.Context(), dto); err != nil {
 		c.httpHelper.HandleError(rw, err)
 		return
 	}

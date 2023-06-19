@@ -33,7 +33,6 @@ services:
       - network
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      #      - ../database/postgres/dump.sql:/docker-entrypoint-initdb.d/dummy_dump.sql
       - ../database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
   backend:
     container_name: backend

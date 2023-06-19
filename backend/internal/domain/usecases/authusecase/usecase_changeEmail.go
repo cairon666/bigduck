@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"backend/internal/domain/validate"
+	"backend/pkg/tracing"
 )
 
 type ChangeEmailRequest struct {
@@ -11,17 +12,23 @@ type ChangeEmailRequest struct {
 	Email  string
 }
 
-func (dto *ChangeEmailRequest) IsValid() error {
-	return validate.Test(
-		validate.UUIDSimple(dto.IDUser),
-		validate.EmailSimple(dto.Email),
-	)
+func NewChangeEmailRequest(idUser, email string) (ChangeEmailRequest, error) {
+	if err := validate.Test(
+		validate.UUIDSimple(idUser),
+		validate.EmailSimple(email),
+	); err != nil {
+		return ChangeEmailRequest{}, err
+	}
+
+	return ChangeEmailRequest{
+		IDUser: idUser,
+		Email:  email,
+	}, nil
 }
 
 func (u *Usecase) ChangeEmail(ctx context.Context, dto ChangeEmailRequest) error {
-	if err := dto.IsValid(); err != nil {
-		return err
-	}
+	ctx, span := tracing.Start(ctx, "authusecase.ChangeEmail")
+	defer span.End()
 
 	_, err := u.credentialService.ReadByEmail(ctx, dto.Email)
 	if err != nil {

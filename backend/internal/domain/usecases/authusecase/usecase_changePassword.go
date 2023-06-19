@@ -5,6 +5,7 @@ import (
 
 	"backend/internal/domain/exceptions"
 	"backend/internal/domain/validate"
+	"backend/pkg/tracing"
 )
 
 type ChangePasswordRequest struct {
@@ -13,18 +14,25 @@ type ChangePasswordRequest struct {
 	NewPassword string
 }
 
-func (dto *ChangePasswordRequest) IsValid() error {
-	return validate.Test(
-		validate.UUIDSimple(dto.IDUser),
-		validate.PasswordSimple(dto.OldPassword),
-		validate.PasswordSimple(dto.NewPassword),
-	)
+func NewChangePasswordRequest(idUser, oldPassword, newPassword string) (ChangePasswordRequest, error) {
+	if err := validate.Test(
+		validate.UUIDSimple(idUser),
+		validate.PasswordSimple(oldPassword),
+		validate.PasswordSimple(newPassword),
+	); err != nil {
+		return ChangePasswordRequest{}, err
+	}
+
+	return ChangePasswordRequest{
+		IDUser:      idUser,
+		OldPassword: oldPassword,
+		NewPassword: newPassword,
+	}, nil
 }
 
 func (u *Usecase) ChangePassword(ctx context.Context, dto ChangePasswordRequest) error {
-	if err := dto.IsValid(); err != nil {
-		return err
-	}
+	ctx, span := tracing.Start(ctx, "authusecase.ChangeEmail")
+	defer span.End()
 
 	credentials, err := u.credentialService.ReadByID(ctx, dto.IDUser)
 	if err != nil {

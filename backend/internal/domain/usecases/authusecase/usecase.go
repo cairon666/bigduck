@@ -40,8 +40,8 @@ type RecoverPasswordCodeService interface {
 
 //go:generate mockery --name ConfirmEmailCodeService
 type ConfirmEmailCodeService interface {
-	Get(ctx context.Context, idUser string) (models.ConfirmEmail, error)
-	Set(ctx context.Context, idUser string, data models.ConfirmEmail) error
+	Get(ctx context.Context, idUser string) (string, error)
+	Set(ctx context.Context, idUser, code string) error
 }
 
 type Usecase struct {

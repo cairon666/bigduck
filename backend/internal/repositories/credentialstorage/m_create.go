@@ -7,10 +7,14 @@ import (
 	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
 	"backend/pkg/qb"
+	"backend/pkg/tracing"
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func (s *storage) Create(ctx context.Context, credentials models.Credential) error {
+	ctx, span := tracing.Start(ctx, "credentialstorage.Create")
+	defer span.End()
+
 	query, args := qb.
 		Insert("public.credentials",
 			"id",

@@ -12,7 +12,6 @@ import (
 type UserUsecase interface {
 	ReadByID(ctx context.Context, dto userusecase.ReadByIDRequest) (userusecase.ReadByIDResponse, error)
 	UpdateByID(ctx context.Context, dto userusecase.UpdateByIDRequest) error
-	DeleteByID(ctx context.Context, dto userusecase.DeleteByIDRequest) error
 }
 
 //go:generate mockery --name HTTPHelper
@@ -50,6 +49,5 @@ func (c *controller) RegisterRouter(r chi.Router) {
 	r.Route("/user", func(r chi.Router) {
 		r.Get("/{IDUser}", c.getUserByID)
 		r.Put("/{IDUser}", c.updateUserByID)
-		r.Delete("/{IDUser}", c.deleteUserByID)
 	})
 }

@@ -6,9 +6,13 @@ import (
 	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
 	"backend/pkg/qb"
+	"backend/pkg/tracing"
 )
 
 func (s *storage) ReadOne(ctx context.Context, filter map[string]any) (models.Credential, error) {
+	ctx, span := tracing.Start(ctx, "credentialstorage.ReadOne")
+	defer span.End()
+
 	builder := qb.
 		Select(
 			"id",

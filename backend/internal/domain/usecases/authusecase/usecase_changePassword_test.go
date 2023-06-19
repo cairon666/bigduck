@@ -27,12 +27,7 @@ func TestChangePassword_Success(t *testing.T) {
 		t.Fatalf("genereate password error: %s", err)
 	}
 
-	credentials := models.Credential{
-		ID:           req.IDUser,
-		Email:        "example@example.example",
-		PasswordHash: hash,
-		Salt:         salt,
-	}
+	credentials := models.NewCredential(req.IDUser, "example@example.example", false, hash, salt)
 
 	params.CredentialService.
 		On("ReadByID", mock.Anything, req.IDUser).
@@ -67,12 +62,7 @@ func TestChangePassword_WrongOldPassword(t *testing.T) {
 		t.Fatalf("genereate password error: %s", err)
 	}
 
-	credentials := models.Credential{
-		ID:           req.IDUser,
-		Email:        "example@example.example",
-		PasswordHash: hash,
-		Salt:         salt,
-	}
+	credentials := models.NewCredential(req.IDUser, "example@example.example", false, hash, salt)
 
 	params.CredentialService.
 		On("ReadByID", mock.Anything, req.IDUser).

@@ -10,59 +10,6 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestLoginRequest_IsValid(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		dto         LoginRequest
-		description string
-		shouldHas   exceptions.Error
-	}{
-		{
-			dto: LoginRequest{
-				Email:    "example@example.com",
-				Password: "12345678",
-			},
-			description: "should success validate",
-			shouldHas:   nil,
-		},
-		{
-			dto: LoginRequest{
-				Email:    "example@example.com",
-				Password: "",
-			},
-			description: "should short password",
-			shouldHas:   exceptions.ErrShortPassword,
-		},
-		{
-			dto: LoginRequest{
-				Email:    "",
-				Password: "12345678",
-			},
-			description: "should bad email",
-			shouldHas:   exceptions.ErrBadEmail,
-		},
-	}
-
-HERE:
-	for _, test := range tests {
-		err := test.dto.IsValid()
-
-		if test.shouldHas == nil && err == nil {
-			continue
-		}
-
-		apiErr, _ := err.(exceptions.AppError)
-		for _, err2 := range apiErr.Errors() {
-			if errors.Is(err2, test.shouldHas) {
-				continue HERE
-			}
-		}
-
-		t.Fatalf("desc: %s, shouldHas %v, err: %v", test.description, test.shouldHas, err)
-	}
-}
-
 func TestLogin_Success(t *testing.T) {
 	t.Parallel()
 
@@ -78,11 +25,7 @@ func TestLogin_Success(t *testing.T) {
 		t.Fatal("should generate hash", err)
 	}
 
-	credential := models.Credential{
-		Email:        dto.Email,
-		PasswordHash: hash,
-		Salt:         salt,
-	}
+	credential := models.NewCredential("", dto.Email, false, hash, salt)
 
 	params.CredentialService.
 		On("ReadByEmail", mock.Anything, dto.Email).
@@ -131,11 +74,7 @@ func TestLogin_WrongPassword(t *testing.T) {
 		t.Fatal("should generate hash", err)
 	}
 
-	credential := models.Credential{
-		Email:        dto.Email,
-		PasswordHash: hash,
-		Salt:         "1234567", // random salt
-	}
+	credential := models.NewCredential("", dto.Email, false, hash, "1234567")
 
 	params.CredentialService.
 		On("ReadByEmail", mock.Anything, dto.Email).

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"backend/pkg/qb"
+	"backend/pkg/tracing"
 )
 
 var possibleKeys = []string{
@@ -14,6 +15,9 @@ var possibleKeys = []string{
 }
 
 func (s *storage) UpdateByID(ctx context.Context, id string, data map[string]any) error {
+	ctx, span := tracing.Start(ctx, "credentialstorage.UpdateByID")
+	defer span.End()
+
 	builder := qb.Update("public.credentials")
 
 	for _, key := range possibleKeys {

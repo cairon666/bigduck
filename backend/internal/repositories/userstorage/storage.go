@@ -1,14 +1,14 @@
 package userstorage
 
 import (
-	"backend/pkg/database/postgres"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserStorage struct {
-	client postgres.PgxPool
+	client *pgxpool.Pool
 }
 
-func NewUserStorage(client postgres.PgxPool) *UserStorage {
+func NewUserStorage(client *pgxpool.Pool) *UserStorage {
 	return &UserStorage{
 		client: client,
 	}

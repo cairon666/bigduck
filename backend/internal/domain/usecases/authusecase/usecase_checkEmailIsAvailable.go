@@ -5,20 +5,27 @@ import (
 	"errors"
 
 	"backend/internal/domain/exceptions"
+	"backend/internal/domain/validate"
+	"backend/pkg/tracing"
 )
 
 type CheckEmailIsAvailableRequest struct {
 	Email string
 }
 
-func (dto *CheckEmailIsAvailableRequest) IsValid() error {
-	return nil
+func NewCheckEmailIsAvailableRequest(email string) (CheckEmailIsAvailableRequest, error) {
+	if err := validate.Test(validate.EmailSimple(email)); err != nil {
+		return CheckEmailIsAvailableRequest{}, err
+	}
+
+	return CheckEmailIsAvailableRequest{
+		Email: email,
+	}, nil
 }
 
 func (u *Usecase) CheckEmailIsAvailable(ctx context.Context, dto CheckEmailIsAvailableRequest) error {
-	if err := dto.IsValid(); err != nil {
-		return err
-	}
+	ctx, span := tracing.Start(ctx, "authusecase.CheckEmailIsAvailable")
+	defer span.End()
 
 	_, err := u.credentialService.ReadByEmail(ctx, dto.Email)
 

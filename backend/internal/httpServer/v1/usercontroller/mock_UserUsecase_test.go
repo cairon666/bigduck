@@ -22,49 +22,6 @@ func (_m *MockUserUsecase) EXPECT() *MockUserUsecase_Expecter {
 	return &MockUserUsecase_Expecter{mock: &_m.Mock}
 }
 
-// DeleteByID provides a mock function with given fields: ctx, dto
-func (_m *MockUserUsecase) DeleteByID(ctx context.Context, dto userusecase.DeleteByIDRequest) error {
-	ret := _m.Called(ctx, dto)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, userusecase.DeleteByIDRequest) error); ok {
-		r0 = rf(ctx, dto)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// MockUserUsecase_DeleteByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByID'
-type MockUserUsecase_DeleteByID_Call struct {
-	*mock.Call
-}
-
-// DeleteByID is a helper method to define mock.On call
-//   - ctx context.Context
-//   - dto userusecase.DeleteByIDRequest
-func (_e *MockUserUsecase_Expecter) DeleteByID(ctx interface{}, dto interface{}) *MockUserUsecase_DeleteByID_Call {
-	return &MockUserUsecase_DeleteByID_Call{Call: _e.mock.On("DeleteByID", ctx, dto)}
-}
-
-func (_c *MockUserUsecase_DeleteByID_Call) Run(run func(ctx context.Context, dto userusecase.DeleteByIDRequest)) *MockUserUsecase_DeleteByID_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(userusecase.DeleteByIDRequest))
-	})
-	return _c
-}
-
-func (_c *MockUserUsecase_DeleteByID_Call) Return(_a0 error) *MockUserUsecase_DeleteByID_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *MockUserUsecase_DeleteByID_Call) RunAndReturn(run func(context.Context, userusecase.DeleteByIDRequest) error) *MockUserUsecase_DeleteByID_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // ReadByID provides a mock function with given fields: ctx, dto
 func (_m *MockUserUsecase) ReadByID(ctx context.Context, dto userusecase.ReadByIDRequest) (userusecase.ReadByIDResponse, error) {
 	ret := _m.Called(ctx, dto)

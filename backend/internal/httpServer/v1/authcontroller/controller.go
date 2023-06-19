@@ -19,6 +19,7 @@ type AuthUsecase interface {
 	ChangePassword(ctx context.Context, dto authusecase.ChangePasswordRequest) error
 	ConfirmEmailSend(ctx context.Context, dto authusecase.ConfirmEmailSendRequest) error
 	ConfirmEmailConfirm(ctx context.Context, dto authusecase.ConfirmEmailConfirmRequest) error
+	CheckEmailIsAvailable(ctx context.Context, dto authusecase.CheckEmailIsAvailableRequest) error
 }
 
 //go:generate mockery --name HTTPHelper
@@ -70,6 +71,6 @@ func (c *controller) RegisterRouter(r chi.Router) {
 		r.Post("/change/password", c.changePasswordHandler)
 		r.Post("/confirm/email/send", c.confirmEmailSendHandler)       // send code to email
 		r.Post("/confirm/email/confirm", c.confirmEmailConfirmHandler) // confirm sent code
-		r.Post("/check/email/{Email} ", nil)                           // checking what email is available
+		r.Get("/check/email/{Email} ", c.checkEmailHandler)            // checking what email is available
 	})
 }

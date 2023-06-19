@@ -24,9 +24,10 @@ func (c *controller) loginHandler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	dto := authusecase.LoginRequest{
-		Email:    reqDTO.Email,
-		Password: reqDTO.Password,
+	dto, err := authusecase.NewLoginRequest(reqDTO.Email, reqDTO.Password)
+	if err != nil {
+		c.httpHelper.HandleError(rw, err)
+		return
 	}
 
 	resp, err := c.authUsecase.Login(req.Context(), dto)

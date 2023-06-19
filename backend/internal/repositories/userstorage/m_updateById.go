@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"backend/pkg/qb"
+	"backend/pkg/tracing"
 	"github.com/pkg/errors"
 )
 
@@ -19,6 +20,9 @@ var possibleUpdateKeys = []string{
 }
 
 func (s *UserStorage) UpdateByID(ctx context.Context, id string, data map[string]any) error {
+	ctx, span := tracing.Start(ctx, "userstorage.UpdateByID")
+	defer span.End()
+
 	builder := qb.Update("public.users")
 
 	for _, key := range possibleUpdateKeys {

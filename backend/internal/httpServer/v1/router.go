@@ -5,14 +5,16 @@ import (
 
 	"backend/pkg/middleware"
 	"github.com/go-chi/chi/v5"
+	"github.com/riandyrn/otelchi"
 )
 
-func (s *server) router() http.Handler {
+func (s *Server) router() http.Handler {
 	r := chi.NewRouter()
 
-	r.Use(middleware.BodyCloser)
-	r.Use(middleware.RequestID)
 	r.Use(middleware.Recoverer)
+	r.Use(middleware.BodyCloser)
+	r.Use(otelchi.Middleware("backend_service"))
+	r.Use(middleware.RequestID)
 	r.Use(s.CorsMiddleware)
 	r.Use(s.authHelper.AuthorizationMiddleware)
 

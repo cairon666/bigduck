@@ -17,8 +17,8 @@ func TestLoginHandler_Success(t *testing.T) {
 	c, params := NewMockController(t)
 
 	reqData := loginRequest{
-		Email:    "",
-		Password: "",
+		Email:    "example@example.example",
+		Password: "12345678",
 	}
 
 	usecaseResp := authusecase.LoginResponse{IDUser: "123"}

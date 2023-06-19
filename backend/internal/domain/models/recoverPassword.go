@@ -1,13 +1,22 @@
 package models
 
-// RecoverPassword - struct for processing recover password
 type RecoverPassword struct {
-	Email string
-	// ID - for updating in database
-	ID        string
-	IsConfirm bool
-	Code      string
-	// PasswordHash and Salt for check, what old password not equal new password
-	PasswordHash string
-	Salt         string
+	Email     string `json:"email"`
+	ID        string `json:"id"`
+	IsConfirm bool   `json:"is_confirm"`
+	Code      string `json:"code"`
+}
+
+func NewRecoverPassword(
+	email string,
+	id string,
+	isConfirm bool,
+	code string,
+) RecoverPassword {
+	return RecoverPassword{
+		Email:     email,
+		ID:        id,
+		IsConfirm: isConfirm,
+		Code:      code,
+	}
 }

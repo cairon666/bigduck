@@ -1,5 +1,8 @@
+include .local.env
+export
+
 BINARY_NAME := main
-MAIN_PACKAGE_PATH := ./cmd/server.go
+MAIN_PACKAGE_PATH := ./cmd/app/main.go
 
 # ==================================================================================== #
 # HELPERS
@@ -22,7 +25,7 @@ no-dirty:
 ## golangci-lint-check: check golangci-lint and install if not exist
 .PHONY: golangci-lint-check
 golangci-lint-check:
-	bash ./scripts/golangci-lint-check.bash
+	/bin/bash ./scripts/golangci-lint-check.bash
 
 # ==================================================================================== #
 # QUALITY CONTROL
@@ -45,6 +48,10 @@ audit: golangci-lint-check
 # ==================================================================================== #
 # DEVELOPMENT
 # ==================================================================================== #
+
+.PHONY: migrations
+migrate:
+	sudo docker run -e GOOSE_DRIVER=pgx -e GOOSE_DBSTRING=postgres://admin:admin@0.0.0.0:6432/root --network=host migrations
 
 ## test: run all tests
 .PHONY: test

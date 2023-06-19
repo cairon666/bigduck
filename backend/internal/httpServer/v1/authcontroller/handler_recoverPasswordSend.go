@@ -18,12 +18,16 @@ func (c *controller) recoverPasswordSend(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	dto := authusecase.RecoverPasswordSendRequest{Email: req.Email}
+	dto, err := authusecase.NewRecoverPasswordSendRequest(req.Email)
+	if err != nil {
+		c.httpHelper.HandleError(w, err)
+		return
+	}
 
 	if err := c.authUsecase.RecoverPasswordSend(r.Context(), dto); err != nil {
 		c.httpHelper.HandleError(w, err)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusOK)
 }

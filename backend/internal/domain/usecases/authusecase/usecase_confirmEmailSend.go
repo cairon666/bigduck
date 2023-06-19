@@ -3,24 +3,29 @@ package authusecase
 import (
 	"context"
 
-	"backend/internal/domain/models"
 	"backend/internal/domain/validate"
+	"backend/pkg/tracing"
 )
 
 type ConfirmEmailSendRequest struct {
 	IDUser string
 }
 
-func (dto *ConfirmEmailSendRequest) IsValid() error {
-	return validate.Test(
-		validate.UUIDSimple(dto.IDUser),
-	)
+func NewConfirmEmailSendRequest(idUser string) (ConfirmEmailSendRequest, error) {
+	if err := validate.Test(
+		validate.UUIDSimple(idUser),
+	); err != nil {
+		return ConfirmEmailSendRequest{}, err
+	}
+
+	return ConfirmEmailSendRequest{
+		IDUser: idUser,
+	}, nil
 }
 
 func (u *Usecase) ConfirmEmailSend(ctx context.Context, dto ConfirmEmailSendRequest) error {
-	if err := dto.IsValid(); err != nil {
-		return err
-	}
+	ctx, span := tracing.Start(ctx, "authusecase.ConfirmEmailSend")
+	defer span.End()
 
 	credential, err := u.credentialService.ReadByID(ctx, dto.IDUser)
 	if err != nil {
@@ -32,9 +37,7 @@ func (u *Usecase) ConfirmEmailSend(ctx context.Context, dto ConfirmEmailSendRequ
 		return err
 	}
 
-	data := models.ConfirmEmail{Code: code}
-
-	if err := u.confirmEmailCodeService.Set(ctx, dto.IDUser, data); err != nil {
+	if err := u.confirmEmailCodeService.Set(ctx, dto.IDUser, code); err != nil {
 		return err
 	}
 

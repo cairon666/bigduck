@@ -1,14 +1,14 @@
 package credentialstorage
 
 import (
-	"backend/pkg/database/postgres"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type storage struct {
-	client postgres.PgxPool
+	client *pgxpool.Pool
 }
 
-func NewCredentialStorage(client postgres.PgxPool) *storage {
+func NewCredentialStorage(client *pgxpool.Pool) *storage {
 	return &storage{
 		client: client,
 	}

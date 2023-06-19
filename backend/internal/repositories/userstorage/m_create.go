@@ -7,11 +7,15 @@ import (
 	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
 	"backend/pkg/qb"
+	"backend/pkg/tracing"
 	"github.com/jackc/pgx/v5/pgconn"
 	errors2 "github.com/pkg/errors"
 )
 
 func (s *UserStorage) Create(ctx context.Context, user models.User) error {
+	ctx, span := tracing.Start(ctx, "userstorage.Create")
+	defer span.End()
+
 	query, args := qb.Insert(
 		"public.users",
 		"id",

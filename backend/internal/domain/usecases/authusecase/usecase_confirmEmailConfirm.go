@@ -5,6 +5,7 @@ import (
 
 	"backend/internal/domain/exceptions"
 	"backend/internal/domain/validate"
+	"backend/pkg/tracing"
 )
 
 type ConfirmEmailConfirmRequest struct {
@@ -12,24 +13,30 @@ type ConfirmEmailConfirmRequest struct {
 	Code   string
 }
 
-func (dto *ConfirmEmailConfirmRequest) IsValid() error {
-	return validate.Test(
-		validate.UUIDSimple(dto.IDUser),
-		validate.ConfirmEmailCodeSimple(dto.Code),
-	)
+func NewConfirmEmailConfirmRequest(idUser, code string) (ConfirmEmailConfirmRequest, error) {
+	if err := validate.Test(
+		validate.UUIDSimple(idUser),
+		validate.ConfirmEmailCodeSimple(code),
+	); err != nil {
+		return ConfirmEmailConfirmRequest{}, err
+	}
+
+	return ConfirmEmailConfirmRequest{
+		IDUser: idUser,
+		Code:   code,
+	}, nil
 }
 
 func (u *Usecase) ConfirmEmailConfirm(ctx context.Context, dto ConfirmEmailConfirmRequest) error {
-	if err := dto.IsValid(); err != nil {
-		return err
-	}
+	ctx, span := tracing.Start(ctx, "authusecase.ConfirmEmailConfirm")
+	defer span.End()
 
-	data, err := u.confirmEmailCodeService.Get(ctx, dto.IDUser)
+	code, err := u.confirmEmailCodeService.Get(ctx, dto.IDUser)
 	if err != nil {
 		return err
 	}
 
-	if data.Code != dto.Code {
+	if code != dto.Code {
 		return exceptions.ErrBadEmailConfirmCode
 	}
 

@@ -6,6 +6,7 @@ import (
 	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
 	"backend/pkg/qb"
+	"backend/pkg/tracing"
 	"github.com/pkg/errors"
 )
 
@@ -15,6 +16,9 @@ var possibleFilterKeys = []string{
 }
 
 func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (models.User, error) {
+	ctx, span := tracing.Start(ctx, "userstorage.ReadOne")
+	defer span.End()
+
 	builder := qb.Select(
 		"id",
 		"email",

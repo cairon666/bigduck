@@ -25,14 +25,13 @@ func (c *controller) changePasswordHandler(rw http.ResponseWriter, req *http.Req
 		return
 	}
 
-	dto := authusecase.ChangePasswordRequest{
-		OldPassword: reqDTO.OldPassword,
-		NewPassword: reqDTO.NewPassword,
-		IDUser:      IDUser,
+	dto, err := authusecase.NewChangePasswordRequest(reqDTO.OldPassword, reqDTO.NewPassword, IDUser)
+	if err != nil {
+		c.httpHelper.HandleError(rw, err)
+		return
 	}
 
-	err := c.authUsecase.ChangePassword(req.Context(), dto)
-	if err != nil {
+	if err := c.authUsecase.ChangePassword(req.Context(), dto); err != nil {
 		c.httpHelper.HandleError(rw, err)
 		return
 	}

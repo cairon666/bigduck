@@ -20,13 +20,11 @@ func TestRecoverPasswordConfirm_Success(t *testing.T) {
 		Code:  "0000",
 	}
 
+	recoverData := models.NewRecoverPassword(dto.Email, "", false, dto.Code)
+
 	props.RecoverPasswordCodeService.
 		On("Get", mock.Anything, dto.Email).
-		Return(models.RecoverPassword{
-			Email:     dto.Email,
-			IsConfirm: false,
-			Code:      dto.Code,
-		}, nil)
+		Return(recoverData, nil)
 
 	props.RecoverPasswordCodeService.
 		On("Set", mock.Anything, dto.Email, mock.IsType(models.RecoverPassword{})).
@@ -48,12 +46,11 @@ func TestRecoverPasswordConfirm_BadRecoverCode(t *testing.T) {
 		Code:  "0000",
 	}
 
+	recoverData := models.NewRecoverPassword(dto.Email, "", false, "0001")
+
 	props.RecoverPasswordCodeService.
 		On("Get", mock.Anything, dto.Email).
-		Return(models.RecoverPassword{
-			IsConfirm: false,
-			Code:      "0001",
-		}, nil)
+		Return(recoverData, nil)
 
 	err := usecase.RecoverPasswordConfirm(context.Background(), dto)
 	if !errors.Is(err, exceptions.ErrBadRecoverCode) {
@@ -71,12 +68,11 @@ func TestRecoverPasswordConfirm_EmailNotFound(t *testing.T) {
 		Code:  "0000",
 	}
 
+	recoverData := models.NewRecoverPassword(dto.Email, "", false, dto.Code)
+
 	props.RecoverPasswordCodeService.
 		On("Get", mock.Anything, dto.Email).
-		Return(models.RecoverPassword{
-			IsConfirm: false,
-			Code:      dto.Code,
-		}, exceptions.ErrNotFound)
+		Return(recoverData, exceptions.ErrNotFound)
 
 	err := usecase.RecoverPasswordConfirm(context.Background(), dto)
 	if !errors.Is(err, exceptions.ErrNotFound) {

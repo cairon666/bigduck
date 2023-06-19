@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -24,11 +25,13 @@ type Controller interface {
 	RegisterRouter(r chi.Router)
 }
 
-type server struct {
+type Server struct {
 	conf           *config.Config
 	authController Controller
 	userController Controller
 	authHelper     AuthHelper
+
+	server *http.Server
 }
 
 type Params struct {
@@ -40,7 +43,7 @@ type Params struct {
 	UserUsecase *userusecase.Usecase
 }
 
-func NewServer(params Params) *server {
+func NewServer(params Params) *Server {
 	httpHelper := httphelper.NewHTTPHelper(params.Log, params.Conf)
 	authHelper := authhelper.NewAuthHelper(authhelper.Props{
 		Issuer:     params.Conf.HTTP.Domain,
@@ -49,7 +52,7 @@ func NewServer(params Params) *server {
 		TTLRefresh: params.Conf.JWT.TTLRefresh,
 	})
 
-	return &server{
+	return &Server{
 		conf:       params.Conf,
 		authHelper: authHelper,
 		authController: authcontroller.NewAuthController(authcontroller.Params{
@@ -65,8 +68,8 @@ func NewServer(params Params) *server {
 	}
 }
 
-func (s *server) Run() error {
-	server := http.Server{
+func (s *Server) ListenAndServe() error {
+	server := &http.Server{
 		Addr:              fmt.Sprintf("%s:%s", s.conf.HTTP.Address, s.conf.HTTP.Port),
 		Handler:           s.router(),
 		ReadTimeout:       s.conf.HTTP.ReadTimeout,
@@ -75,5 +78,15 @@ func (s *server) Run() error {
 		IdleTimeout:       s.conf.HTTP.IdleTimeout,
 	}
 
+	s.server = server
+
 	return server.ListenAndServe()
+}
+
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.server.Shutdown(ctx)
+}
+
+func (s *Server) SetKeepAlivesEnabled(v bool) {
+	s.server.SetKeepAlivesEnabled(v)
 }

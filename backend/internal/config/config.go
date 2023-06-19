@@ -8,15 +8,15 @@ import (
 )
 
 type Config struct {
-	Postgres string `env:"POSTGRESQL_URL" envDefault:"postgresql://admin:admin@0.0.0.0:5432/root"`
+	Postgres string `env:"POSTGRESQL_URL" envDefault:"postgresql://admin:admin@0.0.0.0:6432/root"`
 	HTTP     struct {
-		Port              string        `env:"APP_PORT"                envDefault:"3000"`
-		Address           string        `env:"APP_ADDRESS"             envDefault:"0.0.0.0"`
-		Domain            string        `env:"APP_DOMAIN"              envDefault:"localhost"`
-		ReadTimeout       time.Duration `env:"APP_READ_TIMEOUT"        envDefault:"10s"`
-		ReadHeaderTimeout time.Duration `env:"APP_READ_HEADER_TIMEOUT" envDefault:"10s"`
-		WriteTimeout      time.Duration `env:"APP_WRITE_TIMEOUT"       envDefault:"30s"`
-		IdleTimeout       time.Duration `env:"APP_IDLE_TIMEOUT"        envDefault:"2m"`
+		Port              string        `env:"HTTP_PORT"                envDefault:"3000"`
+		Address           string        `env:"HTTP_ADDRESS"             envDefault:"0.0.0.0"`
+		Domain            string        `env:"HTTP_DOMAIN"              envDefault:"localhost"`
+		ReadTimeout       time.Duration `env:"HTTP_READ_TIMEOUT"        envDefault:"10s"`
+		ReadHeaderTimeout time.Duration `env:"HTTP_READ_HEADER_TIMEOUT" envDefault:"10s"`
+		WriteTimeout      time.Duration `env:"HTTP_WRITE_TIMEOUT"       envDefault:"30s"`
+		IdleTimeout       time.Duration `env:"HTTP_IDLE_TIMEOUT"        envDefault:"2m"`
 
 		CORS struct {
 			// AllowedOrigins is a list of origins a cross-domain request can be executed from.
@@ -45,6 +45,26 @@ type Config struct {
 		Private    string        `env:"JWT_PRIVATE"     envDefault:"private"`
 		TTLAccess  time.Duration `env:"JWT_TTL_ACCESS"  envDefault:"1h"`
 		TTLRefresh time.Duration `env:"JWT_TTL_REFRESH" envDefault:"720h"`
+	}
+	// S3 struct {
+	//	ConfigPath    string
+	//	Endpoint      string
+	//	SigningRegion string
+	//	PartitionID   string
+	//}
+	Redis struct {
+		ConfirmEmail       string        `env:"REDIS_CONFIRM_EMAIL"        envDefault:"redis://admin:admin@0.0.0.0:6379/0"` //nolint:lll
+		ConfirmEmailTTL    time.Duration `env:"REDIS_CONFIRM_EMAIL_TTL"    envDefault:"5m"`
+		RecoverPassword    string        `env:"REDIS_RECOVER_PASSWORD"     envDefault:"redis://admin:admin@0.0.0.0:6379/1"` //nolint:lll
+		RecoverPasswordTTL time.Duration `env:"REDIS_RECOVER_PASSWORD_TTL" envDefault:"5m"`
+	}
+	Trace struct {
+		TraceGRPCAddr  string `env:"TRACE_GRPC_ADDR"       envDefault:"0.0.0.0:4317"`
+		MetricGRPCAddr string `env:"METRIC_GRPC_ADDR"      envDefault:"0.0.0.0:12345"`
+		ServiceID      string `env:"TRACE_SERVICE_ID"      envDefault:"627cc493-f310-47de-96bd-71410b7dec09"`
+		ServiceName    string `env:"TRACE_SERVICE_NAME"    envDefault:"backend_service"`
+		ServiceVersion string `env:"TRACE_SERVICE_VERSION" envDefault:"1.0.0"`
+		EnvName        string `env:"TRACE_ENV_NAME"        envDefault:"develop"`
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 
 	"backend/internal/domain/exceptions"
 	validate2 "backend/internal/domain/validate"
+	"backend/pkg/tracing"
 )
 
 type RecoverPasswordConfirmRequest struct {
@@ -12,17 +13,20 @@ type RecoverPasswordConfirmRequest struct {
 	Code  string
 }
 
-func (dto *RecoverPasswordConfirmRequest) IsValid() error {
-	return validate2.Test(
-		validate2.EmailSimple(dto.Email),
-		validate2.RecoverPasswordCodeSimple(dto.Code),
-	)
+func NewRecoverPasswordConfirmRequest(email, code string) (RecoverPasswordConfirmRequest, error) {
+	if err := validate2.Test(
+		validate2.EmailSimple(email),
+		validate2.RecoverPasswordCodeSimple(code),
+	); err != nil {
+		return RecoverPasswordConfirmRequest{}, err
+	}
+
+	return RecoverPasswordConfirmRequest{Email: email, Code: code}, nil
 }
 
 func (u *Usecase) RecoverPasswordConfirm(ctx context.Context, req RecoverPasswordConfirmRequest) error {
-	if err := req.IsValid(); err != nil {
-		return err
-	}
+	ctx, span := tracing.Start(ctx, "authusecase.RecoverPasswordConfirm")
+	defer span.End()
 
 	// create code
 	data, err := u.recoverPasswordCodeService.Get(ctx, req.Email)

@@ -24,13 +24,13 @@ func (c *controller) confirmEmailConfirmHandler(rw http.ResponseWriter, req *htt
 		return
 	}
 
-	dto := authusecase.ConfirmEmailConfirmRequest{
-		IDUser: IDUser,
-		Code:   reqDTO.Code,
+	dto, err := authusecase.NewConfirmEmailConfirmRequest(IDUser, reqDTO.Code)
+	if err != nil {
+		c.httpHelper.HandleError(rw, err)
+		return
 	}
 
-	err := c.authUsecase.ConfirmEmailConfirm(req.Context(), dto)
-	if err != nil {
+	if err := c.authUsecase.ConfirmEmailConfirm(req.Context(), dto); err != nil {
 		c.httpHelper.HandleError(rw, err)
 		return
 	}

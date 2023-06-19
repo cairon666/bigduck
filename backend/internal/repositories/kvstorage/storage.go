@@ -2,39 +2,57 @@ package kvstorage
 
 import (
 	"context"
-	"sync"
+	"time"
 
-	"backend/internal/domain/exceptions"
+	"backend/pkg/tracing"
+	"github.com/redis/go-redis/v9"
 )
 
 type storage struct {
-	mu    sync.Mutex
-	store map[string]map[string]string
+	client *redis.Client
+	ttl    time.Duration
 }
 
-func NewKVStorage() *storage {
+func NewKVStorage(client *redis.Client, ttl time.Duration) *storage {
 	return &storage{
-		store: make(map[string]map[string]string),
+		client: client,
+		ttl:    ttl,
 	}
 }
 
-func (s *storage) Get(ctx context.Context, key string) (map[string]string, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (s *storage) Get(ctx context.Context, key string) (string, error) {
+	ctx, span := tracing.Start(ctx, "kvstorage.Get")
+	defer span.End()
 
-	data, ok := s.store[key]
-	if !ok {
-		return nil, exceptions.ErrNotFound
+	data, err := s.client.Get(ctx, key).Result()
+	if err != nil {
+		return "", err
 	}
 
 	return data, nil
 }
 
-func (s *storage) Set(ctx context.Context, key string, data map[string]string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (s *storage) Set(ctx context.Context, key string, data string) error {
+	ctx, span := tracing.Start(ctx, "kvstorage.Set")
+	defer span.End()
 
-	s.store[key] = data
+	cmd := s.client.Set(ctx, key, data, s.ttl)
+
+	if cmd.Err() != nil {
+		return cmd.Err()
+	}
+
+	return nil
+}
+
+func (s *storage) Del(ctx context.Context, keys ...string) error {
+	ctx, span := tracing.Start(ctx, "kvstorage.Del")
+	defer span.End()
+
+	cmd := s.client.Del(ctx, keys...)
+	if cmd.Err() != nil {
+		return cmd.Err()
+	}
 
 	return nil
 }

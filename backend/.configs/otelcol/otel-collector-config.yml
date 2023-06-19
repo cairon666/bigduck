@@ -1,0 +1,56 @@
+receivers:
+  jaeger:
+    protocols:
+      thrift_http:
+        endpoint: "0.0.0.0:14268"
+
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+  otlp/spanmetrics:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:12345"
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+
+  jaeger:
+    endpoint: "jaeger:14250"
+    tls:
+      insecure: true
+
+connectors:
+  spanmetrics:
+
+processors:
+  batch:
+  spanmetrics:
+    metrics_exporter: prometheus
+
+service:
+#  telemetry:
+#    logs:
+#      level: "debug"
+  pipelines:
+    traces:
+      receivers: [ otlp, jaeger ]
+      processors: [ spanmetrics, batch ]
+      exporters: [ jaeger ]
+#    traces:
+#      receivers: [jaeger]
+#      # spanmetrics will pass on span data untouched to next processor
+#      # while also accumulating metrics to be sent to the configured 'otlp/spanmetrics' exporter.
+#      processors: [spanmetrics, batch]
+#      exporters: [jaeger]
+
+    # This pipeline acts as a proxy to the 'metrics' pipeline below,
+    # allowing for further metrics processing if required.
+    metrics/spanmetrics:
+      # This receiver is just a dummy and never used.
+      # Added to pass validation requiring at least one receiver in a pipeline.
+      receivers: [otlp/spanmetrics]
+      exporters: [prometheus]

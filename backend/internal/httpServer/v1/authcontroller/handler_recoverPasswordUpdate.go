@@ -19,9 +19,10 @@ func (c *controller) recoverPasswordUpdate(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	dto := authusecase.RecoverPasswordUpdateRequest{
-		Email:    req.Email,
-		Password: req.Password,
+	dto, err := authusecase.NewRecoverPasswordUpdateRequest(req.Email, req.Password)
+	if err != nil {
+		c.httpHelper.HandleError(w, err)
+		return
 	}
 
 	if err := c.authUsecase.RecoverPasswordUpdate(r.Context(), dto); err != nil {
@@ -29,5 +30,5 @@ func (c *controller) recoverPasswordUpdate(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusOK)
 }

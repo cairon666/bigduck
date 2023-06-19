@@ -108,6 +108,49 @@ func (_c *MockAuthUsecase_ChangePassword_Call) RunAndReturn(run func(context.Con
 	return _c
 }
 
+// CheckEmailIsAvailable provides a mock function with given fields: ctx, dto
+func (_m *MockAuthUsecase) CheckEmailIsAvailable(ctx context.Context, dto authusecase.CheckEmailIsAvailableRequest) error {
+	ret := _m.Called(ctx, dto)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, authusecase.CheckEmailIsAvailableRequest) error); ok {
+		r0 = rf(ctx, dto)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAuthUsecase_CheckEmailIsAvailable_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CheckEmailIsAvailable'
+type MockAuthUsecase_CheckEmailIsAvailable_Call struct {
+	*mock.Call
+}
+
+// CheckEmailIsAvailable is a helper method to define mock.On call
+//   - ctx context.Context
+//   - dto authusecase.CheckEmailIsAvailableRequest
+func (_e *MockAuthUsecase_Expecter) CheckEmailIsAvailable(ctx interface{}, dto interface{}) *MockAuthUsecase_CheckEmailIsAvailable_Call {
+	return &MockAuthUsecase_CheckEmailIsAvailable_Call{Call: _e.mock.On("CheckEmailIsAvailable", ctx, dto)}
+}
+
+func (_c *MockAuthUsecase_CheckEmailIsAvailable_Call) Run(run func(ctx context.Context, dto authusecase.CheckEmailIsAvailableRequest)) *MockAuthUsecase_CheckEmailIsAvailable_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(authusecase.CheckEmailIsAvailableRequest))
+	})
+	return _c
+}
+
+func (_c *MockAuthUsecase_CheckEmailIsAvailable_Call) Return(_a0 error) *MockAuthUsecase_CheckEmailIsAvailable_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAuthUsecase_CheckEmailIsAvailable_Call) RunAndReturn(run func(context.Context, authusecase.CheckEmailIsAvailableRequest) error) *MockAuthUsecase_CheckEmailIsAvailable_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ConfirmEmailConfirm provides a mock function with given fields: ctx, dto
 func (_m *MockAuthUsecase) ConfirmEmailConfirm(ctx context.Context, dto authusecase.ConfirmEmailConfirmRequest) error {
 	ret := _m.Called(ctx, dto)

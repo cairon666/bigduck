@@ -19,12 +19,16 @@ func (c *controller) recoverPasswordConfirm(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	dto := authusecase.RecoverPasswordConfirmRequest{Email: req.Email, Code: req.Code}
+	dto, err := authusecase.NewRecoverPasswordConfirmRequest(req.Email, req.Code)
+	if err != nil {
+		c.httpHelper.HandleError(w, err)
+		return
+	}
 
 	if err := c.authUsecase.RecoverPasswordConfirm(r.Context(), dto); err != nil {
 		c.httpHelper.HandleError(w, err)
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusOK)
 }

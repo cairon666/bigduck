@@ -19,11 +19,11 @@ func TestRecoverPasswordSend_Success(t *testing.T) {
 		Email: "example@example.com",
 	}
 
+	credential := models.NewCredential("", dto.Email, false, "", "")
+
 	props.CredentialService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(models.Credential{
-			Email: dto.Email,
-		}, nil)
+		Return(credential, nil)
 
 	props.RecoverPasswordCodeService.
 		On("Set", mock.Anything, dto.Email, mock.IsType(models.RecoverPassword{})).

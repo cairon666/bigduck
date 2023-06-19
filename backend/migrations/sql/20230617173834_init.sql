@@ -1,4 +1,5 @@
-drop type if exists gender;
+-- +goose Up
+-- +goose StatementBegin
 create type gender as enum ('male', 'female');
 
 create table if not exists public.credentials
@@ -35,3 +36,4 @@ create table if not exists public.users
             on update cascade,
     primary key (id, email, user_name)
 );
+-- +goose StatementEnd

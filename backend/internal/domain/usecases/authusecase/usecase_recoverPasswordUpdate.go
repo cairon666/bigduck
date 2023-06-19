@@ -6,6 +6,7 @@ import (
 
 	"backend/internal/domain/exceptions"
 	validate2 "backend/internal/domain/validate"
+	"backend/pkg/tracing"
 )
 
 type RecoverPasswordUpdateRequest struct {
@@ -13,17 +14,20 @@ type RecoverPasswordUpdateRequest struct {
 	Password string
 }
 
-func (dto *RecoverPasswordUpdateRequest) IsValid() error {
-	return validate2.Test(
-		validate2.EmailSimple(dto.Email),
-		validate2.PasswordSimple(dto.Password),
-	)
+func NewRecoverPasswordUpdateRequest(email, password string) (RecoverPasswordUpdateRequest, error) {
+	if err := validate2.Test(
+		validate2.EmailSimple(email),
+		validate2.PasswordSimple(password),
+	); err != nil {
+		return RecoverPasswordUpdateRequest{}, err
+	}
+
+	return RecoverPasswordUpdateRequest{Email: email, Password: password}, nil
 }
 
 func (u *Usecase) RecoverPasswordUpdate(ctx context.Context, req RecoverPasswordUpdateRequest) error {
-	if err := req.IsValid(); err != nil {
-		return err
-	}
+	ctx, span := tracing.Start(ctx, "authusecase.RecoverPasswordUpdate")
+	defer span.End()
 
 	data, err := u.recoverPasswordCodeService.Get(ctx, req.Email)
 	if err != nil {
@@ -35,8 +39,14 @@ func (u *Usecase) RecoverPasswordUpdate(ctx context.Context, req RecoverPassword
 		return exceptions.ErrRecoverEmailNotConfirm
 	}
 
+	// get password from db
+	credential, err := u.credentialService.ReadByID(ctx, data.ID)
+	if err != nil {
+		return err
+	}
+
 	// check what old password not equal new password
-	err = checkPasswordHash(req.Password, data.Salt, data.PasswordHash)
+	err = checkPasswordHash(req.Password, credential.Salt, credential.PasswordHash)
 	if !errors.Is(err, exceptions.ErrBadPassword) {
 		return exceptions.ErrNewPasswordEqualOldPassword
 	}

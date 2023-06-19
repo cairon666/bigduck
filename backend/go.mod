@@ -9,6 +9,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx/v5 v5.4.1
 	github.com/pkg/errors v0.9.1
+	github.com/pressly/goose/v3 v3.11.2
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/riandyrn/otelchi v0.5.1
 	github.com/stretchr/testify v1.8.3
@@ -41,7 +42,6 @@ require (
 	github.com/jackc/puddle/v2 v2.2.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/pressly/goose/v3 v3.11.2 // indirect
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
 	go.opentelemetry.io/contrib v1.0.0 // indirect

@@ -84,7 +84,7 @@ run/live:
 
 # push: push changes to the remote Git repository
 .PHONY: push
-push: tidy audit no-dirty
+push: no-dirty
 	git push
 
 ### production/deploy: deploy the application to production

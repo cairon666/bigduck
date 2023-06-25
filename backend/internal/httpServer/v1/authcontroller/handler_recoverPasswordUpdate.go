@@ -13,20 +13,22 @@ type recoverPasswordUpdateRequest struct {
 }
 
 func (c *controller) recoverPasswordUpdate(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	var req recoverPasswordUpdateRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		c.httpHelper.HandleError(w, err)
+		c.httpHelper.HandleError(ctx, w, err)
 		return
 	}
 
 	dto, err := authusecase.NewRecoverPasswordUpdateRequest(req.Email, req.Password)
 	if err != nil {
-		c.httpHelper.HandleError(w, err)
+		c.httpHelper.HandleError(ctx, w, err)
 		return
 	}
 
-	if err := c.authUsecase.RecoverPasswordUpdate(r.Context(), dto); err != nil {
-		c.httpHelper.HandleError(w, err)
+	if err := c.authUsecase.RecoverPasswordUpdate(ctx, dto); err != nil {
+		c.httpHelper.HandleError(ctx, w, err)
 		return
 	}
 

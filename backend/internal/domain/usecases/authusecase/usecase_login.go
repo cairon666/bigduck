@@ -3,7 +3,7 @@ package authusecase
 import (
 	"context"
 
-	validate2 "backend/internal/domain/validate"
+	"backend/internal/domain/validate"
 	"backend/pkg/tracing"
 )
 
@@ -13,9 +13,9 @@ type LoginRequest struct {
 }
 
 func NewLoginRequest(email, password string) (LoginRequest, error) {
-	if err := validate2.Test(
-		validate2.EmailSimple(email),
-		validate2.PasswordSimple(password),
+	if err := validate.Test(
+		validate.EmailSimple(email),
+		validate.PasswordSimple(password),
 	); err != nil {
 		return LoginRequest{}, err
 	}
@@ -34,7 +34,7 @@ func (u *Usecase) Login(ctx context.Context, dto LoginRequest) (LoginResponse, e
 	ctx, span := tracing.Start(ctx, "authusecase.Login")
 	defer span.End()
 
-	user, err := u.credentialService.ReadByEmail(ctx, dto.Email)
+	user, err := u.userService.ReadByEmail(ctx, dto.Email)
 	if err != nil {
 		return LoginResponse{}, err
 	}

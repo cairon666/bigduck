@@ -53,10 +53,7 @@ type Config struct {
 	//	PartitionID   string
 	//}
 	Redis struct {
-		ConfirmEmail       string        `env:"REDIS_CONFIRM_EMAIL"        envDefault:"redis://admin:admin@0.0.0.0:6379/0"` //nolint:lll
-		ConfirmEmailTTL    time.Duration `env:"REDIS_CONFIRM_EMAIL_TTL"    envDefault:"5m"`
-		RecoverPassword    string        `env:"REDIS_RECOVER_PASSWORD"     envDefault:"redis://admin:admin@0.0.0.0:6379/1"` //nolint:lll
-		RecoverPasswordTTL time.Duration `env:"REDIS_RECOVER_PASSWORD_TTL" envDefault:"5m"`
+		URL string `env:"REDIS_URL"        envDefault:"redis://admin:admin@0.0.0.0:6379/0"`
 	}
 	Trace struct {
 		TraceGRPCAddr  string `env:"TRACE_GRPC_ADDR"       envDefault:"0.0.0.0:4317"`
@@ -65,6 +62,9 @@ type Config struct {
 		ServiceName    string `env:"TRACE_SERVICE_NAME"    envDefault:"backend_service"`
 		ServiceVersion string `env:"TRACE_SERVICE_VERSION" envDefault:"1.0.0"`
 		EnvName        string `env:"TRACE_ENV_NAME"        envDefault:"develop"`
+	}
+	NATS struct {
+		URL string `env:"NATS_URL" envDefault:"nats://0.0.0.0:4222"`
 	}
 }
 

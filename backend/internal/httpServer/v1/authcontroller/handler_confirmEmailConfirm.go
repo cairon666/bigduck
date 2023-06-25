@@ -1,4 +1,4 @@
-package authcontroller
+package authcontroller //nolint:dupl
 
 import (
 	"encoding/json"
@@ -12,9 +12,11 @@ type confirmEmailConfirmRequest struct {
 }
 
 func (c *controller) confirmEmailConfirmHandler(rw http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+
 	var reqDTO confirmEmailConfirmRequest
 	if err := json.NewDecoder(req.Body).Decode(&reqDTO); err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
@@ -26,12 +28,12 @@ func (c *controller) confirmEmailConfirmHandler(rw http.ResponseWriter, req *htt
 
 	dto, err := authusecase.NewConfirmEmailConfirmRequest(IDUser, reqDTO.Code)
 	if err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
-	if err := c.authUsecase.ConfirmEmailConfirm(req.Context(), dto); err != nil {
-		c.httpHelper.HandleError(rw, err)
+	if err := c.authUsecase.ConfirmEmailConfirm(ctx, dto); err != nil {
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 

@@ -5,8 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
+	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -16,18 +17,20 @@ func TestRecoverPasswordConfirm_Success(t *testing.T) {
 	usecase, props := NewMockAuthUsecase(t)
 
 	dto := RecoverPasswordConfirmRequest{
-		Email: "example@example.com",
-		Code:  "0000",
+		Email: validate.MockEmail,
+		Code:  validate.MockCode,
 	}
 
 	recoverData := models.NewRecoverPassword(dto.Email, "", false, dto.Code)
 
+	key := models.RecoverPasswordKey(dto.Email)
+
 	props.RecoverPasswordCodeService.
-		On("Get", mock.Anything, dto.Email).
+		On("Get", mock.Anything, key).
 		Return(recoverData, nil)
 
 	props.RecoverPasswordCodeService.
-		On("Set", mock.Anything, dto.Email, mock.IsType(models.RecoverPassword{})).
+		On("Set", mock.Anything, mock.IsType(&models.RecoverPassword{}), ttlRecoverPasswordCode).
 		Return(nil)
 
 	err := usecase.RecoverPasswordConfirm(context.Background(), dto)
@@ -42,14 +45,16 @@ func TestRecoverPasswordConfirm_BadRecoverCode(t *testing.T) {
 	usecase, props := NewMockAuthUsecase(t)
 
 	dto := RecoverPasswordConfirmRequest{
-		Email: "example@example.com",
-		Code:  "0000",
+		Email: validate.MockEmail,
+		Code:  validate.MockCode,
 	}
 
-	recoverData := models.NewRecoverPassword(dto.Email, "", false, "0001")
+	recoverData := models.NewRecoverPassword(dto.Email, "", false, validate.MockCode2)
+
+	key := models.RecoverPasswordKey(dto.Email)
 
 	props.RecoverPasswordCodeService.
-		On("Get", mock.Anything, dto.Email).
+		On("Get", mock.Anything, key).
 		Return(recoverData, nil)
 
 	err := usecase.RecoverPasswordConfirm(context.Background(), dto)
@@ -64,14 +69,16 @@ func TestRecoverPasswordConfirm_EmailNotFound(t *testing.T) {
 	usecase, props := NewMockAuthUsecase(t)
 
 	dto := RecoverPasswordConfirmRequest{
-		Email: "example@example.com",
-		Code:  "0000",
+		Email: validate.MockEmail,
+		Code:  validate.MockCode,
 	}
 
 	recoverData := models.NewRecoverPassword(dto.Email, "", false, dto.Code)
 
+	key := models.RecoverPasswordKey(dto.Email)
+
 	props.RecoverPasswordCodeService.
-		On("Get", mock.Anything, dto.Email).
+		On("Get", mock.Anything, key).
 		Return(recoverData, exceptions.ErrNotFound)
 
 	err := usecase.RecoverPasswordConfirm(context.Background(), dto)

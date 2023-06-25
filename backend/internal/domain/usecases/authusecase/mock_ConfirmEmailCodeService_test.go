@@ -4,7 +4,9 @@ package authusecase
 
 import (
 	context "context"
+	time "time"
 
+	models "backend/internal/domain/models"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -21,23 +23,25 @@ func (_m *MockConfirmEmailCodeService) EXPECT() *MockConfirmEmailCodeService_Exp
 	return &MockConfirmEmailCodeService_Expecter{mock: &_m.Mock}
 }
 
-// Get provides a mock function with given fields: ctx, idUser
-func (_m *MockConfirmEmailCodeService) Get(ctx context.Context, idUser string) (string, error) {
-	ret := _m.Called(ctx, idUser)
+// Get provides a mock function with given fields: ctx, key
+func (_m *MockConfirmEmailCodeService) Get(ctx context.Context, key string) (*models.ConfirmEmailCode, error) {
+	ret := _m.Called(ctx, key)
 
-	var r0 string
+	var r0 *models.ConfirmEmailCode
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (string, error)); ok {
-		return rf(ctx, idUser)
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*models.ConfirmEmailCode, error)); ok {
+		return rf(ctx, key)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) string); ok {
-		r0 = rf(ctx, idUser)
+	if rf, ok := ret.Get(0).(func(context.Context, string) *models.ConfirmEmailCode); ok {
+		r0 = rf(ctx, key)
 	} else {
-		r0 = ret.Get(0).(string)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.ConfirmEmailCode)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, idUser)
+		r1 = rf(ctx, key)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -52,35 +56,35 @@ type MockConfirmEmailCodeService_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - idUser string
-func (_e *MockConfirmEmailCodeService_Expecter) Get(ctx interface{}, idUser interface{}) *MockConfirmEmailCodeService_Get_Call {
-	return &MockConfirmEmailCodeService_Get_Call{Call: _e.mock.On("Get", ctx, idUser)}
+//   - key string
+func (_e *MockConfirmEmailCodeService_Expecter) Get(ctx interface{}, key interface{}) *MockConfirmEmailCodeService_Get_Call {
+	return &MockConfirmEmailCodeService_Get_Call{Call: _e.mock.On("Get", ctx, key)}
 }
 
-func (_c *MockConfirmEmailCodeService_Get_Call) Run(run func(ctx context.Context, idUser string)) *MockConfirmEmailCodeService_Get_Call {
+func (_c *MockConfirmEmailCodeService_Get_Call) Run(run func(ctx context.Context, key string)) *MockConfirmEmailCodeService_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *MockConfirmEmailCodeService_Get_Call) Return(_a0 string, _a1 error) *MockConfirmEmailCodeService_Get_Call {
+func (_c *MockConfirmEmailCodeService_Get_Call) Return(_a0 *models.ConfirmEmailCode, _a1 error) *MockConfirmEmailCodeService_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockConfirmEmailCodeService_Get_Call) RunAndReturn(run func(context.Context, string) (string, error)) *MockConfirmEmailCodeService_Get_Call {
+func (_c *MockConfirmEmailCodeService_Get_Call) RunAndReturn(run func(context.Context, string) (*models.ConfirmEmailCode, error)) *MockConfirmEmailCodeService_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Set provides a mock function with given fields: ctx, idUser, code
-func (_m *MockConfirmEmailCodeService) Set(ctx context.Context, idUser string, code string) error {
-	ret := _m.Called(ctx, idUser, code)
+// Set provides a mock function with given fields: ctx, data, ttl
+func (_m *MockConfirmEmailCodeService) Set(ctx context.Context, data *models.ConfirmEmailCode, ttl time.Duration) error {
+	ret := _m.Called(ctx, data, ttl)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
-		r0 = rf(ctx, idUser, code)
+	if rf, ok := ret.Get(0).(func(context.Context, *models.ConfirmEmailCode, time.Duration) error); ok {
+		r0 = rf(ctx, data, ttl)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -95,15 +99,15 @@ type MockConfirmEmailCodeService_Set_Call struct {
 
 // Set is a helper method to define mock.On call
 //   - ctx context.Context
-//   - idUser string
-//   - code string
-func (_e *MockConfirmEmailCodeService_Expecter) Set(ctx interface{}, idUser interface{}, code interface{}) *MockConfirmEmailCodeService_Set_Call {
-	return &MockConfirmEmailCodeService_Set_Call{Call: _e.mock.On("Set", ctx, idUser, code)}
+//   - data *models.ConfirmEmailCode
+//   - ttl time.Duration
+func (_e *MockConfirmEmailCodeService_Expecter) Set(ctx interface{}, data interface{}, ttl interface{}) *MockConfirmEmailCodeService_Set_Call {
+	return &MockConfirmEmailCodeService_Set_Call{Call: _e.mock.On("Set", ctx, data, ttl)}
 }
 
-func (_c *MockConfirmEmailCodeService_Set_Call) Run(run func(ctx context.Context, idUser string, code string)) *MockConfirmEmailCodeService_Set_Call {
+func (_c *MockConfirmEmailCodeService_Set_Call) Run(run func(ctx context.Context, data *models.ConfirmEmailCode, ttl time.Duration)) *MockConfirmEmailCodeService_Set_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string))
+		run(args[0].(context.Context), args[1].(*models.ConfirmEmailCode), args[2].(time.Duration))
 	})
 	return _c
 }
@@ -113,7 +117,7 @@ func (_c *MockConfirmEmailCodeService_Set_Call) Return(_a0 error) *MockConfirmEm
 	return _c
 }
 
-func (_c *MockConfirmEmailCodeService_Set_Call) RunAndReturn(run func(context.Context, string, string) error) *MockConfirmEmailCodeService_Set_Call {
+func (_c *MockConfirmEmailCodeService_Set_Call) RunAndReturn(run func(context.Context, *models.ConfirmEmailCode, time.Duration) error) *MockConfirmEmailCodeService_Set_Call {
 	_c.Call.Return(run)
 	return _c
 }

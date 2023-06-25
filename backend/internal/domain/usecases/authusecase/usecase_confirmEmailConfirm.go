@@ -3,8 +3,9 @@ package authusecase
 import (
 	"context"
 
-	"backend/internal/domain/exceptions"
+	"backend/internal/domain/models"
 	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"backend/pkg/tracing"
 )
 
@@ -31,16 +32,16 @@ func (u *Usecase) ConfirmEmailConfirm(ctx context.Context, dto ConfirmEmailConfi
 	ctx, span := tracing.Start(ctx, "authusecase.ConfirmEmailConfirm")
 	defer span.End()
 
-	code, err := u.confirmEmailCodeService.Get(ctx, dto.IDUser)
+	resp, err := u.confirmEmailCodeService.Get(ctx, models.ConfirmEmailCodeKey(dto.IDUser))
 	if err != nil {
 		return err
 	}
 
-	if code != dto.Code {
+	if resp.Code != dto.Code {
 		return exceptions.ErrBadEmailConfirmCode
 	}
 
-	if err := u.credentialService.ConfirmEmailByID(ctx, dto.IDUser); err != nil {
+	if err := u.userService.ConfirmEmailByID(ctx, dto.IDUser); err != nil {
 		return err
 	}
 

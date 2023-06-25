@@ -4,8 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"backend/internal/domain/exceptions"
+	"backend/internal/domain/models"
 	validate2 "backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"backend/pkg/tracing"
 )
 
@@ -29,7 +30,7 @@ func (u *Usecase) RecoverPasswordUpdate(ctx context.Context, req RecoverPassword
 	ctx, span := tracing.Start(ctx, "authusecase.RecoverPasswordUpdate")
 	defer span.End()
 
-	data, err := u.recoverPasswordCodeService.Get(ctx, req.Email)
+	data, err := u.recoverPasswordCodeService.Get(ctx, models.RecoverPasswordKey(req.Email))
 	if err != nil {
 		return err
 	}
@@ -40,7 +41,7 @@ func (u *Usecase) RecoverPasswordUpdate(ctx context.Context, req RecoverPassword
 	}
 
 	// get password from db
-	credential, err := u.credentialService.ReadByID(ctx, data.ID)
+	credential, err := u.userService.ReadByID(ctx, data.ID)
 	if err != nil {
 		return err
 	}
@@ -58,7 +59,7 @@ func (u *Usecase) RecoverPasswordUpdate(ctx context.Context, req RecoverPassword
 	}
 
 	// update user password
-	if err := u.credentialService.UpdatePasswordByID(ctx, data.ID, hash, salt); err != nil {
+	if err := u.userService.UpdatePasswordByID(ctx, data.ID, hash, salt); err != nil {
 		return err
 	}
 

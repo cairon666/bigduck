@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
-	"github.com/google/uuid"
+	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -17,21 +17,23 @@ func TestConfirmEmailSend_Success(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	req := ConfirmEmailSendRequest{
-		IDUser: uuid.New().String(),
+		IDUser: validate.MockUUID,
 	}
 
-	credential := models.NewCredential("", "example@exmple.com", false, "", "")
+	user := models.User{
+		Email: validate.MockEmail,
+	}
 
-	params.CredentialService.
+	params.UserService.
 		On("ReadByID", mock.Anything, req.IDUser).
-		Return(credential, nil)
+		Return(user, nil)
 
 	params.ConfirmEmailCodeService.
-		On("Set", mock.Anything, req.IDUser, mock.IsType("")).
+		On("Set", mock.Anything, mock.IsType(&models.ConfirmEmailCode{}), mock.AnythingOfType("time.Duration")).
 		Return(nil)
 
 	params.MailService.
-		On("SendEmailConfirmCode", mock.Anything, credential.Email, mock.IsType("")).
+		On("SendEmailConfirmCode", mock.Anything, user.Email, mock.IsType("")).
 		Return()
 
 	if err := usecase.ConfirmEmailSend(context.Background(), req); err != nil {
@@ -45,12 +47,12 @@ func TestConfirmEmailSend_NotFound(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	req := ConfirmEmailSendRequest{
-		IDUser: uuid.New().String(),
+		IDUser: validate.MockUUID,
 	}
 
-	params.CredentialService.
+	params.UserService.
 		On("ReadByID", mock.Anything, req.IDUser).
-		Return(models.Credential{}, exceptions.ErrNotFound)
+		Return(models.User{}, exceptions.ErrNotFound)
 
 	if err := usecase.ConfirmEmailSend(context.Background(), req); !errors.Is(err, exceptions.ErrNotFound) {
 		t.Fatalf("should be success, err: %s", err)

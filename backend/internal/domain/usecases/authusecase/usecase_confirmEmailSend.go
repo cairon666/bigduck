@@ -2,9 +2,15 @@ package authusecase
 
 import (
 	"context"
+	"time"
 
+	"backend/internal/domain/models"
 	"backend/internal/domain/validate"
 	"backend/pkg/tracing"
+)
+
+var (
+	ttlConfirmEmail = time.Minute * 5
 )
 
 type ConfirmEmailSendRequest struct {
@@ -27,7 +33,7 @@ func (u *Usecase) ConfirmEmailSend(ctx context.Context, dto ConfirmEmailSendRequ
 	ctx, span := tracing.Start(ctx, "authusecase.ConfirmEmailSend")
 	defer span.End()
 
-	credential, err := u.credentialService.ReadByID(ctx, dto.IDUser)
+	credential, err := u.userService.ReadByID(ctx, dto.IDUser)
 	if err != nil {
 		return err
 	}
@@ -37,7 +43,8 @@ func (u *Usecase) ConfirmEmailSend(ctx context.Context, dto ConfirmEmailSendRequ
 		return err
 	}
 
-	if err := u.confirmEmailCodeService.Set(ctx, dto.IDUser, code); err != nil {
+	req := models.NewConfirmEmailCode(code, dto.IDUser)
+	if err := u.confirmEmailCodeService.Set(ctx, req, ttlConfirmEmail); err != nil {
 		return err
 	}
 

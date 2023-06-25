@@ -2,10 +2,16 @@ package authusecase
 
 import (
 	"context"
+	"time"
 
-	"backend/internal/domain/exceptions"
+	"backend/internal/domain/models"
 	validate2 "backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"backend/pkg/tracing"
+)
+
+var (
+	ttlRecoverPasswordCode = time.Minute * 5
 )
 
 type RecoverPasswordConfirmRequest struct {
@@ -29,7 +35,7 @@ func (u *Usecase) RecoverPasswordConfirm(ctx context.Context, req RecoverPasswor
 	defer span.End()
 
 	// create code
-	data, err := u.recoverPasswordCodeService.Get(ctx, req.Email)
+	data, err := u.recoverPasswordCodeService.Get(ctx, models.RecoverPasswordKey(req.Email))
 	if err != nil {
 		return err
 	}
@@ -41,7 +47,7 @@ func (u *Usecase) RecoverPasswordConfirm(ctx context.Context, req RecoverPasswor
 
 	data.IsConfirm = true
 
-	if err := u.recoverPasswordCodeService.Set(ctx, data.Email, data); err != nil {
+	if err := u.recoverPasswordCodeService.Set(ctx, data, ttlRecoverPasswordCode); err != nil {
 		return err
 	}
 

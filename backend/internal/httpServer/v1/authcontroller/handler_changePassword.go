@@ -13,9 +13,11 @@ type changePasswordRequest struct {
 }
 
 func (c *controller) changePasswordHandler(rw http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+
 	var reqDTO changePasswordRequest
 	if err := json.NewDecoder(req.Body).Decode(&reqDTO); err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
@@ -25,14 +27,14 @@ func (c *controller) changePasswordHandler(rw http.ResponseWriter, req *http.Req
 		return
 	}
 
-	dto, err := authusecase.NewChangePasswordRequest(reqDTO.OldPassword, reqDTO.NewPassword, IDUser)
+	dto, err := authusecase.NewChangePasswordRequest(IDUser, reqDTO.OldPassword, reqDTO.NewPassword)
 	if err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
-	if err := c.authUsecase.ChangePassword(req.Context(), dto); err != nil {
-		c.httpHelper.HandleError(rw, err)
+	if err := c.authUsecase.ChangePassword(ctx, dto); err != nil {
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 

@@ -2,57 +2,72 @@ package kvstorage
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"time"
 
+	"backend/internal/domain/models"
+	"backend/internal/exceptions"
 	"backend/pkg/tracing"
 	"github.com/redis/go-redis/v9"
 )
 
-type storage struct {
-	client *redis.Client
-	ttl    time.Duration
+type Store[T models.Keyer] struct {
+	rdb *redis.Client
 }
 
-func NewKVStorage(client *redis.Client, ttl time.Duration) *storage {
-	return &storage{
-		client: client,
-		ttl:    ttl,
-	}
+func NewKVStorage[T models.Keyer](rdb *redis.Client) *Store[T] {
+	return &Store[T]{rdb: rdb}
 }
 
-func (s *storage) Get(ctx context.Context, key string) (string, error) {
-	ctx, span := tracing.Start(ctx, "kvstorage.Get")
-	defer span.End()
-
-	data, err := s.client.Get(ctx, key).Result()
-	if err != nil {
-		return "", err
-	}
-
-	return data, nil
-}
-
-func (s *storage) Set(ctx context.Context, key string, data string) error {
+func (r Store[T]) Set(ctx context.Context, k T, expiration time.Duration) error {
 	ctx, span := tracing.Start(ctx, "kvstorage.Set")
 	defer span.End()
 
-	cmd := s.client.Set(ctx, key, data, s.ttl)
+	b, err := json.Marshal(k)
+	if err != nil {
+		err = exceptions.NewInternalErr("kvstorage.Set.Marshal", err)
+		tracing.Error(ctx, err)
 
-	if cmd.Err() != nil {
-		return cmd.Err()
+		return err
+	}
+
+	err = r.rdb.Set(ctx, k.Key(), b, expiration).Err()
+	if err != nil {
+		err = exceptions.NewInternalErr("kvstorage.Set.Set", err)
+		tracing.Error(ctx, err)
+
+		return err
 	}
 
 	return nil
 }
 
-func (s *storage) Del(ctx context.Context, keys ...string) error {
-	ctx, span := tracing.Start(ctx, "kvstorage.Del")
+func (r Store[T]) Get(ctx context.Context, key string) (T, error) {
+	ctx, span := tracing.Start(ctx, "kvstorage.Get")
 	defer span.End()
 
-	cmd := s.client.Del(ctx, keys...)
-	if cmd.Err() != nil {
-		return cmd.Err()
+	var t T
+
+	b, err := r.rdb.Get(ctx, key).Bytes()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return t, exceptions.ErrNotFound
+		}
+
+		err = exceptions.NewInternalErr("kvstorage.Get.Get", err)
+		tracing.Error(ctx, err)
+
+		return t, err
 	}
 
-	return nil
+	err = json.Unmarshal(b, &t)
+	if err != nil {
+		err = exceptions.NewInternalErr("kvstorage.Get.Unmarshal", err)
+		tracing.Error(ctx, err)
+
+		return t, err
+	}
+
+	return t, nil
 }

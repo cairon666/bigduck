@@ -5,8 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
+	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
 )
@@ -17,24 +18,33 @@ func TestRecoverPasswordUpdate_Success(t *testing.T) {
 	usecase, props := NewMockAuthUsecase(t)
 
 	dto := RecoverPasswordUpdateRequest{
-		Email:    "example@example.com",
-		Password: "12345678",
+		Email:    validate.MockEmail,
+		Password: validate.MockPassword,
 	}
 
-	hash, salt, err := generateHashPassword("87654321")
+	hash, salt, err := generateHashPassword(validate.MockPassword2)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	recoverData := models.NewRecoverPassword(dto.Email, uuid.New().String(), true, "")
 
-	credential := models.NewCredential("", "", false, hash, salt)
+	user := models.User{
+		PasswordHash: hash,
+		Salt:         salt,
+	}
+
+	key := models.RecoverPasswordKey(dto.Email)
 
 	props.RecoverPasswordCodeService.
-		On("Get", mock.Anything, dto.Email).
+		On("Get", mock.Anything, key).
 		Return(recoverData, nil)
 
-	props.CredentialService.
+	props.UserService.
+		On("ReadByID", mock.Anything, recoverData.ID).
+		Return(user, nil)
+
+	props.UserService.
 		On(
 			"UpdatePasswordByID",
 			mock.Anything,
@@ -43,10 +53,6 @@ func TestRecoverPasswordUpdate_Success(t *testing.T) {
 			mock.AnythingOfType("string"),
 		).
 		Return(nil)
-
-	props.CredentialService.
-		On("ReadByID", mock.Anything, recoverData.ID).
-		Return(credential, nil)
 
 	err = usecase.RecoverPasswordUpdate(context.Background(), dto)
 	if err != nil {
@@ -60,14 +66,16 @@ func TestRecoverPasswordUpdate_EmailNotConfirm(t *testing.T) {
 	usecase, props := NewMockAuthUsecase(t)
 
 	dto := RecoverPasswordUpdateRequest{
-		Email:    "example@example.com",
-		Password: "12345678",
+		Email:    validate.MockEmail,
+		Password: validate.MockPassword,
 	}
+
+	key := models.RecoverPasswordKey(dto.Email)
 
 	recoverData := models.NewRecoverPassword(dto.Email, uuid.New().String(), false, "")
 
 	props.RecoverPasswordCodeService.
-		On("Get", mock.Anything, dto.Email).
+		On("Get", mock.Anything, key).
 		Return(recoverData, nil)
 
 	err := usecase.RecoverPasswordUpdate(context.Background(), dto)
@@ -82,8 +90,8 @@ func TestRecoverPasswordUpdate_NewPasswordEqualOldPassword(t *testing.T) {
 	usecase, props := NewMockAuthUsecase(t)
 
 	dto := RecoverPasswordUpdateRequest{
-		Email:    "example@example.com",
-		Password: "12345678",
+		Email:    validate.MockEmail,
+		Password: validate.MockPassword,
 	}
 
 	hash, salt, err := generateHashPassword(dto.Password)
@@ -93,15 +101,20 @@ func TestRecoverPasswordUpdate_NewPasswordEqualOldPassword(t *testing.T) {
 
 	recoverData := models.NewRecoverPassword(dto.Email, uuid.New().String(), true, "")
 
-	credential := models.NewCredential("", "", false, hash, salt)
+	user := models.User{
+		PasswordHash: hash,
+		Salt:         salt,
+	}
+
+	key := models.RecoverPasswordKey(dto.Email)
 
 	props.RecoverPasswordCodeService.
-		On("Get", mock.Anything, dto.Email).
+		On("Get", mock.Anything, key).
 		Return(recoverData, nil)
 
-	props.CredentialService.
+	props.UserService.
 		On("ReadByID", mock.Anything, recoverData.ID).
-		Return(credential, nil)
+		Return(user, nil)
 
 	err = usecase.RecoverPasswordUpdate(context.Background(), dto)
 	if !errors.Is(err, exceptions.ErrNewPasswordEqualOldPassword) {

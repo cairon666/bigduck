@@ -19,10 +19,12 @@ type registerRequest struct {
 	AvatarURL   *string    `json:"avatar_url,omitempty"`
 }
 
-func (c *controller) registerHandler(rw http.ResponseWriter, req *http.Request) {
+func (c *controller) registerHandler(rw http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	var reqDTO registerRequest
-	if err := json.NewDecoder(req.Body).Decode(&reqDTO); err != nil {
-		c.httpHelper.HandleError(rw, err)
+	if err := json.NewDecoder(r.Body).Decode(&reqDTO); err != nil {
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
@@ -37,12 +39,12 @@ func (c *controller) registerHandler(rw http.ResponseWriter, req *http.Request) 
 		reqDTO.AvatarURL,
 	)
 	if err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
-	if err := c.authUsecase.Register(req.Context(), dto); err != nil {
-		c.httpHelper.HandleError(rw, err)
+	if err := c.authUsecase.Register(ctx, dto); err != nil {
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 

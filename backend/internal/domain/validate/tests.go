@@ -3,31 +3,19 @@ package validate
 import (
 	"time"
 
-	"backend/internal/domain/exceptions"
+	"backend/internal/exceptions"
 	"github.com/google/uuid"
 )
 
-const (
-	MinLenPassword = 8
-)
-
-func EmailSimple(email string) exceptions.Error {
+func EmailSimple(email string) *exceptions.ValidateError {
 	if ok := regexpEmailSimple.MatchString(email); !ok {
-		return exceptions.ErrBadEmail
+		return exceptions.ErrBadFormatEmail
 	}
 
 	return nil
 }
 
-func PasswordSimple(password string) exceptions.Error {
-	if len(password) < MinLenPassword {
-		return exceptions.ErrShortPassword
-	}
-
-	return nil
-}
-
-func DayOfBirth(date time.Time) exceptions.Error {
+func DayOfBirth(date time.Time) *exceptions.ValidateError {
 	if date.After(time.Now()) {
 		return exceptions.ErrDateOfBirthFromFeature
 	}
@@ -35,26 +23,26 @@ func DayOfBirth(date time.Time) exceptions.Error {
 	return nil
 }
 
-func AvatarURL(url string) exceptions.Error {
+func AvatarURL(url string) *exceptions.ValidateError {
 	if ok := regexpURLSimple.MatchString(url); !ok {
-		return exceptions.ErrBadAvatarURL
+		return exceptions.ErrBadFormatAvatarURL
 	}
 
 	return nil
 }
 
-func Gender(gender string) exceptions.Error {
+func Gender(gender string) *exceptions.ValidateError {
 	if gender == "male" ||
 		gender == "female" {
 		return nil
 	}
 
-	return exceptions.ErrUnknownGender
+	return exceptions.ErrBadFormatGender
 }
 
-func UUIDSimple(id string) exceptions.Error {
+func UUIDSimple(id string) *exceptions.ValidateError {
 	if _, err := uuid.Parse(id); err != nil {
-		return exceptions.ErrBadUUID
+		return exceptions.ErrBadFormatUUID
 	}
 
 	return nil

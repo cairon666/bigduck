@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"backend/pkg/tracing"
 )
 
@@ -27,7 +27,7 @@ func (u *Usecase) CheckEmailIsAvailable(ctx context.Context, dto CheckEmailIsAva
 	ctx, span := tracing.Start(ctx, "authusecase.CheckEmailIsAvailable")
 	defer span.End()
 
-	_, err := u.credentialService.ReadByEmail(ctx, dto.Email)
+	_, err := u.userService.ReadByEmail(ctx, dto.Email)
 
 	if err == nil {
 		return exceptions.ErrEmailAlreadyExist

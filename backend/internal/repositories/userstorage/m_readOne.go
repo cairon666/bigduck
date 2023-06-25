@@ -3,17 +3,12 @@ package userstorage
 import (
 	"context"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
+	"backend/internal/exceptions"
 	"backend/pkg/qb"
 	"backend/pkg/tracing"
-	"github.com/pkg/errors"
+	"github.com/jackc/pgx/v5"
 )
-
-var possibleFilterKeys = []string{
-	"id",
-	"email",
-}
 
 func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (models.User, error) {
 	ctx, span := tracing.Start(ctx, "userstorage.ReadOne")
@@ -22,6 +17,9 @@ func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (model
 	builder := qb.Select(
 		"id",
 		"email",
+		"email_is_confirm",
+		"password_hash",
+		"salt",
 		"first_name",
 		"second_name",
 		"user_name",
@@ -32,17 +30,15 @@ func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (model
 	).
 		From("public.users")
 
-	for _, key := range possibleFilterKeys {
-		if value, ok := filter[key]; ok {
-			builder = builder.AndWhere(qb.Eql(key, value))
-		}
+	for key, value := range filter {
+		builder = builder.AndWhere(qb.Eql(key, value))
 	}
 
 	query, args := builder.ToSQL()
 
 	rows, err := s.client.Query(ctx, query, args...)
 	if err != nil {
-		return models.User{}, errors.Wrap(err, "userstorage.ReadOne.Query")
+		return models.User{}, exceptions.NewInternalErr("userstorage.ReadOne.Query", err)
 	}
 	defer rows.Close()
 
@@ -50,20 +46,10 @@ func (s *UserStorage) ReadOne(ctx context.Context, filter map[string]any) (model
 		return models.User{}, exceptions.ErrNotFound
 	}
 
-	var user models.User
-	if err := rows.Scan(
-		&user.ID,
-		&user.Email,
-		&user.FirstName,
-		&user.SecondName,
-		&user.UserName,
-		&user.DateOfBirth,
-		&user.AvatarURL,
-		&user.Gender,
-		&user.CreateAt,
-	); err != nil {
-		return models.User{}, errors.Wrap(err, "userstorage.ReadOne.Scan")
+	dbUser, err := pgx.RowToStructByPos[DBUser](rows)
+	if err != nil {
+		return models.User{}, exceptions.NewInternalErr("userstorage.ReadOne.RowToStructByPos", err)
 	}
 
-	return user, nil
+	return dbUser.ToModelUser(), nil
 }

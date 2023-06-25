@@ -7,6 +7,8 @@ import (
 )
 
 func (c *controller) confirmEmailSendHandler(rw http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+
 	IDUser, ok := c.authHelper.ParseIDUser(req)
 	if !ok {
 		rw.WriteHeader(http.StatusForbidden)
@@ -15,12 +17,12 @@ func (c *controller) confirmEmailSendHandler(rw http.ResponseWriter, req *http.R
 
 	dto, err := authusecase.NewConfirmEmailSendRequest(IDUser)
 	if err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
-	if err := c.authUsecase.ConfirmEmailSend(req.Context(), dto); err != nil {
-		c.httpHelper.HandleError(rw, err)
+	if err := c.authUsecase.ConfirmEmailSend(ctx, dto); err != nil {
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 

@@ -2,7 +2,7 @@ include .local.env
 export
 
 BINARY_NAME := main
-MAIN_PACKAGE_PATH := ./cmd/app/main.go
+MAIN_PACKAGE_PATH := ./cmd/app/...
 
 # ==================================================================================== #
 # HELPERS
@@ -50,8 +50,8 @@ audit: golangci-lint-check
 # ==================================================================================== #
 
 .PHONY: migrations
-migrate:
-	sudo docker run -e GOOSE_DRIVER=pgx -e GOOSE_DBSTRING=postgres://admin:admin@0.0.0.0:6432/root --network=host migrations
+migrations:
+	goose -dir ./migrations/sql pgx postgres://admin:admin@0.0.0.0:6432/root up
 
 ## test: run all tests
 .PHONY: test

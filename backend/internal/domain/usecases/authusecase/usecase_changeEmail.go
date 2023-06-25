@@ -30,12 +30,12 @@ func (u *Usecase) ChangeEmail(ctx context.Context, dto ChangeEmailRequest) error
 	ctx, span := tracing.Start(ctx, "authusecase.ChangeEmail")
 	defer span.End()
 
-	_, err := u.credentialService.ReadByEmail(ctx, dto.Email)
+	_, err := u.userService.ReadByID(ctx, dto.IDUser)
 	if err != nil {
 		return err
 	}
 
-	if err := u.credentialService.UpdateEmailByID(ctx, dto.IDUser, dto.Email); err != nil {
+	if err := u.userService.UpdateEmailByID(ctx, dto.IDUser, dto.Email); err != nil {
 		return err
 	}
 

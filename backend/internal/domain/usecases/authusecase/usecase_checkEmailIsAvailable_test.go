@@ -5,8 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
+	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -16,12 +17,12 @@ func TestCheckEmailIsAvailable_Success(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	req := CheckEmailIsAvailableRequest{
-		Email: "example@example.example",
+		Email: validate.MockEmail,
 	}
 
-	params.CredentialService.
+	params.UserService.
 		On("ReadByEmail", mock.Anything, req.Email).
-		Return(models.Credential{}, exceptions.ErrNotFound)
+		Return(models.User{}, exceptions.ErrNotFound)
 
 	if err := usecase.CheckEmailIsAvailable(context.Background(), req); err != nil {
 		t.Fatalf("should be success, err: %s", err)
@@ -34,12 +35,12 @@ func TestCheckEmailIsAvailable_Internal(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	req := CheckEmailIsAvailableRequest{
-		Email: "example@example.example",
+		Email: validate.MockEmail,
 	}
 
-	params.CredentialService.
+	params.UserService.
 		On("ReadByEmail", mock.Anything, req.Email).
-		Return(models.Credential{}, errInternal)
+		Return(models.User{}, errInternal)
 
 	if err := usecase.CheckEmailIsAvailable(context.Background(), req); !errors.Is(err, errInternal) {
 		t.Fatalf("should be internal error, err: %s", err)
@@ -52,12 +53,12 @@ func TestCheckEmailIsAvailable_AlreadyExist(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	req := CheckEmailIsAvailableRequest{
-		Email: "example@example.example",
+		Email: validate.MockEmail,
 	}
 
-	params.CredentialService.
+	params.UserService.
 		On("ReadByEmail", mock.Anything, req.Email).
-		Return(models.Credential{}, nil)
+		Return(models.User{}, nil)
 
 	if err := usecase.CheckEmailIsAvailable(context.Background(), req); !errors.Is(err, exceptions.ErrEmailAlreadyExist) {
 		t.Fatalf("should be already exist error, err: %s", err)

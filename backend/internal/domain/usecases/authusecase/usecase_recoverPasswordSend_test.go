@@ -5,8 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
+	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -16,17 +17,17 @@ func TestRecoverPasswordSend_Success(t *testing.T) {
 	usecase, props := NewMockAuthUsecase(t)
 
 	dto := RecoverPasswordSendRequest{
-		Email: "example@example.com",
+		Email: validate.MockEmail,
 	}
 
-	credential := models.NewCredential("", dto.Email, false, "", "")
+	user := models.User{Email: dto.Email}
 
-	props.CredentialService.
+	props.UserService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(credential, nil)
+		Return(user, nil)
 
 	props.RecoverPasswordCodeService.
-		On("Set", mock.Anything, dto.Email, mock.IsType(models.RecoverPassword{})).
+		On("Set", mock.Anything, mock.IsType(&models.RecoverPassword{}), mock.AnythingOfType("time.Duration")).
 		Return(nil)
 
 	props.MailService.
@@ -45,12 +46,12 @@ func TestRecoverPasswordSend_EmailNotExist(t *testing.T) {
 	usecase, props := NewMockAuthUsecase(t)
 
 	dto := RecoverPasswordSendRequest{
-		Email: "example@example.com",
+		Email: validate.MockEmail,
 	}
 
-	props.CredentialService.
+	props.UserService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(models.Credential{}, exceptions.ErrNotFound)
+		Return(models.User{}, exceptions.ErrNotFound)
 
 	err := usecase.RecoverPasswordSend(context.Background(), dto)
 	if !errors.Is(err, exceptions.ErrNotFound) {

@@ -29,7 +29,7 @@ func (u *Usecase) RecoverPasswordSend(ctx context.Context, req RecoverPasswordSe
 	defer span.End()
 
 	// check what email is exist
-	credential, err := u.credentialService.ReadByEmail(ctx, req.Email)
+	credential, err := u.userService.ReadByEmail(ctx, req.Email)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func (u *Usecase) RecoverPasswordSend(ctx context.Context, req RecoverPasswordSe
 	)
 
 	// set code
-	if err := u.recoverPasswordCodeService.Set(ctx, credential.Email, data); err != nil {
+	if err := u.recoverPasswordCodeService.Set(ctx, data, ttlRecoverPasswordCode); err != nil {
 		return err
 	}
 

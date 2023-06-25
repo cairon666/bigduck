@@ -5,8 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
+	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -16,8 +17,8 @@ func TestLogin_Success(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	dto := LoginRequest{
-		Email:    "example@example.com",
-		Password: "12345678",
+		Email:    validate.MockEmail,
+		Password: validate.MockPassword,
 	}
 
 	hash, salt, err := generateHashPassword(dto.Password)
@@ -25,11 +26,15 @@ func TestLogin_Success(t *testing.T) {
 		t.Fatal("should generate hash", err)
 	}
 
-	credential := models.NewCredential("", dto.Email, false, hash, salt)
+	user := models.User{
+		Email:        dto.Email,
+		PasswordHash: hash,
+		Salt:         salt,
+	}
 
-	params.CredentialService.
+	params.UserService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(credential, nil)
+		Return(user, nil)
 
 	params.MailService.
 		On("SendSomebodyLogin", mock.Anything, dto.Email)
@@ -45,13 +50,13 @@ func TestLogin_EmailNotFound(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	dto := LoginRequest{
-		Email:    "example@example.com",
-		Password: "12345678",
+		Email:    validate.MockEmail,
+		Password: validate.MockPassword,
 	}
 
-	params.CredentialService.
+	params.UserService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(models.Credential{}, exceptions.ErrNotFound)
+		Return(models.User{}, exceptions.ErrNotFound)
 
 	_, err := usecase.Login(context.Background(), dto)
 	if !errors.Is(err, exceptions.ErrNotFound) {
@@ -65,8 +70,8 @@ func TestLogin_WrongPassword(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	dto := LoginRequest{
-		Email:    "example@example.com",
-		Password: "12345678",
+		Email:    validate.MockEmail,
+		Password: validate.MockPassword,
 	}
 
 	hash, _, err := generateHashPassword(dto.Password)
@@ -74,11 +79,15 @@ func TestLogin_WrongPassword(t *testing.T) {
 		t.Fatal("should generate hash", err)
 	}
 
-	credential := models.NewCredential("", dto.Email, false, hash, "1234567")
+	user := models.User{
+		Email:        dto.Email,
+		PasswordHash: hash,
+		Salt:         "1234567",
+	}
 
-	params.CredentialService.
+	params.UserService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(credential, nil)
+		Return(user, nil)
 
 	params.MailService.
 		On("SendSomebodyTryLogin", mock.Anything, dto.Email)

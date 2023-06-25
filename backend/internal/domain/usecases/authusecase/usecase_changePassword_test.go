@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
-	"github.com/google/uuid"
+	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -17,9 +17,9 @@ func TestChangePassword_Success(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	req := ChangePasswordRequest{
-		IDUser:      uuid.New().String(),
-		OldPassword: "12345678",
-		NewPassword: "qwertyuii",
+		IDUser:      validate.MockUUID,
+		OldPassword: validate.MockPassword,
+		NewPassword: validate.MockPassword2,
 	}
 
 	hash, salt, err := generateHashPassword(req.OldPassword)
@@ -27,18 +27,24 @@ func TestChangePassword_Success(t *testing.T) {
 		t.Fatalf("genereate password error: %s", err)
 	}
 
-	credentials := models.NewCredential(req.IDUser, "example@example.example", false, hash, salt)
+	user := models.User{
+		ID:             req.IDUser,
+		Email:          validate.MockEmail,
+		EmailIsConfirm: false,
+		PasswordHash:   hash,
+		Salt:           salt,
+	}
 
-	params.CredentialService.
+	params.UserService.
 		On("ReadByID", mock.Anything, req.IDUser).
-		Return(credentials, nil)
+		Return(user, nil)
 
-	params.CredentialService.
+	params.UserService.
 		On("UpdatePasswordByID", mock.Anything, req.IDUser, mock.IsType(""), mock.IsType("")).
 		Return(nil)
 
 	params.MailService.
-		On("SendPasswordWasUpdate", mock.Anything, credentials.Email).
+		On("SendPasswordWasUpdate", mock.Anything, user.Email).
 		Return(nil)
 
 	if err := usecase.ChangePassword(context.Background(), req); err != nil {
@@ -52,9 +58,9 @@ func TestChangePassword_WrongOldPassword(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	req := ChangePasswordRequest{
-		IDUser:      uuid.New().String(),
-		OldPassword: "12345678",
-		NewPassword: "qwertyuii",
+		IDUser:      validate.MockUUID,
+		OldPassword: validate.MockPassword,
+		NewPassword: validate.MockPassword2,
 	}
 
 	hash, salt, err := generateHashPassword("87654321")
@@ -62,11 +68,17 @@ func TestChangePassword_WrongOldPassword(t *testing.T) {
 		t.Fatalf("genereate password error: %s", err)
 	}
 
-	credentials := models.NewCredential(req.IDUser, "example@example.example", false, hash, salt)
+	user := models.User{
+		ID:             req.IDUser,
+		Email:          validate.MockEmail,
+		EmailIsConfirm: false,
+		PasswordHash:   hash,
+		Salt:           salt,
+	}
 
-	params.CredentialService.
+	params.UserService.
 		On("ReadByID", mock.Anything, req.IDUser).
-		Return(credentials, nil)
+		Return(user, nil)
 
 	if err := usecase.ChangePassword(context.Background(), req); !errors.Is(err, exceptions.ErrWrongOldPassword) {
 		t.Fatalf("should be wrong old password, err: %s", err)

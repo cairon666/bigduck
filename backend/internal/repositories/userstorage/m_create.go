@@ -4,12 +4,11 @@ import (
 	"context"
 	"errors"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
+	"backend/internal/exceptions"
 	"backend/pkg/qb"
 	"backend/pkg/tracing"
 	"github.com/jackc/pgx/v5/pgconn"
-	errors2 "github.com/pkg/errors"
 )
 
 func (s *UserStorage) Create(ctx context.Context, user models.User) error {
@@ -20,6 +19,9 @@ func (s *UserStorage) Create(ctx context.Context, user models.User) error {
 		"public.users",
 		"id",
 		"email",
+		"email_is_confirm",
+		"password_hash",
+		"salt",
 		"first_name",
 		"second_name",
 		"user_name",
@@ -30,6 +32,9 @@ func (s *UserStorage) Create(ctx context.Context, user models.User) error {
 		Values(
 			user.ID,
 			user.Email,
+			user.EmailIsConfirm,
+			user.PasswordHash,
+			user.Salt,
 			user.FirstName,
 			user.SecondName,
 			user.UserName,
@@ -45,11 +50,13 @@ func (s *UserStorage) Create(ctx context.Context, user models.User) error {
 		if pgErr := new(pgconn.PgError); errors.As(err, &pgErr) {
 			switch pgErr.ConstraintName {
 			case "users_user_name_uniq":
+				return exceptions.ErrUsernameAlreadyExist
+			case "users_email_uniq":
 				return exceptions.ErrEmailAlreadyExist
-			default:
-				return errors2.Wrap(err, "userstorage.Create")
 			}
 		}
+
+		return exceptions.NewInternalErr("userstorage.Create.Exec", err)
 	}
 
 	return nil

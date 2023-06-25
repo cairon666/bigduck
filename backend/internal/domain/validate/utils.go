@@ -1,10 +1,10 @@
 package validate
 
 import (
-	"backend/internal/domain/exceptions"
+	"backend/internal/exceptions"
 )
 
-func TestPointer[T any](param *T, f func(T) exceptions.Error) exceptions.Error {
+func TestPointer[T any](param *T, f func(T) *exceptions.ValidateError) *exceptions.ValidateError {
 	if param != nil {
 		return f(*param)
 	}
@@ -12,18 +12,12 @@ func TestPointer[T any](param *T, f func(T) exceptions.Error) exceptions.Error {
 	return nil
 }
 
-func Test(errs ...exceptions.Error) error {
-	appErr := exceptions.NewAppError()
+func Test(errs ...*exceptions.ValidateError) error {
+	errors := exceptions.NewMultiValidateError()
 
 	for _, err := range errs {
-		if err != nil {
-			appErr.Add(err)
-		}
+		errors.Append(err)
 	}
 
-	if appErr.IsEmpty() {
-		return nil
-	}
-
-	return appErr
+	return errors.AsError()
 }

@@ -7,7 +7,7 @@ import (
 	"math/big"
 	"strings"
 
-	"backend/internal/domain/exceptions"
+	"backend/internal/exceptions"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )

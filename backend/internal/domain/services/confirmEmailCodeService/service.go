@@ -2,11 +2,14 @@ package confirmemailcodeservice
 
 import (
 	"context"
+	"time"
+
+	"backend/internal/domain/models"
 )
 
 type KVRepo interface {
-	Get(ctx context.Context, key string) (string, error)
-	Set(ctx context.Context, key string, data string) error
+	Get(ctx context.Context, key string) (*models.ConfirmEmailCode, error)
+	Set(ctx context.Context, k *models.ConfirmEmailCode, expiration time.Duration) error
 }
 
 type service struct {
@@ -14,15 +17,13 @@ type service struct {
 }
 
 func New(repo KVRepo) *service {
-	return &service{
-		repo: repo,
-	}
+	return &service{repo: repo}
 }
 
-func (s *service) Get(ctx context.Context, idUser string) (string, error) {
-	return s.repo.Get(ctx, idUser)
+func (s *service) Get(ctx context.Context, key string) (*models.ConfirmEmailCode, error) {
+	return s.repo.Get(ctx, key)
 }
 
-func (s *service) Set(ctx context.Context, idUser, code string) error {
-	return s.repo.Set(ctx, idUser, code)
+func (s *service) Set(ctx context.Context, k *models.ConfirmEmailCode, expiration time.Duration) error {
+	return s.repo.Set(ctx, k, expiration)
 }

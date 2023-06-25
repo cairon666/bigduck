@@ -20,7 +20,6 @@ func (s *Server) router() http.Handler {
 
 	controllers := []Controller{
 		s.authController,
-		s.userController,
 	}
 
 	r.Route("/api/v1", func(r chi.Router) {

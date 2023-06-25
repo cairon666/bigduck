@@ -9,6 +9,7 @@ import (
 	"backend/internal/domain/services/recoverPasswordCodeService"
 	"backend/internal/domain/services/userservice"
 	"backend/internal/domain/usecases/authusecase"
+	"backend/internal/domain/usecases/userusecase"
 	httpServer "backend/internal/httpServer/v1"
 	"backend/internal/repositories/kvstorage"
 	"backend/internal/repositories/userstorage"
@@ -23,7 +24,10 @@ import (
 
 func RegisterServices(c *dig.Container) {
 	panicIfError(c.Provide(mailservice.NewMailService, dig.As(new(authusecase.MailService))))
-	panicIfError(c.Provide(userservice.NewUserService, dig.As(new(authusecase.UserService))))
+	panicIfError(c.Provide(userservice.NewUserService, dig.As(
+		new(authusecase.UserService),
+		new(userusecase.UserService),
+	)))
 	panicIfError(c.Provide(recoverpasswordcodeservice.New, dig.As(new(authusecase.RecoverPasswordCodeService))))
 	panicIfError(c.Provide(confirmemailcodeservice.New, dig.As(new(authusecase.ConfirmEmailCodeService))))
 }
@@ -34,6 +38,7 @@ func RegisterAdapters(c *dig.Container) {
 
 func RegisterUsecases(c *dig.Container) {
 	panicIfError(c.Provide(authusecase.NewAuthUsecase))
+	panicIfError(c.Provide(userusecase.NewUsecase))
 }
 
 func RegisterLogger(c *dig.Container) {

@@ -2,14 +2,14 @@ package recoverpasswordcodeservice
 
 import (
 	"context"
-	"encoding/json"
+	"time"
 
 	"backend/internal/domain/models"
 )
 
 type KVRepo interface {
-	Get(ctx context.Context, key string) (string, error)
-	Set(ctx context.Context, key string, data string) error
+	Get(ctx context.Context, key string) (*models.RecoverPassword, error)
+	Set(ctx context.Context, k *models.RecoverPassword, expiration time.Duration) error
 }
 
 type service struct {
@@ -17,30 +17,13 @@ type service struct {
 }
 
 func New(repo KVRepo) *service {
-	return &service{
-		repo: repo,
-	}
+	return &service{repo: repo}
 }
 
-func (s *service) Get(ctx context.Context, email string) (models.RecoverPassword, error) {
-	data, err := s.repo.Get(ctx, email)
-	if err != nil {
-		return models.RecoverPassword{}, err
-	}
-
-	var resp models.RecoverPassword
-	if err := json.Unmarshal([]byte(data), &resp); err != nil {
-		return models.RecoverPassword{}, err
-	}
-
-	return resp, nil
+func (s *service) Get(ctx context.Context, key string) (*models.RecoverPassword, error) {
+	return s.repo.Get(ctx, key)
 }
 
-func (s *service) Set(ctx context.Context, email string, data models.RecoverPassword) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	return s.repo.Set(ctx, email, string(jsonData))
+func (s *service) Set(ctx context.Context, k *models.RecoverPassword, expiration time.Duration) error {
+	return s.repo.Set(ctx, k, expiration)
 }

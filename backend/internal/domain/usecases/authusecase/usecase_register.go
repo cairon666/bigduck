@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
 	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"backend/pkg/tracing"
 )
 
@@ -57,7 +57,7 @@ func (u *Usecase) Register(ctx context.Context, dto RegisterRequest) error {
 	ctx, span := tracing.Start(ctx, "authusecase.Register")
 	defer span.End()
 
-	_, err := u.credentialService.ReadByEmail(ctx, dto.Email)
+	_, err := u.userService.ReadByEmail(ctx, dto.Email)
 	if err == nil {
 		return exceptions.ErrEmailAlreadyExist
 	}
@@ -76,11 +76,12 @@ func (u *Usecase) Register(ctx context.Context, dto RegisterRequest) error {
 		return err
 	}
 
-	credential := models.NewCredential(uuid, dto.Email, false, hash, salt)
-
 	user := models.NewUser(
 		uuid,
 		dto.Email,
+		false,
+		hash,
+		salt,
 		dto.FirstName,
 		dto.SecondName,
 		dto.UserName,
@@ -90,11 +91,8 @@ func (u *Usecase) Register(ctx context.Context, dto RegisterRequest) error {
 		time.Now(),
 	)
 
-	if err := u.credentialService.Create(ctx, credential); err != nil {
-		return err
-	}
-
-	if err := u.userService.Create(ctx, user); err != nil {
+	err = u.userService.Create(ctx, user)
+	if err != nil {
 		return err
 	}
 

@@ -3,7 +3,7 @@ package validate
 import (
 	"regexp"
 
-	"backend/internal/domain/exceptions"
+	"backend/internal/exceptions"
 )
 
 const (
@@ -20,7 +20,7 @@ var (
 	regexpNameShouldNotContain     = regexp.MustCompile(`[^\p{L} ]`)
 )
 
-func FirstNameSimple(firstName string) exceptions.Error {
+func FirstNameSimple(firstName string) *exceptions.ValidateError {
 	if len(firstName) < MilLenFirstName {
 		return exceptions.ErrShortFirstName
 	}
@@ -30,13 +30,13 @@ func FirstNameSimple(firstName string) exceptions.Error {
 	}
 
 	if regexpNameShouldNotContain.MatchString(firstName) {
-		return exceptions.ErrFirstNameHasNoLetter
+		return exceptions.ErrBadFormatFirstName
 	}
 
 	return nil
 }
 
-func SecondNameSimple(secondName string) exceptions.Error {
+func SecondNameSimple(secondName string) *exceptions.ValidateError {
 	if len(secondName) < MilLenSecondName {
 		return exceptions.ErrShortSecondName
 	}
@@ -46,13 +46,13 @@ func SecondNameSimple(secondName string) exceptions.Error {
 	}
 
 	if regexpNameShouldNotContain.MatchString(secondName) {
-		return exceptions.ErrSecondNameHasNoLetter
+		return exceptions.ErrBadFormatSecondName
 	}
 
 	return nil
 }
 
-func UserNameSimple(username string) exceptions.Error {
+func UserNameSimple(username string) *exceptions.ValidateError {
 	if len(username) < MilLenUserName {
 		return exceptions.ErrShortUserName
 	}
@@ -62,7 +62,7 @@ func UserNameSimple(username string) exceptions.Error {
 	}
 
 	if regexpUserNameShouldNotContain.MatchString(username) {
-		return exceptions.ErrUserNameHasNotNumberOrNoLetter
+		return exceptions.ErrBadFormatUserName
 	}
 
 	return nil

@@ -18,32 +18,34 @@ type loginResponse struct {
 }
 
 func (c *controller) loginHandler(rw http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+
 	var reqDTO loginRequest
 	if err := json.NewDecoder(req.Body).Decode(&reqDTO); err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
 	dto, err := authusecase.NewLoginRequest(reqDTO.Email, reqDTO.Password)
 	if err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
-	resp, err := c.authUsecase.Login(req.Context(), dto)
+	resp, err := c.authUsecase.Login(ctx, dto)
 	if err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
 	access, refresh, err := c.authHelper.NewTokens(resp.IDUser)
 	if err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
 	if err := c.authHelper.SetRefreshCookie(rw, refresh); err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 

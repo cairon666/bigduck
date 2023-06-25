@@ -22,6 +22,49 @@ func (_m *MockUserService) EXPECT() *MockUserService_Expecter {
 	return &MockUserService_Expecter{mock: &_m.Mock}
 }
 
+// ConfirmEmailByID provides a mock function with given fields: ctx, id
+func (_m *MockUserService) ConfirmEmailByID(ctx context.Context, id string) error {
+	ret := _m.Called(ctx, id)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockUserService_ConfirmEmailByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ConfirmEmailByID'
+type MockUserService_ConfirmEmailByID_Call struct {
+	*mock.Call
+}
+
+// ConfirmEmailByID is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id string
+func (_e *MockUserService_Expecter) ConfirmEmailByID(ctx interface{}, id interface{}) *MockUserService_ConfirmEmailByID_Call {
+	return &MockUserService_ConfirmEmailByID_Call{Call: _e.mock.On("ConfirmEmailByID", ctx, id)}
+}
+
+func (_c *MockUserService_ConfirmEmailByID_Call) Run(run func(ctx context.Context, id string)) *MockUserService_ConfirmEmailByID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockUserService_ConfirmEmailByID_Call) Return(_a0 error) *MockUserService_ConfirmEmailByID_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockUserService_ConfirmEmailByID_Call) RunAndReturn(run func(context.Context, string) error) *MockUserService_ConfirmEmailByID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Create provides a mock function with given fields: ctx, user
 func (_m *MockUserService) Create(ctx context.Context, user models.User) error {
 	ret := _m.Called(ctx, user)
@@ -61,6 +104,254 @@ func (_c *MockUserService_Create_Call) Return(_a0 error) *MockUserService_Create
 }
 
 func (_c *MockUserService_Create_Call) RunAndReturn(run func(context.Context, models.User) error) *MockUserService_Create_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ReadByEmail provides a mock function with given fields: ctx, email
+func (_m *MockUserService) ReadByEmail(ctx context.Context, email string) (models.User, error) {
+	ret := _m.Called(ctx, email)
+
+	var r0 models.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (models.User, error)); ok {
+		return rf(ctx, email)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) models.User); ok {
+		r0 = rf(ctx, email)
+	} else {
+		r0 = ret.Get(0).(models.User)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, email)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockUserService_ReadByEmail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadByEmail'
+type MockUserService_ReadByEmail_Call struct {
+	*mock.Call
+}
+
+// ReadByEmail is a helper method to define mock.On call
+//   - ctx context.Context
+//   - email string
+func (_e *MockUserService_Expecter) ReadByEmail(ctx interface{}, email interface{}) *MockUserService_ReadByEmail_Call {
+	return &MockUserService_ReadByEmail_Call{Call: _e.mock.On("ReadByEmail", ctx, email)}
+}
+
+func (_c *MockUserService_ReadByEmail_Call) Run(run func(ctx context.Context, email string)) *MockUserService_ReadByEmail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockUserService_ReadByEmail_Call) Return(_a0 models.User, _a1 error) *MockUserService_ReadByEmail_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockUserService_ReadByEmail_Call) RunAndReturn(run func(context.Context, string) (models.User, error)) *MockUserService_ReadByEmail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ReadByID provides a mock function with given fields: ctx, id
+func (_m *MockUserService) ReadByID(ctx context.Context, id string) (models.User, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 models.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (models.User, error)); ok {
+		return rf(ctx, id)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) models.User); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(models.User)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockUserService_ReadByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadByID'
+type MockUserService_ReadByID_Call struct {
+	*mock.Call
+}
+
+// ReadByID is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id string
+func (_e *MockUserService_Expecter) ReadByID(ctx interface{}, id interface{}) *MockUserService_ReadByID_Call {
+	return &MockUserService_ReadByID_Call{Call: _e.mock.On("ReadByID", ctx, id)}
+}
+
+func (_c *MockUserService_ReadByID_Call) Run(run func(ctx context.Context, id string)) *MockUserService_ReadByID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockUserService_ReadByID_Call) Return(_a0 models.User, _a1 error) *MockUserService_ReadByID_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockUserService_ReadByID_Call) RunAndReturn(run func(context.Context, string) (models.User, error)) *MockUserService_ReadByID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ReadByUsername provides a mock function with given fields: ctx, username
+func (_m *MockUserService) ReadByUsername(ctx context.Context, username string) (models.User, error) {
+	ret := _m.Called(ctx, username)
+
+	var r0 models.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (models.User, error)); ok {
+		return rf(ctx, username)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) models.User); ok {
+		r0 = rf(ctx, username)
+	} else {
+		r0 = ret.Get(0).(models.User)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, username)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockUserService_ReadByUsername_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ReadByUsername'
+type MockUserService_ReadByUsername_Call struct {
+	*mock.Call
+}
+
+// ReadByUsername is a helper method to define mock.On call
+//   - ctx context.Context
+//   - username string
+func (_e *MockUserService_Expecter) ReadByUsername(ctx interface{}, username interface{}) *MockUserService_ReadByUsername_Call {
+	return &MockUserService_ReadByUsername_Call{Call: _e.mock.On("ReadByUsername", ctx, username)}
+}
+
+func (_c *MockUserService_ReadByUsername_Call) Run(run func(ctx context.Context, username string)) *MockUserService_ReadByUsername_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockUserService_ReadByUsername_Call) Return(_a0 models.User, _a1 error) *MockUserService_ReadByUsername_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockUserService_ReadByUsername_Call) RunAndReturn(run func(context.Context, string) (models.User, error)) *MockUserService_ReadByUsername_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateEmailByID provides a mock function with given fields: ctx, id, email
+func (_m *MockUserService) UpdateEmailByID(ctx context.Context, id string, email string) error {
+	ret := _m.Called(ctx, id, email)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+		r0 = rf(ctx, id, email)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockUserService_UpdateEmailByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateEmailByID'
+type MockUserService_UpdateEmailByID_Call struct {
+	*mock.Call
+}
+
+// UpdateEmailByID is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id string
+//   - email string
+func (_e *MockUserService_Expecter) UpdateEmailByID(ctx interface{}, id interface{}, email interface{}) *MockUserService_UpdateEmailByID_Call {
+	return &MockUserService_UpdateEmailByID_Call{Call: _e.mock.On("UpdateEmailByID", ctx, id, email)}
+}
+
+func (_c *MockUserService_UpdateEmailByID_Call) Run(run func(ctx context.Context, id string, email string)) *MockUserService_UpdateEmailByID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockUserService_UpdateEmailByID_Call) Return(_a0 error) *MockUserService_UpdateEmailByID_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockUserService_UpdateEmailByID_Call) RunAndReturn(run func(context.Context, string, string) error) *MockUserService_UpdateEmailByID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdatePasswordByID provides a mock function with given fields: ctx, id, hash, salt
+func (_m *MockUserService) UpdatePasswordByID(ctx context.Context, id string, hash string, salt string) error {
+	ret := _m.Called(ctx, id, hash, salt)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) error); ok {
+		r0 = rf(ctx, id, hash, salt)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockUserService_UpdatePasswordByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdatePasswordByID'
+type MockUserService_UpdatePasswordByID_Call struct {
+	*mock.Call
+}
+
+// UpdatePasswordByID is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id string
+//   - hash string
+//   - salt string
+func (_e *MockUserService_Expecter) UpdatePasswordByID(ctx interface{}, id interface{}, hash interface{}, salt interface{}) *MockUserService_UpdatePasswordByID_Call {
+	return &MockUserService_UpdatePasswordByID_Call{Call: _e.mock.On("UpdatePasswordByID", ctx, id, hash, salt)}
+}
+
+func (_c *MockUserService_UpdatePasswordByID_Call) Run(run func(ctx context.Context, id string, hash string, salt string)) *MockUserService_UpdatePasswordByID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(string))
+	})
+	return _c
+}
+
+func (_c *MockUserService_UpdatePasswordByID_Call) Return(_a0 error) *MockUserService_UpdatePasswordByID_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockUserService_UpdatePasswordByID_Call) RunAndReturn(run func(context.Context, string, string, string) error) *MockUserService_UpdatePasswordByID_Call {
 	_c.Call.Return(run)
 	return _c
 }

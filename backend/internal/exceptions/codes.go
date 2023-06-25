@@ -1,0 +1,44 @@
+package exceptions
+
+type ErrorCode int
+
+const (
+	CodeNotFound ErrorCode = 1 + iota
+	CodeEmailAlreadyExist
+	CodeBadPassword
+	CodeBadRecoverCode
+	CodeRecoverEmailNotConfirm
+	CodeNewPasswordEqualOldPassword
+	CodeWrongOldPassword
+	CodeBadEmailConfirmCode
+	CodeUsernameAlreadyExist
+
+	// VALIDATES
+
+	CodePasswordShouldSpecialCharacter
+	CodePasswordShouldOneDigital
+	CodePasswordShouldOneUpperCharacter
+	CodePasswordShouldOneLowerCharacter
+	CodeNewPasswordShouldSpecialCharacter
+	CodeNewPasswordShouldOneDigital
+	CodeNewPasswordShouldOneUpperCharacter
+	CodeNewPasswordShouldOneLowerCharacter
+	CodeShortPassword
+	CodeShortNewPassword
+	CodeBadFormatEmail
+	CodeBadFormatEmailConfirmCode
+	CodeBadFormatGender
+	CodeShortFirstName
+	CodeBadFormatFirstName
+	CodeLongFirstName
+	CodeShortSecondName
+	CodeLongSecondName
+	CodeBadFormatSecondName
+	CodeShortUserName
+	CodeLongUserName
+	CodeBadFormatUserName
+	CodeBadFormatAvatarURL
+	CodeBadFormatUUID
+	CodeBadFormatRecoverCode
+	CodeDateOfBirthFromFeature
+)

@@ -1,7 +1,9 @@
 package authcontroller
 
-import "net/http"
+import (
+	"net/http"
+)
 
-func (c *controller) logoutHandler(rw http.ResponseWriter, _ *http.Request) {
+func (c *controller) logoutHandler(rw http.ResponseWriter, req *http.Request) {
 	c.authHelper.ClearRefreshCookie(rw)
 }

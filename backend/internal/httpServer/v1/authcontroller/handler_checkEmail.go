@@ -8,16 +8,18 @@ import (
 )
 
 func (c *controller) checkEmailHandler(rw http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+
 	email := chi.URLParam(req, "Email")
 
 	dto, err := authusecase.NewCheckEmailIsAvailableRequest(email)
 	if err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
-	if err := c.authUsecase.CheckEmailIsAvailable(req.Context(), dto); err != nil {
-		c.httpHelper.HandleError(rw, err)
+	if err := c.authUsecase.CheckEmailIsAvailable(ctx, dto); err != nil {
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 

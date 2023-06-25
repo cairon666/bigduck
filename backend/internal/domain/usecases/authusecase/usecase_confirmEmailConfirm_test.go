@@ -5,8 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"backend/internal/domain/exceptions"
-	"github.com/google/uuid"
+	"backend/internal/domain/models"
+	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -16,17 +17,19 @@ func TestConfirmEmailConfirm_Success(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	req := ConfirmEmailConfirmRequest{
-		IDUser: uuid.New().String(),
-		Code:   "0000",
+		IDUser: validate.MockUUID,
+		Code:   validate.MockCode,
 	}
 
-	code := req.Code
+	cec := models.NewConfirmEmailCode(req.Code, req.IDUser)
+
+	key := models.ConfirmEmailCodeKey(req.IDUser)
 
 	params.ConfirmEmailCodeService.
-		On("Get", mock.Anything, req.IDUser).
-		Return(code, nil)
+		On("Get", mock.Anything, key).
+		Return(cec, nil)
 
-	params.CredentialService.
+	params.UserService.
 		On("ConfirmEmailByID", mock.Anything, req.IDUser).
 		Return(nil)
 
@@ -41,15 +44,17 @@ func TestConfirmEmailConfirm_BadCode(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	req := ConfirmEmailConfirmRequest{
-		IDUser: uuid.New().String(),
-		Code:   "0000",
+		IDUser: validate.MockUUID,
+		Code:   validate.MockCode,
 	}
 
-	code := "0001"
+	cec := models.NewConfirmEmailCode(validate.MockCode2, req.Code)
+
+	key := models.ConfirmEmailCodeKey(req.IDUser)
 
 	params.ConfirmEmailCodeService.
-		On("Get", mock.Anything, req.IDUser).
-		Return(code, nil)
+		On("Get", mock.Anything, key).
+		Return(cec, nil)
 
 	if err := usecase.ConfirmEmailConfirm(context.Background(), req); !errors.Is(err, exceptions.ErrBadEmailConfirmCode) {
 		t.Fatalf("should be bad code, err: %s", err)

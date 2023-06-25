@@ -1,10 +1,12 @@
 package httphelper
 
 import (
+	"context"
 	"net/http"
 
-	"backend/internal/domain/exceptions"
+	"backend/internal/exceptions"
 	"backend/pkg/logger"
+	"backend/pkg/middleware"
 )
 
 type subHTTPError struct {
@@ -16,46 +18,82 @@ type httpError struct {
 	Errors []subHTTPError `json:"errors"`
 }
 
-func fromAppError(appErr exceptions.AppError) httpError {
-	httpErr := httpError{}
-
-	for _, err := range appErr.Errors() {
-		httpErr.Errors = append(httpErr.Errors, subHTTPError{
-			Message: err.Message(),
-			Code:    err.Code(),
-		})
-	}
-
-	return httpErr
-}
-
-func fromError(err exceptions.Error) httpError {
-	httpErr := httpError{
+func fromAppError(err *exceptions.AppError) httpError {
+	return httpError{
 		Errors: []subHTTPError{
 			{
-				Message: err.Message(),
-				Code:    err.Code(),
+				Message: err.Msg,
+				Code:    err.Code,
 			},
 		},
 	}
-
-	return httpErr
 }
 
-func (h *httpHelper) HandleError(rw http.ResponseWriter, err error) {
-	h.log.Info("handled error", logger.Error(err))
+func fromMultiValidateError(err *exceptions.MultiValidateError) httpError {
+	httpError := httpError{
+		Errors: make([]subHTTPError, 0, len(err.Errs)),
+	}
+
+	for _, err := range err.Errs {
+		httpError.Errors = append(httpError.Errors, subHTTPError{
+			Message: err.Message,
+			Code:    err.Code,
+		})
+	}
+
+	return httpError
+}
+
+func fromValidateError(err *exceptions.ValidateError) httpError {
+	return httpError{
+		Errors: []subHTTPError{
+			{
+				Message: err.Message,
+				Code:    err.Code,
+			},
+		},
+	}
+}
+
+func (h *httpHelper) HandleError(ctx context.Context, rw http.ResponseWriter, err error) {
+	var (
+		errorField     = logger.Error(err)
+		requestIDField = logger.String(middleware.RequestIDHeader, middleware.GetReqID(ctx))
+		errorType      string
+	)
 
 	switch err := err.(type) {
-	case exceptions.AppError:
-		h.SendJSON(rw, fromAppError(err), http.StatusBadRequest)
-		return
-	case exceptions.Error:
-		h.SendJSON(rw, fromError(err), http.StatusBadRequest)
-		return
+	case *exceptions.AppError:
+		{
+			errorType = "AppError"
+			h.SendJSON(rw, fromAppError(err), http.StatusBadRequest)
+		}
+	case *exceptions.MultiValidateError:
+		{
+			errorType = "MultiValidateError"
+			h.SendJSON(rw, fromMultiValidateError(err), http.StatusBadRequest)
+		}
+	case *exceptions.ValidateError:
+		{
+			errorType = "ValidateError"
+			h.SendJSON(rw, fromValidateError(err), http.StatusBadRequest)
+		}
+	case *exceptions.ForbiddenError:
+		{
+			errorType = "ForbiddenError"
+			rw.WriteHeader(http.StatusForbidden)
+		}
+	case *exceptions.InternalError:
+		{
+			errorType = "InternalError"
+			rw.WriteHeader(http.StatusInternalServerError)
+		}
 	default:
-		_, _ = rw.Write([]byte(err.Error()))
-		rw.WriteHeader(http.StatusInternalServerError)
-
-		return
+		{
+			errorType = "NonHandleError"
+			rw.WriteHeader(http.StatusInternalServerError)
+		}
 	}
+
+	h.log.Info(errorType, errorField, requestIDField)
 }

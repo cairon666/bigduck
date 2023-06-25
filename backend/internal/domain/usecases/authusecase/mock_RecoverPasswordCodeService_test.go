@@ -4,6 +4,7 @@ package authusecase
 
 import (
 	context "context"
+	time "time"
 
 	models "backend/internal/domain/models"
 	mock "github.com/stretchr/testify/mock"
@@ -22,23 +23,25 @@ func (_m *MockRecoverPasswordCodeService) EXPECT() *MockRecoverPasswordCodeServi
 	return &MockRecoverPasswordCodeService_Expecter{mock: &_m.Mock}
 }
 
-// Get provides a mock function with given fields: ctx, email
-func (_m *MockRecoverPasswordCodeService) Get(ctx context.Context, email string) (models.RecoverPassword, error) {
-	ret := _m.Called(ctx, email)
+// Get provides a mock function with given fields: ctx, key
+func (_m *MockRecoverPasswordCodeService) Get(ctx context.Context, key string) (*models.RecoverPassword, error) {
+	ret := _m.Called(ctx, key)
 
-	var r0 models.RecoverPassword
+	var r0 *models.RecoverPassword
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (models.RecoverPassword, error)); ok {
-		return rf(ctx, email)
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*models.RecoverPassword, error)); ok {
+		return rf(ctx, key)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) models.RecoverPassword); ok {
-		r0 = rf(ctx, email)
+	if rf, ok := ret.Get(0).(func(context.Context, string) *models.RecoverPassword); ok {
+		r0 = rf(ctx, key)
 	} else {
-		r0 = ret.Get(0).(models.RecoverPassword)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.RecoverPassword)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, email)
+		r1 = rf(ctx, key)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -53,35 +56,35 @@ type MockRecoverPasswordCodeService_Get_Call struct {
 
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
-//   - email string
-func (_e *MockRecoverPasswordCodeService_Expecter) Get(ctx interface{}, email interface{}) *MockRecoverPasswordCodeService_Get_Call {
-	return &MockRecoverPasswordCodeService_Get_Call{Call: _e.mock.On("Get", ctx, email)}
+//   - key string
+func (_e *MockRecoverPasswordCodeService_Expecter) Get(ctx interface{}, key interface{}) *MockRecoverPasswordCodeService_Get_Call {
+	return &MockRecoverPasswordCodeService_Get_Call{Call: _e.mock.On("Get", ctx, key)}
 }
 
-func (_c *MockRecoverPasswordCodeService_Get_Call) Run(run func(ctx context.Context, email string)) *MockRecoverPasswordCodeService_Get_Call {
+func (_c *MockRecoverPasswordCodeService_Get_Call) Run(run func(ctx context.Context, key string)) *MockRecoverPasswordCodeService_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *MockRecoverPasswordCodeService_Get_Call) Return(_a0 models.RecoverPassword, _a1 error) *MockRecoverPasswordCodeService_Get_Call {
+func (_c *MockRecoverPasswordCodeService_Get_Call) Return(_a0 *models.RecoverPassword, _a1 error) *MockRecoverPasswordCodeService_Get_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockRecoverPasswordCodeService_Get_Call) RunAndReturn(run func(context.Context, string) (models.RecoverPassword, error)) *MockRecoverPasswordCodeService_Get_Call {
+func (_c *MockRecoverPasswordCodeService_Get_Call) RunAndReturn(run func(context.Context, string) (*models.RecoverPassword, error)) *MockRecoverPasswordCodeService_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Set provides a mock function with given fields: ctx, email, data
-func (_m *MockRecoverPasswordCodeService) Set(ctx context.Context, email string, data models.RecoverPassword) error {
-	ret := _m.Called(ctx, email, data)
+// Set provides a mock function with given fields: ctx, data, ttl
+func (_m *MockRecoverPasswordCodeService) Set(ctx context.Context, data *models.RecoverPassword, ttl time.Duration) error {
+	ret := _m.Called(ctx, data, ttl)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, models.RecoverPassword) error); ok {
-		r0 = rf(ctx, email, data)
+	if rf, ok := ret.Get(0).(func(context.Context, *models.RecoverPassword, time.Duration) error); ok {
+		r0 = rf(ctx, data, ttl)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -96,15 +99,15 @@ type MockRecoverPasswordCodeService_Set_Call struct {
 
 // Set is a helper method to define mock.On call
 //   - ctx context.Context
-//   - email string
-//   - data models.RecoverPassword
-func (_e *MockRecoverPasswordCodeService_Expecter) Set(ctx interface{}, email interface{}, data interface{}) *MockRecoverPasswordCodeService_Set_Call {
-	return &MockRecoverPasswordCodeService_Set_Call{Call: _e.mock.On("Set", ctx, email, data)}
+//   - data *models.RecoverPassword
+//   - ttl time.Duration
+func (_e *MockRecoverPasswordCodeService_Expecter) Set(ctx interface{}, data interface{}, ttl interface{}) *MockRecoverPasswordCodeService_Set_Call {
+	return &MockRecoverPasswordCodeService_Set_Call{Call: _e.mock.On("Set", ctx, data, ttl)}
 }
 
-func (_c *MockRecoverPasswordCodeService_Set_Call) Run(run func(ctx context.Context, email string, data models.RecoverPassword)) *MockRecoverPasswordCodeService_Set_Call {
+func (_c *MockRecoverPasswordCodeService_Set_Call) Run(run func(ctx context.Context, data *models.RecoverPassword, ttl time.Duration)) *MockRecoverPasswordCodeService_Set_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(models.RecoverPassword))
+		run(args[0].(context.Context), args[1].(*models.RecoverPassword), args[2].(time.Duration))
 	})
 	return _c
 }
@@ -114,7 +117,7 @@ func (_c *MockRecoverPasswordCodeService_Set_Call) Return(_a0 error) *MockRecove
 	return _c
 }
 
-func (_c *MockRecoverPasswordCodeService_Set_Call) RunAndReturn(run func(context.Context, string, models.RecoverPassword) error) *MockRecoverPasswordCodeService_Set_Call {
+func (_c *MockRecoverPasswordCodeService_Set_Call) RunAndReturn(run func(context.Context, *models.RecoverPassword, time.Duration) error) *MockRecoverPasswordCodeService_Set_Call {
 	_c.Call.Return(run)
 	return _c
 }

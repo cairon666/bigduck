@@ -5,8 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
+	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -19,22 +20,22 @@ func TestRegister_Success(t *testing.T) {
 	usecase, props := NewMockAuthUsecase(t)
 
 	dto := RegisterRequest{
-		Email:       "example@example.com",
-		Password:    "12345678",
-		FirstName:   "sadsadsa",
-		SecondName:  "sadsadsa",
-		UserName:    "sadsadsa",
+		Email:       validate.MockEmail,
+		Password:    validate.MockPassword,
+		FirstName:   validate.MockFirstName,
+		SecondName:  validate.MockSecondName,
+		UserName:    validate.MockUserName,
 		Gender:      nil,
 		DateOfBirth: nil,
 		AvatarURL:   nil,
 	}
 
-	props.CredentialService.
+	props.UserService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(models.Credential{}, exceptions.ErrNotFound)
+		Return(models.User{}, exceptions.ErrNotFound)
 
-	props.CredentialService.
-		On("Create", mock.Anything, mock.IsType(models.Credential{})).
+	props.UserService.
+		On("Create", mock.Anything, mock.IsType(models.User{})).
 		Return(nil)
 
 	props.UserService.
@@ -52,19 +53,19 @@ func TestRegister_AlreadyExist(t *testing.T) {
 	usecase, props := NewMockAuthUsecase(t)
 
 	dto := RegisterRequest{
-		Email:       "example@example.com",
-		Password:    "12345678",
-		FirstName:   "sadsadsa",
-		SecondName:  "sadsadsa",
-		UserName:    "sadsadsa",
+		Email:       validate.MockEmail,
+		Password:    validate.MockPassword,
+		FirstName:   validate.MockFirstName,
+		SecondName:  validate.MockSecondName,
+		UserName:    validate.MockUserName,
 		Gender:      nil,
 		DateOfBirth: nil,
 		AvatarURL:   nil,
 	}
 
-	props.CredentialService.
+	props.UserService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(models.Credential{}, nil)
+		Return(models.User{}, nil)
 
 	err := usecase.Register(context.Background(), dto)
 	if !errors.Is(err, exceptions.ErrEmailAlreadyExist) {
@@ -78,19 +79,19 @@ func TestRegister_InternalError(t *testing.T) {
 	usecase, props := NewMockAuthUsecase(t)
 
 	dto := RegisterRequest{
-		Email:       "example@example.com",
-		Password:    "12345678",
-		FirstName:   "sadsadsa",
-		SecondName:  "sadsadsa",
-		UserName:    "sadsadsa",
+		Email:       validate.MockEmail,
+		Password:    validate.MockPassword,
+		FirstName:   validate.MockFirstName,
+		SecondName:  validate.MockSecondName,
+		UserName:    validate.MockUserName,
 		Gender:      nil,
 		DateOfBirth: nil,
 		AvatarURL:   nil,
 	}
 
-	props.CredentialService.
+	props.UserService.
 		On("ReadByEmail", mock.Anything, dto.Email).
-		Return(models.Credential{}, errInternal)
+		Return(models.User{}, errInternal)
 
 	err := usecase.Register(context.Background(), dto)
 	if !errors.Is(err, errInternal) {

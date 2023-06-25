@@ -9,7 +9,7 @@ import (
 )
 
 //go:generate mockery --name AuthUsecase
-type AuthUsecase interface {
+type AuthUsecase interface { //nolint:interfacebloat
 	ChangeEmail(ctx context.Context, dto authusecase.ChangeEmailRequest) error
 	Register(ctx context.Context, dto authusecase.RegisterRequest) error
 	RecoverPasswordConfirm(ctx context.Context, req authusecase.RecoverPasswordConfirmRequest) error
@@ -20,11 +20,12 @@ type AuthUsecase interface {
 	ConfirmEmailSend(ctx context.Context, dto authusecase.ConfirmEmailSendRequest) error
 	ConfirmEmailConfirm(ctx context.Context, dto authusecase.ConfirmEmailConfirmRequest) error
 	CheckEmailIsAvailable(ctx context.Context, dto authusecase.CheckEmailIsAvailableRequest) error
+	CheckUsernameIsAvailable(ctx context.Context, dto authusecase.CheckUsernameIsAvailableRequest) error
 }
 
 //go:generate mockery --name HTTPHelper
 type HTTPHelper interface {
-	HandleError(w http.ResponseWriter, err error)
+	HandleError(ctx context.Context, w http.ResponseWriter, err error)
 	SendJSON(w http.ResponseWriter, data any, status int)
 }
 
@@ -36,6 +37,7 @@ type AuthHelper interface {
 	NewTokens(IDUser string) (string, string, error)
 	UpdateTokens(refresh string) (string, string, error)
 	ParseIDUser(r *http.Request) (string, bool)
+	IsEqualIDUser(r *http.Request, id string) error
 }
 
 type controller struct {

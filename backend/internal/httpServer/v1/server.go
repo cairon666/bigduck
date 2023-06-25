@@ -7,11 +7,9 @@ import (
 
 	"backend/internal/config"
 	"backend/internal/domain/usecases/authusecase"
-	"backend/internal/domain/usecases/userusecase"
 	"backend/internal/httpServer/v1/authcontroller"
 	"backend/internal/httpServer/v1/authhelper"
 	"backend/internal/httpServer/v1/httphelper"
-	"backend/internal/httpServer/v1/usercontroller"
 	"backend/pkg/logger"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/dig"
@@ -28,10 +26,9 @@ type Controller interface {
 type Server struct {
 	conf           *config.Config
 	authController Controller
-	userController Controller
-	authHelper     AuthHelper
 
-	server *http.Server
+	authHelper AuthHelper
+	server     *http.Server
 }
 
 type Params struct {
@@ -40,7 +37,6 @@ type Params struct {
 	Log         logger.Logger
 	Conf        *config.Config
 	AuthUsecase *authusecase.Usecase
-	UserUsecase *userusecase.Usecase
 }
 
 func NewServer(params Params) *Server {
@@ -57,11 +53,6 @@ func NewServer(params Params) *Server {
 		authHelper: authHelper,
 		authController: authcontroller.NewAuthController(authcontroller.Params{
 			AuthUsecase: params.AuthUsecase,
-			HTTPHelper:  httpHelper,
-			AuthHelper:  authHelper,
-		}),
-		userController: usercontroller.NewUserController(usercontroller.Params{
-			UserUsecase: params.UserUsecase,
 			HTTPHelper:  httpHelper,
 			AuthHelper:  authHelper,
 		}),

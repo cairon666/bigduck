@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/models"
-	"github.com/google/uuid"
+	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/mock"
 )
@@ -17,15 +17,17 @@ func TestChangeEmail_Success(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	req := ChangeEmailRequest{
-		IDUser: uuid.New().String(),
-		Email:  "example@example.example",
+		IDUser: validate.MockUUID,
+		Email:  validate.MockEmail,
 	}
 
-	params.CredentialService.
-		On("ReadByEmail", mock.Anything, req.Email).
-		Return(models.Credential{}, nil)
+	user := models.User{Email: req.Email, ID: req.IDUser}
 
-	params.CredentialService.
+	params.UserService.
+		On("ReadByID", mock.Anything, req.IDUser).
+		Return(user, nil)
+
+	params.UserService.
 		On("UpdateEmailByID", mock.Anything, req.IDUser, req.Email).
 		Return(nil)
 
@@ -44,13 +46,15 @@ func TestChangeEmail_NotFound(t *testing.T) {
 	usecase, params := NewMockAuthUsecase(t)
 
 	req := ChangeEmailRequest{
-		IDUser: uuid.New().String(),
-		Email:  "example@example.example",
+		IDUser: validate.MockUUID,
+		Email:  validate.MockEmail,
 	}
 
-	params.CredentialService.
-		On("ReadByEmail", mock.Anything, req.Email).
-		Return(models.Credential{}, exceptions.ErrNotFound)
+	user := models.User{Email: req.Email, ID: req.IDUser}
+
+	params.UserService.
+		On("ReadByID", mock.Anything, req.IDUser).
+		Return(user, exceptions.ErrNotFound)
 
 	err := usecase.ChangeEmail(context.Background(), req)
 	if !errors.Is(err, exceptions.ErrNotFound) {

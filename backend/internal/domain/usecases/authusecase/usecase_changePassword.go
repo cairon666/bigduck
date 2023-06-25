@@ -3,8 +3,8 @@ package authusecase
 import (
 	"context"
 
-	"backend/internal/domain/exceptions"
 	"backend/internal/domain/validate"
+	"backend/internal/exceptions"
 	"backend/pkg/tracing"
 )
 
@@ -18,7 +18,7 @@ func NewChangePasswordRequest(idUser, oldPassword, newPassword string) (ChangePa
 	if err := validate.Test(
 		validate.UUIDSimple(idUser),
 		validate.PasswordSimple(oldPassword),
-		validate.PasswordSimple(newPassword),
+		validate.NewPasswordSimple(newPassword),
 	); err != nil {
 		return ChangePasswordRequest{}, err
 	}
@@ -31,10 +31,10 @@ func NewChangePasswordRequest(idUser, oldPassword, newPassword string) (ChangePa
 }
 
 func (u *Usecase) ChangePassword(ctx context.Context, dto ChangePasswordRequest) error {
-	ctx, span := tracing.Start(ctx, "authusecase.ChangeEmail")
+	ctx, span := tracing.Start(ctx, "authusecase.ChangePassword")
 	defer span.End()
 
-	credentials, err := u.credentialService.ReadByID(ctx, dto.IDUser)
+	credentials, err := u.userService.ReadByID(ctx, dto.IDUser)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func (u *Usecase) ChangePassword(ctx context.Context, dto ChangePasswordRequest)
 		return err
 	}
 
-	if err := u.credentialService.UpdatePasswordByID(ctx, dto.IDUser, hash, salt); err != nil {
+	if err := u.userService.UpdatePasswordByID(ctx, dto.IDUser, hash, salt); err != nil {
 		return err
 	}
 

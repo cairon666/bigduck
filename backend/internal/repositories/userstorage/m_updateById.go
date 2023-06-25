@@ -3,21 +3,12 @@ package userstorage
 import (
 	"context"
 
+	"backend/internal/exceptions"
 	"backend/pkg/qb"
 	"backend/pkg/tracing"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/pkg/errors"
 )
-
-var possibleUpdateKeys = []string{
-	"email",
-	"first_name",
-	"second_name",
-	"user_name",
-	"day_of_birth",
-	"avatar_url",
-	"gender",
-	"create_at",
-}
 
 func (s *UserStorage) UpdateByID(ctx context.Context, id string, data map[string]any) error {
 	ctx, span := tracing.Start(ctx, "userstorage.UpdateByID")
@@ -25,18 +16,26 @@ func (s *UserStorage) UpdateByID(ctx context.Context, id string, data map[string
 
 	builder := qb.Update("public.users")
 
-	for _, key := range possibleUpdateKeys {
-		if value, ok := data[key]; ok {
-			builder = builder.Set(qb.Eql(key, value))
-		}
+	for key, value := range data {
+		builder = builder.Set(qb.Eql(key, value))
 	}
 
 	query, args := builder.
 		AndWhere(qb.Eql("id", id)).
 		ToSQL()
 
-	if _, err := s.client.Exec(ctx, query, args...); err != nil {
-		return errors.Wrap(err, "usercredentials.UpdateByID")
+	_, err := s.client.Exec(ctx, query, args...)
+	if err != nil {
+		if pgErr := new(pgconn.PgError); errors.As(err, &pgErr) {
+			switch pgErr.ConstraintName {
+			case "users_user_name_uniq":
+				return exceptions.ErrUsernameAlreadyExist
+			case "users_email_uniq":
+				return exceptions.ErrEmailAlreadyExist
+			}
+		}
+
+		return exceptions.NewInternalErr("userstorage.UpdateByID.Exec", err)
 	}
 
 	return nil

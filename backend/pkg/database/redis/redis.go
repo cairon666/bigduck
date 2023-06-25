@@ -1,14 +1,18 @@
 package redis
 
 import (
+	"fmt"
+
 	"github.com/redis/go-redis/v9"
 )
 
 func NewRedisClient(url string) (*redis.Client, error) {
-	opt, err := redis.ParseURL(url)
+	urlOpt, err := redis.ParseURL(url)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse url error: %w", err)
 	}
 
-	return redis.NewClient(opt), nil
+	client := redis.NewClient(urlOpt)
+
+	return client, nil
 }

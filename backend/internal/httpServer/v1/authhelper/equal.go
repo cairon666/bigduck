@@ -3,6 +3,8 @@ package authhelper
 import (
 	"context"
 	"net/http"
+
+	"backend/internal/exceptions"
 )
 
 func getClaims(ctx context.Context) (*Claims, bool) {
@@ -17,12 +19,12 @@ func getClaims(ctx context.Context) (*Claims, bool) {
 	return nil, false
 }
 
-func (h *helper) IsEqualIDUser(r *http.Request, id string) bool {
+func (h *helper) IsEqualIDUser(r *http.Request, id string) error {
 	if ctxIDUser, ok := getClaims(r.Context()); ok && ctxIDUser.IDUser == id {
-		return true
+		return nil
 	}
 
-	return false
+	return exceptions.ErrForbidden
 }
 
 func (h *helper) ParseIDUser(r *http.Request) (string, bool) {

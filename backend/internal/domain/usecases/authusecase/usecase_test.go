@@ -9,7 +9,6 @@ type MockProps struct {
 	MailService                *MockMailService
 	RecoverPasswordCodeService *MockRecoverPasswordCodeService
 	ConfirmEmailCodeService    *MockConfirmEmailCodeService
-	CredentialService          *MockCredentialService
 }
 
 // NewMockAuthUsecase - creat new mocking usecase for testing
@@ -21,7 +20,6 @@ func NewMockAuthUsecase(t *testing.T) (*Usecase, MockProps) {
 		MailService:                NewMockMailService(t),
 		RecoverPasswordCodeService: NewMockRecoverPasswordCodeService(t),
 		ConfirmEmailCodeService:    NewMockConfirmEmailCodeService(t),
-		CredentialService:          NewMockCredentialService(t),
 	}
 
 	usecase := NewAuthUsecase(Props{
@@ -29,7 +27,6 @@ func NewMockAuthUsecase(t *testing.T) (*Usecase, MockProps) {
 		MailService:                mockProps.MailService,
 		RecoverPasswordCodeService: mockProps.RecoverPasswordCodeService,
 		ConfirmEmailCodeService:    mockProps.ConfirmEmailCodeService,
-		CredentialService:          mockProps.CredentialService,
 	})
 
 	return usecase, mockProps

@@ -1,4 +1,4 @@
-package authcontroller
+package authcontroller //nolint:dupl
 
 import (
 	"encoding/json"
@@ -12,9 +12,11 @@ type changeEmailRequest struct {
 }
 
 func (c *controller) changeEmailHandler(rw http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+
 	var reqDTO changeEmailRequest
 	if err := json.NewDecoder(req.Body).Decode(&reqDTO); err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
@@ -24,14 +26,14 @@ func (c *controller) changeEmailHandler(rw http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	dto, err := authusecase.NewChangeEmailRequest(reqDTO.Email, IDUser)
+	dto, err := authusecase.NewChangeEmailRequest(IDUser, reqDTO.Email)
 	if err != nil {
-		c.httpHelper.HandleError(rw, err)
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
-	if err := c.authUsecase.ChangeEmail(req.Context(), dto); err != nil {
-		c.httpHelper.HandleError(rw, err)
+	if err := c.authUsecase.ChangeEmail(ctx, dto); err != nil {
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 

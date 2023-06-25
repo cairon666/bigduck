@@ -3,24 +3,24 @@ package validate
 import (
 	"regexp"
 
-	"backend/internal/domain/exceptions"
+	"backend/internal/exceptions"
 )
 
 var (
 	regexpCodeSimple = regexp.MustCompile(`^[0-9]{4}$`)
 )
 
-func RecoverPasswordCodeSimple(code string) exceptions.Error {
+func RecoverPasswordCodeSimple(code string) *exceptions.ValidateError {
 	if ok := regexpCodeSimple.MatchString(code); !ok {
-		return exceptions.ErrNotValidRecoverCode
+		return exceptions.ErrBadFormatRecoverCode
 	}
 
 	return nil
 }
 
-func ConfirmEmailCodeSimple(code string) exceptions.Error {
+func ConfirmEmailCodeSimple(code string) *exceptions.ValidateError {
 	if ok := regexpCodeSimple.MatchString(code); !ok {
-		return exceptions.ErrNotValidEmailConfirmCode
+		return exceptions.ErrBadFormatEmailConfirmCode
 	}
 
 	return nil

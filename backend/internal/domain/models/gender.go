@@ -1,7 +1,7 @@
 package models
 
 import (
-	"backend/internal/domain/exceptions"
+	"backend/internal/exceptions"
 )
 
 type Gender string
@@ -33,7 +33,7 @@ func ParseGender(g string) (Gender, error) {
 	case GenderFemale:
 		return GenderFemale, nil
 	default:
-		return "", exceptions.ErrGenderNotFound
+		return "", exceptions.ErrBadFormatGender
 	}
 }
 

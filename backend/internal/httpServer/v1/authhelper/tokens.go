@@ -1,7 +1,9 @@
 package authhelper
 
 import (
+	"backend/internal/domain/models"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 const (
@@ -9,13 +11,13 @@ const (
 	RefreshNameToken = "Refresh-Token"
 )
 
-func (h *helper) NewTokens(id string) (string, string, error) {
-	accessClaims, err := h.newAccessClaims(id)
+func (h *AuthHelper) NewTokens(id uuid.UUID, roles []models.RoleID) (string, string, error) {
+	accessClaims, err := h.newAccessClaims(id, roles)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshClaims, err := h.newRefreshClaims(id)
+	refreshClaims, err := h.newRefreshClaims(id, roles)
 	if err != nil {
 		return "", "", err
 	}
@@ -36,13 +38,13 @@ func (h *helper) NewTokens(id string) (string, string, error) {
 	return access, refresh, nil
 }
 
-func (h *helper) UpdateTokens(refresh string) (string, string, error) {
-	id, err := h.ParseToken(refresh)
+func (h *AuthHelper) UpdateTokens(refresh string) (string, string, error) {
+	claim, err := h.ParseToken(refresh)
 	if err != nil {
 		return "", "", err
 	}
 
-	newAccess, newRefresh, err := h.NewTokens(id.IDUser)
+	newAccess, newRefresh, err := h.NewTokens(claim.IDUser, claim.Roles)
 	if err != nil {
 		return "", "", err
 	}
@@ -50,7 +52,7 @@ func (h *helper) UpdateTokens(refresh string) (string, string, error) {
 	return newAccess, newRefresh, nil
 }
 
-func (h *helper) ParseToken(tokenString string) (*Claims, error) {
+func (h *AuthHelper) ParseToken(tokenString string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return h.private, nil
 	})

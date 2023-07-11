@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"backend/internal/domain/usecases/authusecase"
+	"backend/internal/exceptions"
+	"backend/internal/exceptions/validate"
 )
 
 type changePasswordRequest struct {
@@ -12,7 +14,14 @@ type changePasswordRequest struct {
 	NewPassword string `json:"new_password"`
 }
 
-func (c *controller) changePasswordHandler(rw http.ResponseWriter, req *http.Request) {
+func (req *changePasswordRequest) IsValid() error {
+	return validate.NewValidateError().
+		AddField("old_password", validate.TestPassword(req.OldPassword)).
+		AddField("new_password", validate.TestPassword(req.NewPassword)).
+		ToError()
+}
+
+func (c *Controller) changePasswordHandler(rw http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	var reqDTO changePasswordRequest
@@ -21,18 +30,18 @@ func (c *controller) changePasswordHandler(rw http.ResponseWriter, req *http.Req
 		return
 	}
 
-	IDUser, ok := c.authHelper.ParseIDUser(req)
-	if !ok {
-		rw.WriteHeader(http.StatusForbidden)
-		return
-	}
-
-	dto, err := authusecase.NewChangePasswordRequest(IDUser, reqDTO.OldPassword, reqDTO.NewPassword)
-	if err != nil {
+	if err := reqDTO.IsValid(); err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
+	IDUser, ok := c.authHelper.ParseIDUser(req)
+	if !ok {
+		c.httpHelper.HandleError(ctx, rw, exceptions.ErrForbidden)
+		return
+	}
+
+	dto := authusecase.NewChangePasswordRequest(IDUser, reqDTO.OldPassword, reqDTO.NewPassword)
 	if err := c.authUsecase.ChangePassword(ctx, dto); err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)
 		return

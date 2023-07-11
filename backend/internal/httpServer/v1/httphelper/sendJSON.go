@@ -7,7 +7,7 @@ import (
 	"backend/pkg/logger"
 )
 
-func (h *httpHelper) SendJSON(rw http.ResponseWriter, data any, status int) {
+func (h *HTTPHelper) SendJSON(rw http.ResponseWriter, data any, status int) {
 	rw.Header().Add("Content-Type", "application/json; charset=utf-8")
 	rw.WriteHeader(status)
 

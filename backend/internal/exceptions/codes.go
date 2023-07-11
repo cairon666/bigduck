@@ -11,34 +11,7 @@ const (
 	CodeNewPasswordEqualOldPassword
 	CodeWrongOldPassword
 	CodeBadEmailConfirmCode
-	CodeUsernameAlreadyExist
-
-	// VALIDATES
-
-	CodePasswordShouldSpecialCharacter
-	CodePasswordShouldOneDigital
-	CodePasswordShouldOneUpperCharacter
-	CodePasswordShouldOneLowerCharacter
-	CodeNewPasswordShouldSpecialCharacter
-	CodeNewPasswordShouldOneDigital
-	CodeNewPasswordShouldOneUpperCharacter
-	CodeNewPasswordShouldOneLowerCharacter
-	CodeShortPassword
-	CodeShortNewPassword
-	CodeBadFormatEmail
-	CodeBadFormatEmailConfirmCode
-	CodeBadFormatGender
-	CodeShortFirstName
-	CodeBadFormatFirstName
-	CodeLongFirstName
-	CodeShortSecondName
-	CodeLongSecondName
-	CodeBadFormatSecondName
-	CodeShortUserName
-	CodeLongUserName
-	CodeBadFormatUserName
-	CodeBadFormatAvatarURL
-	CodeBadFormatUUID
-	CodeBadFormatRecoverCode
-	CodeDateOfBirthFromFeature
+	CodeUserNameAlreadyExist
+	CodeIDAlreadyExist
+	CodeRoleAlreadyExist
 )

@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"backend/internal/domain/models"
-	validate2 "backend/internal/domain/validate"
 	"backend/pkg/tracing"
 )
 
@@ -12,14 +11,8 @@ type RecoverPasswordSendRequest struct {
 	Email string
 }
 
-func NewRecoverPasswordSendRequest(email string) (RecoverPasswordSendRequest, error) {
-	if err := validate2.Test(
-		validate2.EmailSimple(email),
-	); err != nil {
-		return RecoverPasswordSendRequest{}, err
-	}
-
-	return RecoverPasswordSendRequest{Email: email}, nil
+func NewRecoverPasswordSendRequest(email string) RecoverPasswordSendRequest {
+	return RecoverPasswordSendRequest{Email: email}
 }
 
 // RecoverPasswordSend - first step of recover password.
@@ -29,7 +22,7 @@ func (u *Usecase) RecoverPasswordSend(ctx context.Context, req RecoverPasswordSe
 	defer span.End()
 
 	// check what email is exist
-	credential, err := u.userService.ReadByEmail(ctx, req.Email)
+	user, err := u.userService.ReadOneUserByEmail(ctx, req.Email)
 	if err != nil {
 		return err
 	}
@@ -40,15 +33,10 @@ func (u *Usecase) RecoverPasswordSend(ctx context.Context, req RecoverPasswordSe
 		return err
 	}
 
-	data := models.NewRecoverPassword(
-		credential.Email,
-		credential.ID,
-		false,
-		code,
-	)
+	data := models.NewRecoverPassword(user.ID, user.Email, false, code)
 
 	// set code
-	if err := u.recoverPasswordCodeService.Set(ctx, data, ttlRecoverPasswordCode); err != nil {
+	if err := u.recoverPasswordCodeService.Set(ctx, &data, ttlRecoverPasswordCode); err != nil {
 		return err
 	}
 

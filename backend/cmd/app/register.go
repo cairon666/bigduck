@@ -17,7 +17,6 @@ import (
 	redis2 "backend/pkg/database/redis"
 	"backend/pkg/logger"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/nats-io/nats.go"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/dig"
 )
@@ -49,16 +48,16 @@ func RegisterConnectors(c *dig.Container) {
 	panicIfError(c.Provide(func(log logger.Logger, conf *config.Config) (*pgxpool.Pool, error) {
 		return postgres.NewPostgresClient(conf.Postgres, postgres.WithLogger(log))
 	}))
-	panicIfError(c.Provide(func(conf *config.Config) (*nats.Conn, error) {
-		return nats.Connect(conf.NATS.URL)
-	}))
 	panicIfError(c.Provide(func(conf *config.Config) (*redis.Client, error) {
 		return redis2.NewRedisClient(conf.Redis.URL)
 	}))
 }
 
 func RegisterConfig(c *dig.Container) {
-	panicIfError(c.Provide(config.NewConfig))
+	panicIfError(c.Provide(func() (*config.Config, error) {
+		conf, err := config.NewConfig()
+		return conf, err
+	}))
 }
 
 func RegisterServer(c *dig.Container) {

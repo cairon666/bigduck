@@ -1,34 +1,19 @@
-import { useCallback } from 'react';
-import { AiOutlineSetting } from 'react-icons/ai';
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { Card, PageHeader, Switch, SwitchButton } from "@/shared/UIKit";
+import { useCallback } from "react";
+import { AiOutlineSetting } from "react-icons/ai";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 
-import { Card, PageHeader, Switch, SwitchItem } from '../../../components/ui';
-import { SettingsMain } from './SettingsMain';
-
-const items: SwitchItem<string>[] = [
-    {
-        label: 'Главная',
-        value: '',
-    },
-    {
-        label: 'Личные данные',
-        value: 'personal',
-    },
-    {
-        label: 'Безопастность и вход',
-        value: 'security',
-    },
-];
+import { SettingsMain } from "./SettingsMain";
 
 export function Settings() {
     return (
-        <Card className={'h-full'}>
+        <Card className={"h-full"}>
             <Header />
             <Routes>
-                <Route path={''} element={<SettingsMain />} />
-                <Route path={'personal'} element={'personal'} />
-                <Route path={'security'} element={'security'} />
-                <Route path={'*'} element={<Navigate to={'/panel/settings/'} />} />
+                <Route path={""} element={<SettingsMain />} />
+                <Route path={"personal"} element={"personal"} />
+                <Route path={"security"} element={"security"} />
+                <Route path={"*"} element={<Navigate to={"/panel/settings/"} />} />
             </Routes>
         </Card>
     );
@@ -43,9 +28,15 @@ function Header() {
 
     return (
         <PageHeader
-            icon={<AiOutlineSetting />}
-            label={'Настройки'}
-            right={<Switch items={items} initActive={items[0].value} onChange={onChange} />}
+            left={<AiOutlineSetting />}
+            label={"Настройки"}
+            right={
+                <Switch initActive={""} onChange={onChange}>
+                    <SwitchButton value={""}>Главная</SwitchButton>
+                    <SwitchButton value={"personal"}>Личные данные</SwitchButton>
+                    <SwitchButton value={"security"}>Безопастность и вход</SwitchButton>
+                </Switch>
+            }
         />
     );
 }

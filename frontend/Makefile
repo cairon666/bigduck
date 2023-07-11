@@ -16,17 +16,17 @@ no-dirty:
 # QUALITY CONTROL
 # ==================================================================================== #
 
+## audit/fix: run quality control checks !WITH FIX!
+.PHONY: tidy
+tidy:
+	npx prettier ./src --check --write;
+	npx eslint ./src --fix;
+
 ## audit: run quality control checks
 .PHONY: audit
 audit:
 	npx prettier ./src --check;
 	npx eslint ./src;
-
-## audit/fix: run quality control checks !WITH FIX!
-.PHONY: audit/fix
-audit/fix:
-	npx prettier ./src --check --write;
-	npx eslint ./src --fix;
 
 ## preview: preview
 .PHONY: preview
@@ -45,8 +45,7 @@ run/storybook:
 ## run/dev: run server with dev
 .PHONY: run/dev
 run/dev:
-	export NODE_ENV development;
-	npx vite serve --config vite.config.ts;
+	NODE_ENV=development npx vite serve --config vite.config.ts;
 
 .PHONY: build
 build:

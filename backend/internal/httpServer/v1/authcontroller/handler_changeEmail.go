@@ -1,17 +1,26 @@
-package authcontroller //nolint:dupl
+package authcontroller
 
 import (
 	"encoding/json"
 	"net/http"
 
 	"backend/internal/domain/usecases/authusecase"
+	"backend/internal/exceptions"
+	"backend/internal/exceptions/validate"
 )
 
 type changeEmailRequest struct {
 	Email string `json:"email"`
 }
 
-func (c *controller) changeEmailHandler(rw http.ResponseWriter, req *http.Request) {
+func (req *changeEmailRequest) IsValid() error {
+	return validate.
+		NewValidateError().
+		AddField("email", validate.TestEmail(req.Email)).
+		ToError()
+}
+
+func (c *Controller) changeEmailHandler(rw http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	var reqDTO changeEmailRequest
@@ -20,18 +29,18 @@ func (c *controller) changeEmailHandler(rw http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	IDUser, ok := c.authHelper.ParseIDUser(req)
-	if !ok {
-		rw.WriteHeader(http.StatusForbidden)
-		return
-	}
-
-	dto, err := authusecase.NewChangeEmailRequest(IDUser, reqDTO.Email)
-	if err != nil {
+	if err := reqDTO.IsValid(); err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
+	IDUser, ok := c.authHelper.ParseIDUser(req)
+	if !ok {
+		c.httpHelper.HandleError(ctx, rw, exceptions.ErrForbidden)
+		return
+	}
+
+	dto := authusecase.NewChangeEmailRequest(IDUser, reqDTO.Email)
 	if err := c.authUsecase.ChangeEmail(ctx, dto); err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)
 		return

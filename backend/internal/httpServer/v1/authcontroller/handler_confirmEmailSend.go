@@ -4,23 +4,19 @@ import (
 	"net/http"
 
 	"backend/internal/domain/usecases/authusecase"
+	"backend/internal/exceptions"
 )
 
-func (c *controller) confirmEmailSendHandler(rw http.ResponseWriter, req *http.Request) {
+func (c *Controller) confirmEmailSendHandler(rw http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	IDUser, ok := c.authHelper.ParseIDUser(req)
 	if !ok {
-		rw.WriteHeader(http.StatusForbidden)
+		c.httpHelper.HandleError(ctx, rw, exceptions.ErrForbidden)
 		return
 	}
 
-	dto, err := authusecase.NewConfirmEmailSendRequest(IDUser)
-	if err != nil {
-		c.httpHelper.HandleError(ctx, rw, err)
-		return
-	}
-
+	dto := authusecase.NewConfirmEmailSendRequest(IDUser)
 	if err := c.authUsecase.ConfirmEmailSend(ctx, dto); err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)
 		return

@@ -8,7 +8,7 @@ type refreshResponse struct {
 	AccessToken string `json:"access_token"`
 }
 
-func (c *controller) refreshHandler(rw http.ResponseWriter, r *http.Request) {
+func (c *Controller) refreshHandler(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	refresh, err := c.authHelper.GetRefreshCookie(r)

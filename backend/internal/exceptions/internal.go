@@ -2,7 +2,6 @@ package exceptions
 
 import "fmt"
 
-// InternalError - ошибка, которая возникает на низком уровне и которая не была коректно обработана
 type InternalError struct {
 	msg string
 	err error

@@ -9,13 +9,13 @@ const (
 	RefreshNameCookie = "Refresh-Cookie"
 )
 
-func (h *helper) SetRefreshCookie(rw http.ResponseWriter, refresh string) error {
+func (h *AuthHelper) SetRefreshCookie(rw http.ResponseWriter, refresh string) error {
 	http.SetCookie(rw, h.newCookie(RefreshNameCookie, refresh, h.ttlRefresh))
 
 	return nil
 }
 
-func (h *helper) GetRefreshCookie(r *http.Request) (string, error) {
+func (h *AuthHelper) GetRefreshCookie(r *http.Request) (string, error) {
 	cookie, err := r.Cookie(RefreshNameCookie)
 	if err != nil {
 		return "", err
@@ -24,11 +24,11 @@ func (h *helper) GetRefreshCookie(r *http.Request) (string, error) {
 	return cookie.Value, nil
 }
 
-func (h *helper) ClearRefreshCookie(rw http.ResponseWriter) {
+func (h *AuthHelper) ClearRefreshCookie(rw http.ResponseWriter) {
 	http.SetCookie(rw, h.newCookie(RefreshNameCookie, "", 0))
 }
 
-func (h *helper) newCookie(name, value string, ttl time.Duration) *http.Cookie {
+func (h *AuthHelper) newCookie(name, value string, ttl time.Duration) *http.Cookie {
 	return &http.Cookie{
 		Name:  name,
 		Value: value,

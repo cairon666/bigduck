@@ -53,7 +53,7 @@ type Config struct {
 	//	PartitionID   string
 	//}
 	Redis struct {
-		URL string `env:"REDIS_URL"        envDefault:"redis://admin:admin@0.0.0.0:6379/0"`
+		URL string `env:"REDIS_URL" envDefault:"redis://admin:admin@0.0.0.0:6379/0"`
 	}
 	Trace struct {
 		TraceGRPCAddr  string `env:"TRACE_GRPC_ADDR"       envDefault:"0.0.0.0:4317"`

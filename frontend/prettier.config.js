@@ -1,8 +1,8 @@
 const config = {
-    singleQuote: true,
+    singleQuote: false,
     trailingComma: 'all',
     quoteProps: 'consistent',
-    jsxSingleQuote: true,
+    jsxSingleQuote: false,
     bracketSpacing: true,
     arrowParens: 'always',
     endOfLine: 'lf',

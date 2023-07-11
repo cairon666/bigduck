@@ -1,40 +1,38 @@
 package models
 
-import (
-	"backend/internal/exceptions"
-)
+import "errors"
 
 type Gender string
 
 var (
+	ErrUnknownGender = errors.New("unknown gender")
+
 	GenderMale   Gender = "male"
 	GenderFemale Gender = "female"
 )
 
-func MustParseGenderPoint(g *string) *Gender {
-	if g == nil {
-		return nil
-	}
-
-	gender, _ := ParseGender(*g)
-
-	return &gender
-}
-
-func MustParseGender(g string) Gender {
-	gender, _ := ParseGender(g)
-	return gender
-}
-
-func ParseGender(g string) (Gender, error) {
-	switch Gender(g) {
-	case GenderMale:
+func ParseGender(gender string) (Gender, error) {
+	switch gender {
+	case "male":
 		return GenderMale, nil
-	case GenderFemale:
+	case "female":
 		return GenderFemale, nil
-	default:
-		return "", exceptions.ErrBadFormatGender
 	}
+
+	return "", ErrUnknownGender
+}
+
+func ParsePointGender(gender *string) (Gender, error) {
+	if gender == nil {
+		return "", ErrUnknownGender
+	}
+
+	return ParseGender(*gender)
+}
+
+func MustParsePointGender(gender *string) *Gender {
+	out, _ := ParsePointGender(gender)
+	return &out
 }
 
 func (g Gender) ToString() string {

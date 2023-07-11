@@ -1,0 +1,83 @@
+.wrapper {
+    @apply border-l border-r border-b;
+
+    // color for texts
+    .button,
+    .title,
+    .rightIcon {
+        @apply text-gray-600;
+    }
+
+    &.active {
+        // color for texts is active
+        .button,
+        .title,
+        .rightIcon {
+            @apply text-gray-1000;
+        }
+    }
+}
+
+// Default theme
+.wrapper.default {
+    .button {
+        @apply hover:bg-gray-80 focus:ring-2 focus:ring-gray-200;
+    }
+
+    &.active {
+        // active button
+        .button {
+            @apply border-b bg-gray-80;
+        }
+    }
+
+    // first item(+button) round
+    &:first-child {
+        @apply rounded-t-xl border-t;
+
+        .button {
+            @apply rounded-t-xl;
+        }
+    }
+
+    // padding for content and button
+    .content,
+    .button {
+        @apply p-4;
+    }
+}
+
+// Flush theme
+.flush {
+    @apply border-none;
+
+    .button {
+        @apply border-b;
+    }
+
+    // padding for content and button
+    .content,
+    .button {
+        @apply py-4 px-1;
+    }
+}
+
+.rightIcon {
+    @apply h-6 w-6;
+}
+
+.title {
+    @apply font-medium;
+}
+
+.button {
+    @apply flex w-full items-center justify-between;
+}
+
+.header {
+    @apply flex items-center gap-2;
+}
+
+.content {
+    @apply text-gray-600;
+}

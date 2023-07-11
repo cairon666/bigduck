@@ -1,50 +1,40 @@
 package userstorage
 
 import (
-	"time"
-
 	"backend/internal/domain/models"
+	"backend/pkg/logger"
+	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type UserStorage struct {
+type Storage struct {
 	client *pgxpool.Pool
+	log    logger.Logger
+	qb     squirrel.StatementBuilderType
 }
 
-func NewUserStorage(client *pgxpool.Pool) *UserStorage {
-	return &UserStorage{
+func NewUserStorage(client *pgxpool.Pool, log logger.Logger) *Storage {
+	return &Storage{
 		client: client,
+		log:    log,
+		qb:     squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar),
 	}
 }
 
-type DBUser struct {
-	ID             string
-	Email          string
-	EmailIsConfirm bool
-	PasswordHash   string
-	Salt           string
-	FirstName      string
-	SecondName     string
-	UserName       string
-	DateOfBirth    *time.Time
-	AvatarURL      *string
-	Gender         *string
-	CreateAt       time.Time
-}
+func fillRolesFromArray(roles []*int) models.Roles {
+	returnRoles := make(models.Roles, 0, len(roles))
 
-func (dbu *DBUser) ToModelUser() models.User {
-	return models.User{
-		ID:             dbu.ID,
-		Email:          dbu.Email,
-		EmailIsConfirm: dbu.EmailIsConfirm,
-		PasswordHash:   dbu.PasswordHash,
-		Salt:           dbu.Salt,
-		FirstName:      dbu.FirstName,
-		SecondName:     dbu.SecondName,
-		UserName:       dbu.UserName,
-		DateOfBirth:    dbu.DateOfBirth,
-		AvatarURL:      dbu.AvatarURL,
-		Gender:         models.MustParseGenderPoint(dbu.Gender),
-		CreateAt:       dbu.CreateAt,
+	if len(roles) != 0 {
+		for _, roleID := range roles {
+			// roleID can be null, because we use aggregate function array_agg
+			// see for more: https://postgrespro.ru/docs/postgresql/9.6/functions-aggregate
+			if roleID == nil {
+				continue
+			}
+
+			returnRoles = append(returnRoles, models.RoleID(*roleID))
+		}
 	}
+
+	return returnRoles
 }

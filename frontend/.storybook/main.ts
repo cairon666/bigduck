@@ -8,9 +8,9 @@ const config: StorybookConfig = {
     framework: '@storybook/react-vite',
     stories: [
         {
-            directory: '../src/components/ui/**',
+            directory: '../src/shared/UIKit/**',
             files: '*.stories.@(js|jsx|ts|tsx)',
-            titlePrefix: 'UI components',
+            titlePrefix: 'UIKit',
         },
     ],
 

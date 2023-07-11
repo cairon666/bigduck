@@ -3,13 +3,14 @@ package userusecase
 import (
 	"context"
 
-	"backend/internal/domain/models"
+	"backend/internal/domain/aggregate"
+	"github.com/google/uuid"
 	"go.uber.org/dig"
 )
 
 //go:generate mockery --name UserService
 type UserService interface {
-	ReadByID(ctx context.Context, id string) (models.User, error)
+	ReadOneUserProfileRolesByID(ctx context.Context, id uuid.UUID) (aggregate.UserProfileRoles, error)
 }
 
 type Usecase struct {

@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"backend/internal/domain/models"
-	validate2 "backend/internal/domain/validate"
 	"backend/internal/exceptions"
 	"backend/pkg/tracing"
 )
@@ -19,15 +18,8 @@ type RecoverPasswordConfirmRequest struct {
 	Code  string
 }
 
-func NewRecoverPasswordConfirmRequest(email, code string) (RecoverPasswordConfirmRequest, error) {
-	if err := validate2.Test(
-		validate2.EmailSimple(email),
-		validate2.RecoverPasswordCodeSimple(code),
-	); err != nil {
-		return RecoverPasswordConfirmRequest{}, err
-	}
-
-	return RecoverPasswordConfirmRequest{Email: email, Code: code}, nil
+func NewRecoverPasswordConfirmRequest(email, code string) RecoverPasswordConfirmRequest {
+	return RecoverPasswordConfirmRequest{Email: email, Code: code}
 }
 
 func (u *Usecase) RecoverPasswordConfirm(ctx context.Context, req RecoverPasswordConfirmRequest) error {

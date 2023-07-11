@@ -1,8 +1,10 @@
 package logger
 
 import (
+	"context"
 	"time"
 
+	"backend/pkg/middleware"
 	"go.uber.org/zap"
 )
 
@@ -50,4 +52,8 @@ func String(key string, val string) Field {
 
 func Time(key string, val time.Time) Field {
 	return zap.Time(key, val)
+}
+
+func RequestIDFromContext(ctx context.Context) Field {
+	return zap.String(middleware.RequestIDHeader, middleware.GetReqID(ctx))
 }

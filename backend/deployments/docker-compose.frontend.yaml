@@ -1,0 +1,163 @@
+version: "3"
+
+services:
+  proxy:
+    container_name: proxy
+    image: nginx:stable
+    restart: unless-stopped
+    logging:
+      driver: none
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - 3000:80
+    networks:
+      - backend
+    volumes:
+      - ./nginx.frontend.dev.conf:/etc/nginx/nginx.conf
+  backend:
+    container_name: backend
+    build:
+      context: ..
+      dockerfile: ../Dockerfile
+    env_file:
+      - .frontend.env
+    depends_on:
+      - redis
+      - pgbouncer
+      - otel_collector
+    restart: unless-stopped
+    networks:
+      backend:
+  frontend:
+    container_name: frontend
+    image: node:19-alpine
+    restart: unless-stopped
+    volumes:
+      - ../../frontend:/app
+      - frontend_node_modules:/app/node_modules
+    command: sh -c "cd /app; apk add --no-cache make; yarn install; make run/dev"
+    networks:
+      - backend
+# ------------------------------------       DATABASES        ------------------------------------
+#  nats:
+#    container_name: nats
+#    image: nats
+#    ports:
+#      - "8222:8222"
+#      - "4222:4222"
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    restart: always
+    environment:
+      XPACK_MONITORING_ENABLED: "false"
+    volumes:
+      - redis_data:/data
+      - ../configs/redis/redis.conf:/etc/redis/redis.conf
+    command: [ "redis-server", "/etc/redis/redis.conf" ]
+    networks:
+      - backend
+  pgbouncer:
+    container_name: pgbouncer
+    image: edoburu/pgbouncer
+    depends_on:
+      - postgres
+    restart: always
+    env_file:
+      - ../configs/pgbouncer/pgbouncer.env
+    ports:
+      - "6432:6432"
+    volumes:
+      - ../configs/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ../configs/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
+    networks:
+      - backend
+  postgres:
+    container_name: postgres
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    restart: always
+    env_file:
+      - ../configs/postgres/postgresql.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  # ------------------------------------       MERTRICS        ------------------------------------
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - backend
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one
+    ports:
+      #      - "6831:6831/udp"
+      #      - "6832:6832/udp"
+      #      - "5778:5778"
+      - "16686:16686"   # http web client
+    #      - "4317:4317"
+    #      - "4318:4318"
+    #      - "14250:14250"
+    #      - "14268:14268"
+    #      - "14269:14269"
+    #      - "9411:9411"
+    env_file:
+      - ../configs/jaeger/jaeger.env
+    networks:
+      - backend
+    volumes:
+      - .configs/jaeger/jaeger-ui.json:/etc/jaeger/jaeger-ui.json
+    command: --query.ui-config /etc/jaeger/jaeger-ui.json
+  otel_collector:
+    container_name: otel_collector
+    image: otel/opentelemetry-collector-contrib
+    volumes:
+      - ../configs/otelcol/otel-collector-config.yml:/etc/otelcol/otel-collector-config.yml
+    command: --config /etc/otelcol/otel-collector-config.yml
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+      - "12345:12345" # otlp/spanmetrics grpc receiver
+    depends_on:
+      - jaeger
+    networks:
+      - backend
+#  grafana:
+#    container_name: grafana
+#    image: grafana/grafana:latest
+#    ports:
+#      - "3333:3000"   # http web client
+#    volumes:
+#      - ../configs/grafana/dashboards:/etc/dashboards
+#      - ../configs/grafana/grafana.ini:/etc/grafana/grafana.ini
+#      - ../configs/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+#      - grafana-storage:/var/lib/grafana
+#    env_file:
+#      - ../configs/grafana/grafana.env
+#    networks:
+#      - backend
+#    depends_on:
+#      - prometheus
+
+
+volumes:
+  postgres_data: { }
+  redis_data: { }
+  grafana-storage: { }
+  frontend_node_modules: {}
+
+networks:
+  elk:
+  backend:
+
+

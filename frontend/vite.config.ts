@@ -1,44 +1,47 @@
-import * as dns from 'dns';
-import * as path from 'path';
+import * as dns from "dns";
+import * as path from "path";
 
-import image from '@rollup/plugin-image';
-import legacy from '@vitejs/plugin-legacy';
-import react from '@vitejs/plugin-react-swc';
-import analyze from 'rollup-plugin-analyzer';
-import visualizer from 'rollup-plugin-visualizer';
-import { defineConfig } from 'vite';
+import image from "@rollup/plugin-image";
+import legacy from "@vitejs/plugin-legacy";
+import react from "@vitejs/plugin-react-swc";
+import analyze from "rollup-plugin-analyzer";
+import visualizer from "rollup-plugin-visualizer";
+import { defineConfig } from "vite";
 
-dns.setDefaultResultOrder('verbatim');
+dns.setDefaultResultOrder("verbatim");
 
-const src = path.join(process.cwd(), 'src');
-const build = path.join(process.cwd(), 'build');
+const src = path.join(process.cwd(), "src");
+const build = path.join(process.cwd(), "build");
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
-    base: '/',
+    base: ".",
+    envDir: path.resolve(__dirname),
+    publicDir: path.resolve(__dirname, "public"),
     plugins: [
         react(),
         visualizer({
             emitFile: true,
-            filename: 'stats.html',
+            filename: "stats.html",
         }),
         legacy({
-            targets: ['defaults', 'not IE 11'],
+            targets: ["defaults", "not IE 11"],
         }),
         {
             ...image(),
-            enforce: 'pre',
+            enforce: "pre",
         },
     ],
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, './src'),
+            "@": path.resolve(__dirname, "src"),
+            "#root": path.resolve(__dirname),
         },
     },
     root: src,
-    appType: 'spa',
+    appType: "spa",
     server: {
-        host: '0.0.0.0',
+        host: "0.0.0.0",
         port: 8080,
         // https: {
         //     key: fs.readFileSync(path.join(process.cwd(), '.config', 'cert', 'example.com+5-key.pem')),
@@ -53,7 +56,7 @@ export default defineConfig(() => ({
         emptyOutDir: true,
     },
     esbuild: {
-        jsxFactory: 'h',
-        jsxFragment: 'Fragment',
+        jsxFactory: "h",
+        jsxFragment: "Fragment",
     },
 }));

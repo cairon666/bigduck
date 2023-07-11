@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"backend/internal/exceptions"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -39,15 +38,6 @@ func generateSalt() (string, error) {
 	}
 
 	return base64.StdEncoding.EncodeToString(salt), err
-}
-
-func generateUUID() (string, error) {
-	genUUID, err := uuid.NewUUID()
-	if err != nil {
-		return "", err
-	}
-
-	return genUUID.String(), nil
 }
 
 func generateHashPassword(password string) (string, string, error) {

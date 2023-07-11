@@ -92,5 +92,6 @@
       "**/tailwindcss",
       "**/@tailwindcss/**"
     ]
-  }
+  },
+  "private": true
 }

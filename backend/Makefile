@@ -23,10 +23,10 @@ confirm:
 no-dirty:
 	git diff --exit-code
 
-## golangci-lint-check: check golangci-lint and install if not exist
-.PHONY: golangci-lint-check
-golangci-lint-check:
-	/bin/bash ./scripts/golangci-lint-check.bash
+## dependency-install: install dependency for project(run script into ./scripts/dependency-install)
+.PHONY: dependency-install
+dependency-install:
+	/bin/sh ./scripts/dependency-install
 
 # ==================================================================================== #
 # QUALITY CONTROL
@@ -41,7 +41,7 @@ tidy:
 
 ## audit: run quality control checks
 .PHONY: audit
-audit: golangci-lint-check
+audit: dependency-install
 	go mod verify
 	golangci-lint run ./...
 	CC=gcc CGO_ENABLED=1 go test -race -buildvcs -vet=off ./...
@@ -94,11 +94,3 @@ push: no-dirty
 #	GOOS=linux GOARCH=amd64 go build -ldflags='-s' -o=/tmp/bin/linux_amd64/${BINARY_NAME} ${MAIN_PACKAGE_PATH}
 #	upx -5 /tmp/bin/linux_amd64/${BINARY_NAME}
 #    # Include additional deployment steps here...
-
-
-generate:
-	go generate ./...
-
-#dependence:
-#	go get .; \
-#	go install github.com/vektra/mockery/v2@v2.20.0

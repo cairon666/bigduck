@@ -6,10 +6,11 @@ import (
 	"testing"
 	"time"
 
+	"backend/internal/domain/models"
 	"github.com/google/uuid"
 )
 
-func ForTestingNewHelper(t *testing.T) *helper {
+func ForTestingNewHelper(t *testing.T) *AuthHelper {
 	t.Helper()
 
 	return NewAuthHelper(Props{
@@ -71,7 +72,7 @@ func TestMiddlewareWithClaims(t *testing.T) {
 	t.Parallel()
 
 	helper := ForTestingNewHelper(t)
-	id := uuid.New().String()
+	id := uuid.New()
 	next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		claims := GetClaims(r.Context())
 		if claims == nil {
@@ -84,7 +85,7 @@ func TestMiddlewareWithClaims(t *testing.T) {
 	})
 	handleToTest := helper.AuthorizationMiddleware(next)
 
-	access, _, err := helper.NewTokens(id)
+	access, _, err := helper.NewTokens(id, []models.RoleID{})
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -4,28 +4,21 @@ import (
 	"context"
 
 	"backend/internal/domain/models"
-	"backend/internal/domain/validate"
 	"backend/internal/exceptions"
 	"backend/pkg/tracing"
+	"github.com/google/uuid"
 )
 
 type ConfirmEmailConfirmRequest struct {
-	IDUser string
+	IDUser uuid.UUID
 	Code   string
 }
 
-func NewConfirmEmailConfirmRequest(idUser, code string) (ConfirmEmailConfirmRequest, error) {
-	if err := validate.Test(
-		validate.UUIDSimple(idUser),
-		validate.ConfirmEmailCodeSimple(code),
-	); err != nil {
-		return ConfirmEmailConfirmRequest{}, err
-	}
-
+func NewConfirmEmailConfirmRequest(idUser uuid.UUID, code string) ConfirmEmailConfirmRequest {
 	return ConfirmEmailConfirmRequest{
 		IDUser: idUser,
 		Code:   code,
-	}, nil
+	}
 }
 
 func (u *Usecase) ConfirmEmailConfirm(ctx context.Context, dto ConfirmEmailConfirmRequest) error {

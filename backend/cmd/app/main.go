@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,15 +14,20 @@ import (
 	"backend/internal/config"
 	httpServer "backend/internal/httpServer/v1"
 	"backend/pkg/logger"
-	"backend/pkg/tracing"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/nats-io/nats.go"
+	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/pressly/goose/v3"
 	"github.com/redis/go-redis/v9"
-	"go.opentelemetry.io/otel/sdk/resource"
 	"go.uber.org/dig"
 )
 
+var (
+	flagDir = flag.String("dir", "./migrations/sql", "Directory with migration files. Default is ./migrations/sql")
+)
+
 func main() {
+	flag.Parse()
+
 	StartServer()
 }
 
@@ -37,38 +43,28 @@ func StartServer() {
 	RegisterUsecases(c)
 	RegisterServer(c)
 
+	InvokeMigrations(c)
 	InvokeTracing(c)
 	InvokeServer(c)
 }
 
-func InvokeTracing(c *dig.Container) {
-	err := c.Provide(func(conf *config.Config) *resource.Resource {
-		return tracing.NewResource(tracing.Config{
-			ServiceID:      conf.Trace.ServiceID,
-			ServiceName:    conf.Trace.ServiceName,
-			ServiceVersion: conf.Trace.ServiceVersion,
-			EnvName:        conf.Trace.EnvName,
-		})
-	})
-	if err != nil {
-		panic(fmt.Errorf("cant provide *resource.Resource: %w", err))
-	}
+func InvokeMigrations(c *dig.Container) {
+	panicIfError(c.Invoke(func(conf *config.Config) error {
+		db, err := goose.OpenDBWithDriver("pgx", conf.Postgres)
+		if err != nil {
+			return fmt.Errorf("goose: failed to open DB: %w", err)
+		}
 
-	err = c.Invoke(func(conf *config.Config, rsr *resource.Resource) error {
-		_, err := tracing.NewTracer(conf.Trace.TraceGRPCAddr, rsr)
-		return err
-	})
-	if err != nil {
-		panic(fmt.Errorf("cant create NewTracer: %w", err))
-	}
+		if err := goose.Run("up", db, *flagDir); err != nil {
+			return fmt.Errorf("goose up: %w", err)
+		}
 
-	err = c.Invoke(func(conf *config.Config, rsr *resource.Resource) error {
-		_, err := tracing.NewMetric(conf.Trace.MetricGRPCAddr, rsr)
-		return err
-	})
-	if err != nil {
-		panic(fmt.Errorf("cant create NewMetric: %w", err))
-	}
+		if err := db.Close(); err != nil {
+			return fmt.Errorf("goose: failed to close DB: %w", err)
+		}
+
+		return nil
+	}))
 }
 
 func InvokeServer(c *dig.Container) {
@@ -76,7 +72,6 @@ func InvokeServer(c *dig.Container) {
 		server *httpServer.Server,
 		log logger.Logger,
 		pgxPool *pgxpool.Pool,
-		natsConn *nats.Conn,
 		rdb *redis.Client,
 	) {
 		errC := make(chan error, 1)
@@ -97,7 +92,6 @@ func InvokeServer(c *dig.Container) {
 				_ = log.Sync()
 
 				pgxPool.Close()
-				natsConn.Close()
 				rdb.Close()
 				stop()
 				cancel()

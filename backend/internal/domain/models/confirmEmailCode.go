@@ -1,7 +1,9 @@
 package models
 
+import "github.com/google/uuid"
+
 type ConfirmEmailCode struct {
-	IDUser string
+	IDUser uuid.UUID
 	Code   string
 }
 
@@ -9,11 +11,11 @@ func (m *ConfirmEmailCode) Key() string {
 	return ConfirmEmailCodeKey(m.IDUser)
 }
 
-func ConfirmEmailCodeKey(idUser string) string {
-	return "confirm_email_code" + idUser
+func ConfirmEmailCodeKey(idUser uuid.UUID) string {
+	return "confirm_email_code" + idUser.String()
 }
 
-func NewConfirmEmailCode(code, idUser string) *ConfirmEmailCode {
+func NewConfirmEmailCode(code string, idUser uuid.UUID) *ConfirmEmailCode {
 	return &ConfirmEmailCode{
 		IDUser: idUser,
 		Code:   code,

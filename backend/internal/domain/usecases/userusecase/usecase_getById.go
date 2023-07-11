@@ -5,58 +5,54 @@ import (
 	"time"
 
 	"backend/internal/domain/models"
-	"backend/internal/domain/validate"
 	"backend/pkg/tracing"
+	"github.com/google/uuid"
 )
 
 type GetByIDRequest struct {
-	IDUser string
+	IDUser uuid.UUID
 }
 
-func NewGetByIDRequest(idUser string) (GetByIDRequest, error) {
-	if err := validate.Test(
-		validate.UUIDSimple(idUser),
-	); err != nil {
-		return GetByIDRequest{}, err
-	}
-
+func NewGetByIDRequest(idUser uuid.UUID) GetByIDRequest {
 	return GetByIDRequest{
 		IDUser: idUser,
-	}, nil
+	}
 }
 
 type GetByIDResponse struct {
-	ID             string
-	Email          string
-	EmailIsConfirm bool
-	FirstName      string
-	SecondName     string
-	UserName       string
-	DateOfBirth    *time.Time
-	AvatarURL      *string
-	Gender         *models.Gender
-	CreateAt       time.Time
+	ID          uuid.UUID
+	Email       string
+	IsConfirm   bool
+	UserName    string
+	FirstName   string
+	SecondName  string
+	Gender      *models.Gender
+	DateOfBirth *time.Time
+	AvatarURL   *string
+	CreateAt    time.Time
+	Roles       []models.RoleID
 }
 
 func (u *Usecase) GetByID(ctx context.Context, req GetByIDRequest) (GetByIDResponse, error) {
-	ctx, span := tracing.Start(ctx, "userusecase.GetById")
+	ctx, span := tracing.Start(ctx, "userusecase.GetByID")
 	defer span.End()
 
-	user, err := u.userService.ReadByID(ctx, req.IDUser)
+	user, err := u.userService.ReadOneUserProfileRolesByID(ctx, req.IDUser)
 	if err != nil {
 		return GetByIDResponse{}, err
 	}
 
 	return GetByIDResponse{
-		ID:             user.ID,
-		Email:          user.Email,
-		EmailIsConfirm: user.EmailIsConfirm,
-		FirstName:      user.FirstName,
-		SecondName:     user.SecondName,
-		UserName:       user.UserName,
-		DateOfBirth:    user.DateOfBirth,
-		AvatarURL:      user.AvatarURL,
-		Gender:         user.Gender,
-		CreateAt:       user.CreateAt,
+		ID:          user.User.ID,
+		Email:       user.User.Email,
+		IsConfirm:   user.User.IsConfirm,
+		UserName:    user.User.UserName,
+		FirstName:   user.Profile.FirstName,
+		SecondName:  user.Profile.SecondName,
+		DateOfBirth: user.Profile.DateOfBirth,
+		AvatarURL:   user.Profile.AvatarURL,
+		Gender:      user.Profile.Gender,
+		CreateAt:    user.Profile.CreateAt,
+		Roles:       user.Roles,
 	}, nil
 }

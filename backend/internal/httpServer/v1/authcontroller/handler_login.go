@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"backend/internal/domain/usecases/authusecase"
+	"backend/internal/exceptions/validate"
+	"github.com/google/uuid"
 )
 
 type loginRequest struct {
@@ -12,12 +14,19 @@ type loginRequest struct {
 	Password string `json:"password"`
 }
 
-type loginResponse struct {
-	IDUser      string `json:"id_user"`
-	AccessToken string `json:"access_token"`
+func (req *loginRequest) IsValid() error {
+	return validate.NewValidateError().
+		AddField("email", validate.TestEmail(req.Email)).
+		AddField("password", validate.TestPassword(req.Password)).
+		ToError()
 }
 
-func (c *controller) loginHandler(rw http.ResponseWriter, req *http.Request) {
+type loginResponse struct {
+	IDUser      uuid.UUID `json:"id_user"`
+	AccessToken string    `json:"access_token"`
+}
+
+func (c *Controller) loginHandler(rw http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	var reqDTO loginRequest
@@ -26,11 +35,12 @@ func (c *controller) loginHandler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	dto, err := authusecase.NewLoginRequest(reqDTO.Email, reqDTO.Password)
-	if err != nil {
+	if err := reqDTO.IsValid(); err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
+
+	dto := authusecase.NewLoginRequest(reqDTO.Email, reqDTO.Password)
 
 	resp, err := c.authUsecase.Login(ctx, dto)
 	if err != nil {
@@ -38,7 +48,7 @@ func (c *controller) loginHandler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	access, refresh, err := c.authHelper.NewTokens(resp.IDUser)
+	access, refresh, err := c.authHelper.NewTokens(resp.IDUser, resp.Roles)
 	if err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)
 		return

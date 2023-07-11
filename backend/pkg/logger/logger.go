@@ -25,16 +25,21 @@ type logger struct {
 // NewDev - default console logger for dev
 func NewDev() (Logger, error) {
 	cfgFile := zapcore.EncoderConfig{
-		MessageKey:   "message",
-		LevelKey:     "level",
-		EncodeLevel:  zapcore.CapitalColorLevelEncoder,
-		TimeKey:      "time",
-		EncodeTime:   zapcore.ISO8601TimeEncoder,
-		CallerKey:    "caller",
-		EncodeCaller: zapcore.FullCallerEncoder,
+		MessageKey:    "message",
+		LevelKey:      "level",
+		EncodeLevel:   zapcore.CapitalColorLevelEncoder,
+		TimeKey:       "time",
+		EncodeTime:    zapcore.ISO8601TimeEncoder,
+		CallerKey:     "caller",
+		EncodeCaller:  zapcore.FullCallerEncoder,
+		StacktraceKey: "trace",
 	}
 	core := zapcore.NewCore(zapcore.NewConsoleEncoder(cfgFile), zapcore.Lock(os.Stdout), zapcore.DebugLevel)
-	log := zap.New(core)
+	log := zap.New(
+		core,
+		zap.Development(),
+		zap.AddStacktrace(zap.ErrorLevel),
+	)
 
 	return &logger{
 		log: log,

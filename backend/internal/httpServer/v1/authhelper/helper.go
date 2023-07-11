@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type helper struct {
+type AuthHelper struct {
 	issuer     string
 	private    []byte
 	ttlAccess  time.Duration
@@ -18,8 +18,8 @@ type Props struct {
 	TTLRefresh time.Duration
 }
 
-func NewAuthHelper(props Props) *helper {
-	return &helper{
+func NewAuthHelper(props Props) *AuthHelper {
+	return &AuthHelper{
 		issuer:     props.Issuer,
 		private:    props.Private,
 		ttlAccess:  props.TTLAccess,

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"backend/internal/domain/usecases/authusecase"
+	"backend/internal/exceptions/validate"
 )
 
 type registerRequest struct {
@@ -19,7 +20,20 @@ type registerRequest struct {
 	AvatarURL   *string    `json:"avatar_url,omitempty"`
 }
 
-func (c *controller) registerHandler(rw http.ResponseWriter, r *http.Request) {
+func (req *registerRequest) IsValid() error {
+	return validate.NewValidateError().
+		AddField("email", validate.TestEmail(req.Email)).
+		AddField("password", validate.TestPassword(req.Password)).
+		AddField("first_name", validate.TestName(req.FirstName)).
+		AddField("second_name", validate.TestName(req.SecondName)).
+		AddField("user_name", validate.TestUsername(req.UserName)).
+		AddField("gender", validate.TestPointer(req.Gender, validate.TestGender)).
+		AddField("date_of_birth", validate.TestPointer(req.DateOfBirth, validate.TestDayOfBirth)).
+		AddField("avatar_url", validate.TestPointer(req.AvatarURL, validate.TestURL)).
+		ToError()
+}
+
+func (c *Controller) registerHandler(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var reqDTO registerRequest
@@ -28,7 +42,12 @@ func (c *controller) registerHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dto, err := authusecase.NewRegisterRequest(
+	if err := reqDTO.IsValid(); err != nil {
+		c.httpHelper.HandleError(ctx, rw, err)
+		return
+	}
+
+	dto := authusecase.NewRegisterRequest(
 		reqDTO.Email,
 		reqDTO.Password,
 		reqDTO.FirstName,
@@ -38,10 +57,6 @@ func (c *controller) registerHandler(rw http.ResponseWriter, r *http.Request) {
 		reqDTO.DateOfBirth,
 		reqDTO.AvatarURL,
 	)
-	if err != nil {
-		c.httpHelper.HandleError(ctx, rw, err)
-		return
-	}
 
 	if err := c.authUsecase.Register(ctx, dto); err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)

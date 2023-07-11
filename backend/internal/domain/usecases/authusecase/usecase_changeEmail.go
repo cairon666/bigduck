@@ -3,34 +3,27 @@ package authusecase
 import (
 	"context"
 
-	"backend/internal/domain/validate"
 	"backend/pkg/tracing"
+	"github.com/google/uuid"
 )
 
 type ChangeEmailRequest struct {
-	IDUser string
+	IDUser uuid.UUID
 	Email  string
 }
 
-func NewChangeEmailRequest(idUser, email string) (ChangeEmailRequest, error) {
-	if err := validate.Test(
-		validate.UUIDSimple(idUser),
-		validate.EmailSimple(email),
-	); err != nil {
-		return ChangeEmailRequest{}, err
-	}
-
+func NewChangeEmailRequest(idUser uuid.UUID, email string) ChangeEmailRequest {
 	return ChangeEmailRequest{
 		IDUser: idUser,
 		Email:  email,
-	}, nil
+	}
 }
 
 func (u *Usecase) ChangeEmail(ctx context.Context, dto ChangeEmailRequest) error {
 	ctx, span := tracing.Start(ctx, "authusecase.ChangeEmail")
 	defer span.End()
 
-	_, err := u.userService.ReadByID(ctx, dto.IDUser)
+	_, err := u.userService.ReadOneUserByID(ctx, dto.IDUser)
 	if err != nil {
 		return err
 	}

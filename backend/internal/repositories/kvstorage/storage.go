@@ -6,17 +6,17 @@ import (
 	"errors"
 	"time"
 
-	"backend/internal/domain/models"
 	"backend/internal/exceptions"
+	"backend/pkg/keyer"
 	"backend/pkg/tracing"
 	"github.com/redis/go-redis/v9"
 )
 
-type Store[T models.Keyer] struct {
+type Store[T keyer.Keyer] struct {
 	rdb *redis.Client
 }
 
-func NewKVStorage[T models.Keyer](rdb *redis.Client) *Store[T] {
+func NewKVStorage[T keyer.Keyer](rdb *redis.Client) *Store[T] {
 	return &Store[T]{rdb: rdb}
 }
 
@@ -26,17 +26,10 @@ func (r Store[T]) Set(ctx context.Context, k T, expiration time.Duration) error 
 
 	b, err := json.Marshal(k)
 	if err != nil {
-		err = exceptions.NewInternalErr("kvstorage.Set.Marshal", err)
-		tracing.Error(ctx, err)
-
 		return err
 	}
 
-	err = r.rdb.Set(ctx, k.Key(), b, expiration).Err()
-	if err != nil {
-		err = exceptions.NewInternalErr("kvstorage.Set.Set", err)
-		tracing.Error(ctx, err)
-
+	if err = r.rdb.Set(ctx, k.Key(), b, expiration).Err(); err != nil {
 		return err
 	}
 
@@ -55,17 +48,10 @@ func (r Store[T]) Get(ctx context.Context, key string) (T, error) {
 			return t, exceptions.ErrNotFound
 		}
 
-		err = exceptions.NewInternalErr("kvstorage.Get.Get", err)
-		tracing.Error(ctx, err)
-
 		return t, err
 	}
 
-	err = json.Unmarshal(b, &t)
-	if err != nil {
-		err = exceptions.NewInternalErr("kvstorage.Get.Unmarshal", err)
-		tracing.Error(ctx, err)
-
+	if err = json.Unmarshal(b, &t); err != nil {
 		return t, err
 	}
 

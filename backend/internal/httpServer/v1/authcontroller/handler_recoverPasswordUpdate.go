@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"backend/internal/domain/usecases/authusecase"
+	"backend/internal/exceptions/validate"
 )
 
 type recoverPasswordUpdateRequest struct {
@@ -12,20 +13,28 @@ type recoverPasswordUpdateRequest struct {
 	Password string `json:"password"`
 }
 
-func (c *controller) recoverPasswordUpdate(w http.ResponseWriter, r *http.Request) {
+func (req *recoverPasswordUpdateRequest) IsValid() error {
+	return validate.NewValidateError().
+		AddField("email", validate.TestEmail(req.Email)).
+		AddField("password", validate.TestPassword(req.Password)).
+		ToError()
+}
+
+func (c *Controller) recoverPasswordUpdate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	var req recoverPasswordUpdateRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	var reqDTO recoverPasswordUpdateRequest
+	if err := json.NewDecoder(r.Body).Decode(&reqDTO); err != nil {
 		c.httpHelper.HandleError(ctx, w, err)
 		return
 	}
 
-	dto, err := authusecase.NewRecoverPasswordUpdateRequest(req.Email, req.Password)
-	if err != nil {
+	if err := reqDTO.IsValid(); err != nil {
 		c.httpHelper.HandleError(ctx, w, err)
 		return
 	}
+
+	dto := authusecase.NewRecoverPasswordUpdateRequest(reqDTO.Email, reqDTO.Password)
 
 	if err := c.authUsecase.RecoverPasswordUpdate(ctx, dto); err != nil {
 		c.httpHelper.HandleError(ctx, w, err)

@@ -10,7 +10,6 @@ linters:
     - decorder
     - depguard
     - dogsled
-    - dupl
     - dupword
     - durationcheck
     - errcheck
@@ -22,7 +21,6 @@ linters:
     - exportloopref
     - forbidigo
     - forcetypeassert
-    - funlen
     - gci
     - ginkgolinter
     - gocheckcompilerdirectives
@@ -44,7 +42,6 @@ linters:
     - grouper
     - importas
     - ineffassign
-    - interfacebloat
     - lll
     - loggercheck
     - maintidx
@@ -84,6 +81,9 @@ linters:
   # Enable presets.
   # https://golangci-lint.run/usage/linters
   disable:
+    - dupl
+    - interfacebloat
+    - funlen # TODO
     - ifshort # deprecated
     - nosnakecase # deprecated
     - deadcode # deprecated

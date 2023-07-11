@@ -4,6 +4,6 @@ import (
 	"net/http"
 )
 
-func (c *controller) logoutHandler(rw http.ResponseWriter, req *http.Request) {
+func (c *Controller) logoutHandler(rw http.ResponseWriter, req *http.Request) {
 	c.authHelper.ClearRefreshCookie(rw)
 }

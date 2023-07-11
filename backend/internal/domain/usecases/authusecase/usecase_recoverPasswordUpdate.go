@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	"backend/internal/domain/models"
-	validate2 "backend/internal/domain/validate"
 	"backend/internal/exceptions"
 	"backend/pkg/tracing"
 )
@@ -15,15 +14,8 @@ type RecoverPasswordUpdateRequest struct {
 	Password string
 }
 
-func NewRecoverPasswordUpdateRequest(email, password string) (RecoverPasswordUpdateRequest, error) {
-	if err := validate2.Test(
-		validate2.EmailSimple(email),
-		validate2.PasswordSimple(password),
-	); err != nil {
-		return RecoverPasswordUpdateRequest{}, err
-	}
-
-	return RecoverPasswordUpdateRequest{Email: email, Password: password}, nil
+func NewRecoverPasswordUpdateRequest(email, password string) RecoverPasswordUpdateRequest {
+	return RecoverPasswordUpdateRequest{Email: email, Password: password}
 }
 
 func (u *Usecase) RecoverPasswordUpdate(ctx context.Context, req RecoverPasswordUpdateRequest) error {
@@ -41,13 +33,13 @@ func (u *Usecase) RecoverPasswordUpdate(ctx context.Context, req RecoverPassword
 	}
 
 	// get password from db
-	credential, err := u.userService.ReadByID(ctx, data.ID)
+	userCredential, err := u.userService.ReadOneUserCredentialByID(ctx, data.ID)
 	if err != nil {
 		return err
 	}
 
 	// check what old password not equal new password
-	err = checkPasswordHash(req.Password, credential.Salt, credential.PasswordHash)
+	err = checkPasswordHash(req.Password, userCredential.Credential.Salt, userCredential.Credential.PasswordHash)
 	if !errors.Is(err, exceptions.ErrBadPassword) {
 		return exceptions.ErrNewPasswordEqualOldPassword
 	}

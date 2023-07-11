@@ -1,10 +1,12 @@
 package models
 
+import "github.com/google/uuid"
+
 type RecoverPassword struct {
-	Email     string `json:"email"`
-	ID        string `json:"id"`
-	IsConfirm bool   `json:"is_confirm"`
-	Code      string `json:"code"`
+	ID        uuid.UUID
+	Email     string
+	IsConfirm bool
+	Code      string
 }
 
 func (rp *RecoverPassword) Key() string {
@@ -15,13 +17,8 @@ func RecoverPasswordKey(email string) string {
 	return "recover_password:" + email
 }
 
-func NewRecoverPassword(
-	email string,
-	id string,
-	isConfirm bool,
-	code string,
-) *RecoverPassword {
-	return &RecoverPassword{
+func NewRecoverPassword(id uuid.UUID, email string, isConfirm bool, code string) RecoverPassword {
+	return RecoverPassword{
 		Email:     email,
 		ID:        id,
 		IsConfirm: isConfirm,

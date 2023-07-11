@@ -4,19 +4,25 @@ import (
 	"context"
 	"time"
 
+	"backend/internal/domain/aggregate"
 	"backend/internal/domain/models"
+	"github.com/google/uuid"
 	"go.uber.org/dig"
 )
 
 //go:generate mockery --name UserService
 type UserService interface {
-	ReadByEmail(ctx context.Context, email string) (models.User, error)
-	ReadByUsername(ctx context.Context, username string) (models.User, error)
-	ReadByID(ctx context.Context, id string) (models.User, error)
-	Create(ctx context.Context, user models.User) error
-	UpdateEmailByID(ctx context.Context, id string, email string) error
-	UpdatePasswordByID(ctx context.Context, id string, hash string, salt string) error
-	ConfirmEmailByID(ctx context.Context, id string) error
+	Create(ctx context.Context, user aggregate.UserFull) error
+	ReadOneUserFullByEmail(ctx context.Context, email string) (aggregate.UserFull, error)
+	ReadOneUserByID(ctx context.Context, id uuid.UUID) (models.User, error)
+	ReadOneUserByEmail(ctx context.Context, email string) (models.User, error)
+	ReadOneUserByUsername(ctx context.Context, username string) (models.User, error)
+	ReadOneUserCredentialByID(ctx context.Context, id uuid.UUID) (aggregate.UserCredential, error)
+	ReadOneUserCredentialByEmail(ctx context.Context, email string) (aggregate.UserCredential, error)
+	ReadOneUserCredentialByUsername(ctx context.Context, un string) (aggregate.UserCredential, error)
+	UpdateEmailByID(ctx context.Context, id uuid.UUID, email string) error
+	UpdatePasswordByID(ctx context.Context, id uuid.UUID, hash string, salt string) error
+	ConfirmEmailByID(ctx context.Context, id uuid.UUID) error
 }
 
 //go:generate mockery --name MailService

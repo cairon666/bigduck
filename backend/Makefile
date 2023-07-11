@@ -3,6 +3,7 @@ export
 
 BINARY_NAME := main
 MAIN_PACKAGE_PATH := ./cmd/app/...
+MIGRATION_DIR := ./migrations/sql
 
 # ==================================================================================== #
 # HELPERS
@@ -49,10 +50,6 @@ audit: golangci-lint-check
 # DEVELOPMENT
 # ==================================================================================== #
 
-.PHONY: migrations
-migrations:
-	goose -dir ./migrations/sql pgx postgres://admin:admin@0.0.0.0:6432/root up
-
 ## test: run all tests
 .PHONY: test
 test:
@@ -63,11 +60,15 @@ test:
 build:
     # Include additional build steps, like TypeScript, SCSS or Tailwind compilation here...
 	go build -o=/tmp/bin/${BINARY_NAME} ${MAIN_PACKAGE_PATH}
+	# copy migrations sql files to /tmp/migrations
+	cp -avr ${MIGRATION_DIR} /tmp/migrations
+
+
 
 ## run: run the  application
 .PHONY: run
 run: build
-	/tmp/bin/${BINARY_NAME}
+	/tmp/bin/${BINARY_NAME} -dir /tmp/migrations
 
 ## run/live: run the application with reloading on file changes
 .PHONY: run/live

@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"backend/internal/domain/models"
-	"backend/internal/domain/validate"
 	"backend/pkg/tracing"
+	"github.com/google/uuid"
 )
 
 var (
@@ -14,26 +14,20 @@ var (
 )
 
 type ConfirmEmailSendRequest struct {
-	IDUser string
+	IDUser uuid.UUID
 }
 
-func NewConfirmEmailSendRequest(idUser string) (ConfirmEmailSendRequest, error) {
-	if err := validate.Test(
-		validate.UUIDSimple(idUser),
-	); err != nil {
-		return ConfirmEmailSendRequest{}, err
-	}
-
+func NewConfirmEmailSendRequest(idUser uuid.UUID) ConfirmEmailSendRequest {
 	return ConfirmEmailSendRequest{
 		IDUser: idUser,
-	}, nil
+	}
 }
 
 func (u *Usecase) ConfirmEmailSend(ctx context.Context, dto ConfirmEmailSendRequest) error {
 	ctx, span := tracing.Start(ctx, "authusecase.ConfirmEmailSend")
 	defer span.End()
 
-	credential, err := u.userService.ReadByID(ctx, dto.IDUser)
+	user, err := u.userService.ReadOneUserByID(ctx, dto.IDUser)
 	if err != nil {
 		return err
 	}
@@ -48,7 +42,7 @@ func (u *Usecase) ConfirmEmailSend(ctx context.Context, dto ConfirmEmailSendRequ
 		return err
 	}
 
-	u.mailService.SendEmailConfirmCode(ctx, credential.Email, code)
+	u.mailService.SendEmailConfirmCode(ctx, user.Email, code)
 
 	return nil
 }

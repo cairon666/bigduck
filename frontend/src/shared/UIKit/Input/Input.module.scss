@@ -1,0 +1,33 @@
+.label {
+}
+
+.input {
+    @apply w-full rounded border px-2 py-1 font-normal focus-visible:outline-none;
+}
+
+.wrapper {
+    @apply relative;
+}
+
+.button {
+    @apply absolute top-2/4 right-2 -translate-y-2/4;
+}
+
+.primary {
+    .input {
+        @apply border-gray-200 bg-white text-gray-900 placeholder-gray-300  hover:border-gray-600
+    focus-visible:border-gray-500 disabled:border-gray-100 disabled:bg-gray-60;
+    }
+}
+
+.clear {
+    .input {
+        @apply border-transparent bg-transparent;
+    }
+}
+
+.error {
+    .input {
+        @apply border-red-800 text-red-800;
+    }
+}

@@ -5,13 +5,13 @@ import (
 	"backend/pkg/logger"
 )
 
-type httpHelper struct {
+type HTTPHelper struct {
 	log  logger.Logger
 	conf *config.Config
 }
 
-func NewHTTPHelper(log logger.Logger, conf *config.Config) *httpHelper {
-	return &httpHelper{
+func NewHTTPHelper(log logger.Logger, conf *config.Config) *HTTPHelper {
+	return &HTTPHelper{
 		conf: conf,
 		log:  log,
 	}

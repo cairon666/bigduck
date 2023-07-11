@@ -40,7 +40,7 @@ preview:
 ## storybook: run storybook server
 .PHONY: run/storybook
 run/storybook:
-	npx storybook dev --config-dir .storybook;
+	npx storybook dev --config-dir storybook;
 
 ## run/dev: run server with dev
 .PHONY: run/dev

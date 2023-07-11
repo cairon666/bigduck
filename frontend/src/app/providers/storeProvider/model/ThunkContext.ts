@@ -1,7 +1,6 @@
 import { StateSchema } from "@/app/providers/storeProvider";
 import { HTTPClientFactory } from "@/shared/HTTPClient";
-import { useNavigate } from "react-router-dom";
-import { NavigateFunction } from "react-router/dist/lib/hooks";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 export enum ThunkExtraArgKeys {
     api = "api",

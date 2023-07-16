@@ -1,130 +1,55 @@
 version: "3"
 
 services:
-  #  backend:
-  #    container_name: backend
-  #    build:
-  #      context: ./
-  #      dockerfile: Dockerfile
-  #    env_file:
-  #      - ./.local.env
-  #    depends_on:
-  #      - redis
-  #      - pgbouncer
-  #      - otel_collector
-  #    restart: unless-stopped
-  #    networks:
-  #      backend:
-  # ----------------- logging ---------------------
-  #  logstash:
-  #    container_name: logstash_one_channel
-  #    image: logstash:8.8.0
-  #    networks:
-  #      - elk
-  #    ports:
-  #      - "5046:5046"
-  #    volumes:
-  #      - ./.configs/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
-  #      - ./.configs/logstash/pipelines:/usr/share/logstash/config/pipelines:ro
-  # ------------------------------------       DATABASES        ------------------------------------
-  #  nats:
-  #    container_name: nats
-  #    image: nats
-  #    ports:
-  #      - "8222:8222"
-  #      - "4222:4222"
-  redis:
-    container_name: redis
-    image: redis:7-alpine
-    restart: always
-    ports:
-      - "6379:6379"
+  backend:
+    container_name: backend
+    build:
+      context: ../
+      dockerfile: Dockerfile
     environment:
-      XPACK_MONITORING_ENABLED: "false"
-    volumes:
-      - redis_data:/data
-      - ../configs/redis/redis.conf:/etc/redis/redis.conf
-    command: [ "redis-server", "/etc/redis/redis.conf" ]
-    networks:
-      - backend
-  pgbouncer:
-    container_name: pgbouncer
-    image: edoburu/pgbouncer
+      # app
+      - "APP_DEBUG=${APP_DEBUG}"
+      # http
+      - "HTTP_PORT=3000"
+      - "HTTP_ADDRESS=0.0.0.0"
+      - "HTTP_DOMAIN=${HTTP_DOMAIN}"
+      - "HTTP_READ_TIMEOUT=${HTTP_READ_TIMEOUT}"
+      - "HTTP_READ_HEADER_TIMEOUT=${HTTP_READ_HEADER_TIMEOUT}"
+      - "HTTP_WRITE_TIMEOUT=${HTTP_WRITE_TIMEOUT}"
+      - "HTTP_IDLE_TIMEOUT=${HTTP_IDLE_TIMEOUT}"
+      # cors
+      - "CORS_ALLOWED_ORIGIN=${CORS_ALLOWED_ORIGIN}"
+      - "CORS_ALLOWED_METHOD=${CORS_ALLOWED_METHOD}"
+      - "CORS_ALLOWED_HEADERS=${CORS_ALLOWED_HEADERS}"
+      - "CORS_ALLOWED_CREDENTIALS=${CORS_ALLOWED_CREDENTIALS}"
+      - "CORS_EXPOSE_HEADERS=${CORS_EXPOSE_HEADERS}"
+      - "CORS_MAX_AGE=${CORS_MAX_AGE}"
+      # jwt
+      - "JWT_PRIVATE=${JWT_PRIVATE}"
+      - "JWT_TTL_ACCESS=${JWT_TTL_ACCESS}"
+      - "JWT_TTL_REFRESH=${JWT_TTL_REFRESH}"
+      # redis
+      - "REDIS_URL=${REDIS_URL}"
+      #nats
+      - "NATS_URL=${NATS_URL}"
+      # postgres
+      - "POSTGRESQL_URL=${POSTGRESQL_URL}"
+      # trace
+      - "TRACE_GRPC_ADDR=${TRACE_GRPC_ADDR}"
+      - "METRIC_GRPC_ADDR=${METRIC_GRPC_ADDR}"
+      - "TRACE_SERVICE_ID=${TRACE_SERVICE_ID}"
+      - "TRACE_SERVICE_NAME=${TRACE_SERVICE_NAME}"
+      - "TRACE_SERVICE_VERSION=${TRACE_SERVICE_VERSION}"
+      - "TRACE_ENV_NAME=${TRACE_ENV_NAME}"
     depends_on:
-      - postgres
-    restart: always
-    env_file:
-      - ../configs/pgbouncer/pgbouncer.env
+      - redis
+      - pgbouncer
+      - otel_collector
+    restart: unless-stopped
     ports:
-      - "6432:6432"
-    volumes:
-      - ../configs/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
-      - ../configs/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
+      - "3000:3000"
     networks:
       - backend
-  postgres:
-    container_name: postgres
-    image: postgres:15-alpine
-    ports:
-      - "5432:5432"
-    restart: always
-    env_file:
-      - ../configs/postgres/postgresql.env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - backend
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    volumes:
-      - ../configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - backend
-  jaeger:
-    container_name: jaeger
-    image: jaegertracing/all-in-one
-    ports:
-      - "16686:16686"   # http web client
-    env_file:
-      - ../configs/jaeger/jaeger.env
-    networks:
-      - backend
-    volumes:
-      - ../configs/jaeger/jaeger-ui.json:/etc/jaeger/jaeger-ui.json
-    command: --query.ui-config /etc/jaeger/jaeger-ui.json
-  otel_collector:
-    container_name: otel_collector
-    image: otel/opentelemetry-collector-contrib
-    volumes:
-      - ../configs/otelcol/otel-collector-config.yml:/etc/otelcol/otel-collector-config.yml
-    command: --config /etc/otelcol/otel-collector-config.yml
-    ports:
-      - "4317:4317"   # OTLP gRPC receiver
-      - "4318:4318"   # OTLP HTTP receiver
-      - "12345:12345" # otlp/spanmetrics grpc receiver
-    depends_on:
-      - jaeger
-    networks:
-      - backend
-#  grafana:
-#    container_name: grafana
-#    image: grafana/grafana:latest
-#    ports:
-#      - "3333:3000"   # http web client
-#    volumes:
-#      - ../configs/grafana/dashboards:/etc/dashboards
-#      - ../configs/grafana/grafana.ini:/etc/grafana/grafana.ini
-#      - ../configs/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
-#      - grafana-storage:/var/lib/grafana
-#    env_file:
-#      - ../configs/grafana/grafana.env
-#    networks:
-#      - backend
-#    depends_on:
-#      - prometheus
 
 
 volumes:

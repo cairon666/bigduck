@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -11,23 +10,15 @@ import (
 	"syscall"
 	"time"
 
-	"backend/internal/config"
 	httpServer "backend/internal/httpServer/v1"
 	"backend/pkg/logger"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/pressly/goose/v3"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/dig"
 )
 
-var (
-	flagDir = flag.String("dir", "./migrations/sql", "Directory with migration files. Default is ./migrations/sql")
-)
-
 func main() {
-	flag.Parse()
-
 	StartServer()
 }
 
@@ -43,28 +34,8 @@ func StartServer() {
 	RegisterUsecases(c)
 	RegisterServer(c)
 
-	InvokeMigrations(c)
 	InvokeTracing(c)
 	InvokeServer(c)
-}
-
-func InvokeMigrations(c *dig.Container) {
-	panicIfError(c.Invoke(func(conf *config.Config) error {
-		db, err := goose.OpenDBWithDriver("pgx", conf.Postgres)
-		if err != nil {
-			return fmt.Errorf("goose: failed to open DB: %w", err)
-		}
-
-		if err := goose.Run("up", db, *flagDir); err != nil {
-			return fmt.Errorf("goose up: %w", err)
-		}
-
-		if err := db.Close(); err != nil {
-			return fmt.Errorf("goose: failed to close DB: %w", err)
-		}
-
-		return nil
-	}))
 }
 
 func InvokeServer(c *dig.Container) {

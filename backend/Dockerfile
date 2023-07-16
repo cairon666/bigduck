@@ -13,16 +13,19 @@ COPY go.sum ./
 
 RUN go mod download
 
-COPY ../ .
+COPY . .
 
 RUN make build
+RUN make build/migrations
 
 ## Deploy
 FROM alpine
 
 COPY --from=build /tmp/bin/main /tmp/bin/main
-COPY --from=build /app/migrations/sql /migrations/sql
+
+COPY --from=build /app/migrations /tmp/migrations
+COPY --from=build /tmp/bin/migrations /tmp/bin/migrations
 
 EXPOSE $APP_PORT
 
-CMD ["/tmp/bin/main", "-dir", "/migrations/sql"]
+CMD ["/bin/sh", "-c", "/tmp/bin/migrations $POSTGRESQL_URL /tmp/migrations/sql; /tmp/bin/main"]

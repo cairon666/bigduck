@@ -1,12 +1,13 @@
-package authcontroller
+package usercontroller
 
 import (
 	"encoding/json"
 	"net/http"
 
-	"backend/internal/domain/usecases/authusecase"
-	"backend/internal/exceptions"
+	"backend/internal/domain/usecases/userusecase"
 	"backend/internal/exceptions/validate"
+	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 )
 
 type changePasswordRequest struct {
@@ -22,9 +23,12 @@ func (req *changePasswordRequest) IsValid() error {
 }
 
 func (c *Controller) changePasswordHandler(rw http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
+	var (
+		ctx    = req.Context()
+		IDUser = uuid.Must(uuid.Parse(chi.URLParam(req, "IDUser")))
+		reqDTO changePasswordRequest
+	)
 
-	var reqDTO changePasswordRequest
 	if err := json.NewDecoder(req.Body).Decode(&reqDTO); err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)
 		return
@@ -35,14 +39,13 @@ func (c *Controller) changePasswordHandler(rw http.ResponseWriter, req *http.Req
 		return
 	}
 
-	IDUser, ok := c.authHelper.ParseIDUser(req)
-	if !ok {
-		c.httpHelper.HandleError(ctx, rw, exceptions.ErrForbidden)
+	if err := c.authHelper.IsEqualOrAdmin(req, IDUser); err != nil {
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
-	dto := authusecase.NewChangePasswordRequest(IDUser, reqDTO.OldPassword, reqDTO.NewPassword)
-	if err := c.authUsecase.ChangePassword(ctx, dto); err != nil {
+	dto := userusecase.NewChangePasswordRequest(IDUser, reqDTO.OldPassword, reqDTO.NewPassword)
+	if err := c.userUsecase.ChangePassword(ctx, dto); err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}

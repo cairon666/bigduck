@@ -10,8 +10,8 @@ const (
 	CodeRecoverEmailNotConfirm
 	CodeNewPasswordEqualOldPassword
 	CodeWrongOldPassword
-	CodeBadEmailConfirmCode
 	CodeUserNameAlreadyExist
 	CodeIDAlreadyExist
 	CodeRoleAlreadyExist
+	CodeNewEmailEqualOldEmail
 )

@@ -22,13 +22,16 @@ import (
 )
 
 func RegisterServices(c *dig.Container) {
-	panicIfError(c.Provide(mailservice.NewMailService, dig.As(new(authusecase.MailService))))
+	panicIfError(c.Provide(mailservice.NewMailService, dig.As(
+		new(authusecase.MailService),
+		new(userusecase.MailService),
+	)))
 	panicIfError(c.Provide(userservice.NewUserService, dig.As(
 		new(authusecase.UserService),
 		new(userusecase.UserService),
 	)))
 	panicIfError(c.Provide(recoverpasswordcodeservice.New, dig.As(new(authusecase.RecoverPasswordCodeService))))
-	panicIfError(c.Provide(confirmemailcodeservice.New, dig.As(new(authusecase.ConfirmEmailCodeService))))
+	panicIfError(c.Provide(confirmemailcodeservice.New, dig.As(new(userusecase.ConfirmEmailCodeService))))
 }
 
 func RegisterAdapters(c *dig.Container) {

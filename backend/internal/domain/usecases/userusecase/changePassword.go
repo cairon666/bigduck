@@ -1,9 +1,11 @@
-package authusecase
+package userusecase
 
 import (
 	"context"
+	"errors"
 
 	"backend/internal/exceptions"
+	"backend/internal/security"
 	"backend/pkg/tracing"
 	"github.com/google/uuid"
 )
@@ -23,7 +25,7 @@ func NewChangePasswordRequest(idUser uuid.UUID, oldPassword, newPassword string)
 }
 
 func (u *Usecase) ChangePassword(ctx context.Context, dto ChangePasswordRequest) error {
-	ctx, span := tracing.Start(ctx, "authusecase.ChangePassword")
+	ctx, span := tracing.Start(ctx, "userusecase.ChangePassword")
 	defer span.End()
 
 	userCredential, err := u.userService.ReadOneUserCredentialByID(ctx, dto.IDUser)
@@ -31,12 +33,25 @@ func (u *Usecase) ChangePassword(ctx context.Context, dto ChangePasswordRequest)
 		return err
 	}
 
-	err = checkPasswordHash(dto.OldPassword, userCredential.Credential.Salt, userCredential.Credential.PasswordHash)
-	if err != nil {
+	// check old password
+	if err = security.CheckPasswordHash(
+		dto.OldPassword,
+		userCredential.Credential.Salt,
+		userCredential.Credential.PasswordHash,
+	); err != nil {
 		return exceptions.ErrWrongOldPassword
 	}
 
-	hash, salt, err := generateHashPassword(dto.NewPassword)
+	// check what old password not equal new password
+	if err := security.CheckPasswordHash(
+		dto.NewPassword,
+		userCredential.Credential.Salt,
+		userCredential.Credential.PasswordHash,
+	); !errors.Is(err, exceptions.ErrBadPassword) {
+		return exceptions.ErrNewPasswordEqualOldPassword
+	}
+
+	hash, salt, err := security.GenerateHashPassword(dto.NewPassword)
 	if err != nil {
 		return err
 	}
@@ -44,8 +59,6 @@ func (u *Usecase) ChangePassword(ctx context.Context, dto ChangePasswordRequest)
 	if err := u.userService.UpdatePasswordByID(ctx, dto.IDUser, hash, salt); err != nil {
 		return err
 	}
-
-	u.mailService.SendPasswordWasUpdate(ctx, userCredential.User.Email)
 
 	return nil
 }

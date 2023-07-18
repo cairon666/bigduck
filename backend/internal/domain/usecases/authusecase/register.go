@@ -6,6 +6,7 @@ import (
 
 	"backend/internal/domain/aggregate"
 	"backend/internal/domain/models"
+	"backend/internal/security"
 	"backend/pkg/tracing"
 	"github.com/google/uuid"
 )
@@ -48,7 +49,7 @@ func (u *Usecase) Register(ctx context.Context, dto RegisterRequest) error {
 		return err
 	}
 
-	hash, salt, err := generateHashPassword(dto.Password)
+	hash, salt, err := security.GenerateHashPassword(dto.Password)
 	if err != nil {
 		return err
 	}

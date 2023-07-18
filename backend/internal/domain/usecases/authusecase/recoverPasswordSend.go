@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"backend/internal/domain/models"
+	"backend/internal/security"
 	"backend/pkg/tracing"
 )
 
@@ -27,8 +28,7 @@ func (u *Usecase) RecoverPasswordSend(ctx context.Context, req RecoverPasswordSe
 		return err
 	}
 
-	// generate code
-	code, err := generateCode()
+	code, err := security.GenerateCode()
 	if err != nil {
 		return err
 	}

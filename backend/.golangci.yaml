@@ -77,10 +77,10 @@ linters:
     - usestdlibvars
     - wastedassign
     - whitespace
-    - wsl
   # Enable presets.
   # https://golangci-lint.run/usage/linters
   disable:
+    - wsl # TODD
     - dupl
     - interfacebloat
     - funlen # TODO

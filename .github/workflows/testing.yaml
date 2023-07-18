@@ -2,7 +2,7 @@ name: Testing
 on: [push, pull_request]
 
 jobs:
-  Backend:
+  backend-lint:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -19,7 +19,7 @@ jobs:
         run: make install
       - name: Start audit code
         run: make audit
-  Frontend:
+  frontend-lint:
     runs-on: ubuntu-latest
     defaults:
       run:

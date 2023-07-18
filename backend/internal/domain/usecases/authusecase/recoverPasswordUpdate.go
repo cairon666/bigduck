@@ -6,6 +6,7 @@ import (
 
 	"backend/internal/domain/models"
 	"backend/internal/exceptions"
+	"backend/internal/security"
 	"backend/pkg/tracing"
 )
 
@@ -39,13 +40,13 @@ func (u *Usecase) RecoverPasswordUpdate(ctx context.Context, req RecoverPassword
 	}
 
 	// check what old password not equal new password
-	err = checkPasswordHash(req.Password, userCredential.Credential.Salt, userCredential.Credential.PasswordHash)
+	err = security.CheckPasswordHash(req.Password, userCredential.Credential.Salt, userCredential.Credential.PasswordHash)
 	if !errors.Is(err, exceptions.ErrBadPassword) {
 		return exceptions.ErrNewPasswordEqualOldPassword
 	}
 
 	// generate new credentials
-	hash, salt, err := generateHashPassword(req.Password)
+	hash, salt, err := security.GenerateHashPassword(req.Password)
 	if err != nil {
 		return err
 	}

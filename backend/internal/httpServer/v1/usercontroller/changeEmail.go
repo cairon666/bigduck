@@ -1,12 +1,13 @@
-package authcontroller
+package usercontroller
 
 import (
 	"encoding/json"
 	"net/http"
 
-	"backend/internal/domain/usecases/authusecase"
-	"backend/internal/exceptions"
+	"backend/internal/domain/usecases/userusecase"
 	"backend/internal/exceptions/validate"
+	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 )
 
 type changeEmailRequest struct {
@@ -21,9 +22,12 @@ func (req *changeEmailRequest) IsValid() error {
 }
 
 func (c *Controller) changeEmailHandler(rw http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
+	var (
+		ctx    = req.Context()
+		IDUser = uuid.Must(uuid.Parse(chi.URLParam(req, "IDUser")))
+		reqDTO changeEmailRequest
+	)
 
-	var reqDTO changeEmailRequest
 	if err := json.NewDecoder(req.Body).Decode(&reqDTO); err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)
 		return
@@ -34,14 +38,13 @@ func (c *Controller) changeEmailHandler(rw http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	IDUser, ok := c.authHelper.ParseIDUser(req)
-	if !ok {
-		c.httpHelper.HandleError(ctx, rw, exceptions.ErrForbidden)
+	if err := c.authHelper.IsEqualOrAdmin(req, IDUser); err != nil {
+		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}
 
-	dto := authusecase.NewChangeEmailRequest(IDUser, reqDTO.Email)
-	if err := c.authUsecase.ChangeEmail(ctx, dto); err != nil {
+	dto := userusecase.NewChangeEmailRequest(IDUser, reqDTO.Email)
+	if err := c.userUsecase.ChangeEmail(ctx, dto); err != nil {
 		c.httpHelper.HandleError(ctx, rw, err)
 		return
 	}

@@ -24,7 +24,7 @@ type getByIDHandlerResponse struct {
 	Roles       []models.RoleID `json:"roles"`
 }
 
-func (c *controller) getByIDHandler(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) getByIDHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	idUser, _ := uuid.Parse(chi.URLParam(r, "IDUser"))
 

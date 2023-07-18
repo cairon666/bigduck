@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"backend/internal/domain/models"
+	"backend/internal/security"
 	"backend/pkg/tracing"
 	"github.com/google/uuid"
 )
@@ -34,16 +35,10 @@ func (u *Usecase) Login(ctx context.Context, dto LoginRequest) (LoginResponse, e
 		return LoginResponse{}, err
 	}
 
-	err = checkPasswordHash(dto.Password, userFull.Credential.Salt, userFull.Credential.PasswordHash)
+	err = security.CheckPasswordHash(dto.Password, userFull.Credential.Salt, userFull.Credential.PasswordHash)
 	if err != nil {
-		// send email what somebody try log in account
-		u.mailService.SendSomebodyTryLogin(ctx, dto.Email)
-
 		return LoginResponse{}, err
 	}
-
-	// send email what somebody log in account
-	u.mailService.SendSomebodyLogin(ctx, dto.Email)
 
 	return LoginResponse{
 		IDUser: userFull.User.ID,

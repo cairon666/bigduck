@@ -1,4 +1,4 @@
-package authusecase
+package userusecase
 
 import (
 	"context"
@@ -22,16 +22,16 @@ func NewConfirmEmailConfirmRequest(idUser uuid.UUID, code string) ConfirmEmailCo
 }
 
 func (u *Usecase) ConfirmEmailConfirm(ctx context.Context, dto ConfirmEmailConfirmRequest) error {
-	ctx, span := tracing.Start(ctx, "authusecase.ConfirmEmailConfirm")
+	ctx, span := tracing.Start(ctx, "userusecase.ConfirmEmailConfirm")
 	defer span.End()
 
-	resp, err := u.confirmEmailCodeService.Get(ctx, models.ConfirmEmailCodeKey(dto.IDUser))
+	confirmEmailDTO, err := u.confirmEmailCodeService.Get(ctx, models.ConfirmEmailCodeKey(dto.IDUser))
 	if err != nil {
 		return err
 	}
 
-	if resp.Code != dto.Code {
-		return exceptions.ErrBadEmailConfirmCode
+	if confirmEmailDTO.Code != dto.Code {
+		return exceptions.ErrBadRecoverCode
 	}
 
 	if err := u.userService.ConfirmEmailByID(ctx, dto.IDUser); err != nil {

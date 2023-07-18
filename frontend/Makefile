@@ -33,6 +33,12 @@ audit:
 preview:
 	npx vite preview;
 
+## preview: preview
+.PHONY: install
+install:
+	npm install -g pnpm;
+	pnpm i;
+
 # ==================================================================================== #
 # DEVELOPMENT
 # ==================================================================================== #

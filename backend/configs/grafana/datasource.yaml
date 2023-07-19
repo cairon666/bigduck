@@ -7,11 +7,11 @@ datasources:
   isDefault: true
   access: proxy
   editable: true
-#- name: Elastic
-#  type: elasticsearch
-#  access: proxy
-#  url: http://elasticsearch:9200
-#  jsonData:
-#    index: '[metrics-]YYYY.MM.DD'
-#    interval: Daily
-#    timeField: '@timestamp'
+- name: Elasticsearch
+  type: elasticsearch
+  url: http://elasticsearch:9200
+  access: proxy
+  editable: true
+  jsonData:
+    index: 'fluentd-*'
+    timeField: '@timestamp'

@@ -1,5 +1,6 @@
 version: "3"
 
+
 services:
   backend:
     container_name: backend
@@ -7,57 +8,52 @@ services:
       context: ../
       dockerfile: Dockerfile
     environment:
-      # app
-      - "APP_DEBUG=${APP_DEBUG}"
-      # http
-      - "HTTP_PORT=3000"
-      - "HTTP_ADDRESS=0.0.0.0"
-      - "HTTP_DOMAIN=${HTTP_DOMAIN}"
-      - "HTTP_READ_TIMEOUT=${HTTP_READ_TIMEOUT}"
-      - "HTTP_READ_HEADER_TIMEOUT=${HTTP_READ_HEADER_TIMEOUT}"
-      - "HTTP_WRITE_TIMEOUT=${HTTP_WRITE_TIMEOUT}"
-      - "HTTP_IDLE_TIMEOUT=${HTTP_IDLE_TIMEOUT}"
-      # cors
-      - "CORS_ALLOWED_ORIGIN=${CORS_ALLOWED_ORIGIN}"
-      - "CORS_ALLOWED_METHOD=${CORS_ALLOWED_METHOD}"
-      - "CORS_ALLOWED_HEADERS=${CORS_ALLOWED_HEADERS}"
-      - "CORS_ALLOWED_CREDENTIALS=${CORS_ALLOWED_CREDENTIALS}"
-      - "CORS_EXPOSE_HEADERS=${CORS_EXPOSE_HEADERS}"
-      - "CORS_MAX_AGE=${CORS_MAX_AGE}"
-      # jwt
-      - "JWT_PRIVATE=${JWT_PRIVATE}"
-      - "JWT_TTL_ACCESS=${JWT_TTL_ACCESS}"
-      - "JWT_TTL_REFRESH=${JWT_TTL_REFRESH}"
       # redis
-      - "REDIS_URL=${REDIS_URL}"
-      #nats
-      - "NATS_URL=${NATS_URL}"
+      - "REDIS_URL=redis://admin:admin@redis:6379/0"
       # postgres
-      - "POSTGRESQL_URL=${POSTGRESQL_URL}"
-      # trace
-      - "TRACE_GRPC_ADDR=${TRACE_GRPC_ADDR}"
-      - "METRIC_GRPC_ADDR=${METRIC_GRPC_ADDR}"
-      - "TRACE_SERVICE_ID=${TRACE_SERVICE_ID}"
-      - "TRACE_SERVICE_NAME=${TRACE_SERVICE_NAME}"
-      - "TRACE_SERVICE_VERSION=${TRACE_SERVICE_VERSION}"
-      - "TRACE_ENV_NAME=${TRACE_ENV_NAME}"
+      - "POSTGRESQL_URL=postgresql://admin:admin@pgbouncer:6432/root"
+      - "TRACE_GRPC_ADDR=otel_collector:4317"
+      - "METRIC_GRPC_ADDR=otel_collector:12345"
     depends_on:
-      - redis
-      - pgbouncer
       - otel_collector
     restart: unless-stopped
     ports:
       - "3000:3000"
     networks:
       - backend
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: "backend"
+  fluentd:
+    container_name: fluentd
+    build:
+      context: .
+      dockerfile: fluentd.Dockerfile
+    volumes:
+      - ../configs/fluentd/fluent.conf:/fluentd/etc/fluent.conf
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    networks:
+      - backend
+  otel_collector:
+    container_name: otel_collector
+    image: otel/opentelemetry-collector-contrib
+    volumes:
+      - ../configs/otelcol/otel-collector-config.yml:/etc/otelcol/otel-collector-config.yml
+    command: --config /etc/otelcol/otel-collector-config.yml
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+      - "12345:12345" # otlp/spanmetrics grpc receiver
+    depends_on:
+      - jaeger
+    networks:
+      - backend
 
 
-volumes:
-  postgres_data: { }
-  redis_data: { }
-  grafana-storage: { }
 
 networks:
   backend:
-
-

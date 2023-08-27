@@ -38,5 +38,5 @@ package natsadapter
 //		return nil, errors.Wrap(err, "Request: a.conn.Request(subj, data, t)")
 //	}
 //
-//	return msg.Data, nil
+//	return msg.File, nil
 //}

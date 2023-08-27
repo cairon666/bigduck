@@ -42,6 +42,7 @@ tidy:
 	go fmt ./...
 	go mod tidy -v
 	go run github.com/daixiang0/gci@latest write ./
+	golangci-lint run ./... --fix
 
 ## audit: run quality control checks
 .PHONY: audit
@@ -64,7 +65,7 @@ test:
 build:
 	go build -o=/tmp/bin/${APP_NAME} ${APP_PACKAGE_PATH}
 
-# build: build the migrations bin
+# build/migrations: build the migrations bin
 .PHONY: build/migrations
 build/migrations:
 	go build -o=/tmp/bin/${MIGRATIONS_NAME} ${MIGRATIONS_PACKAGE_PATH}

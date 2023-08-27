@@ -8,6 +8,7 @@ import (
 )
 
 type Logger interface {
+	Log(lvl Level, msg string, fields ...Field)
 	Debug(msg string, fields ...Field)
 	Info(msg string, fields ...Field)
 	Warn(msg string, fields ...Field)
@@ -21,6 +22,17 @@ type Logger interface {
 type logger struct {
 	log *zap.Logger
 }
+
+type Level int
+
+const (
+	DebugLevel Level = iota
+	InfoLevel
+	WarnLevel
+	ErrorLevel
+	PanicLevel
+	FatalLevel
+)
 
 // NewDev - default console logger for dev
 func NewDev() (Logger, error) {
@@ -44,39 +56,4 @@ func NewDev() (Logger, error) {
 	return &logger{
 		log: log,
 	}, nil
-}
-
-func (l *logger) Debug(msg string, fields ...Field) {
-	l.log.Debug(msg, fields...)
-}
-func (l *logger) Info(msg string, fields ...Field) {
-	l.log.Info(msg, fields...)
-}
-
-func (l *logger) Warn(msg string, fields ...Field) {
-	l.log.Warn(msg, fields...)
-}
-
-func (l *logger) Error(msg string, fields ...Field) {
-	l.log.Error(msg, fields...)
-}
-
-func (l *logger) ErrorDetails(method, operation string, cause error) {
-	l.log.Error("error",
-		String("method", method),
-		String("operation", operation),
-		Error(cause),
-	)
-}
-
-func (l *logger) Panic(msg string, fields ...Field) {
-	l.log.Panic(msg, fields...)
-}
-
-func (l *logger) Fatal(msg string, fields ...Field) {
-	l.log.Fatal(msg, fields...)
-}
-
-func (l *logger) Sync() error {
-	return l.log.Sync()
 }

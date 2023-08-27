@@ -1,12 +1,12 @@
-import { StateSchema } from "@/app/providers/storeProvider";
-import { NewThunkExtraArg } from "@/app/providers/storeProvider/model/ThunkContext";
-import { notifyReducer } from "@/entities/Notify";
-import { userReducer } from "@/entities/User";
-import { authReducer } from "@/features/auth-forms/model/slice";
-import { HTTPClientFactory } from "@/shared/HTTPClient";
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { useNavigate } from "react-router-dom";
-import { logger } from "redux-logger";
+import { StateSchema } from '@/app/providers/storeProvider';
+import { NewThunkExtraArg } from '@/app/providers/storeProvider/model/ThunkContext';
+import { notifyReducer } from '@/entities/Notify';
+import { userReducer } from '@/entities/User';
+import { authReducer } from '@/features/auth-forms/model/slice';
+import { HTTPClientFactory } from '@/shared/HTTPClient';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { useNavigate } from 'react-router-dom';
+import { logger } from 'redux-logger';
 
 export function createReduxStore() {
     const navigate = useNavigate();
@@ -42,6 +42,6 @@ export function createReduxStore() {
 }
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<ReturnType<typeof createReduxStore>["getState"]>;
+export type RootState = ReturnType<ReturnType<typeof createReduxStore>['getState']>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = ReturnType<typeof createReduxStore>["dispatch"];
+export type AppDispatch = ReturnType<typeof createReduxStore>['dispatch'];

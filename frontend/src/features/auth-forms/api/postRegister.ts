@@ -1,7 +1,7 @@
-import { ThunkConfig, ThunkExtraArgKeys } from "@/app/providers/storeProvider";
-import { BadRequestErr } from "@/shared/HTTPClient";
-import { ApiError } from "@/shared/HTTPClient/ApiError";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { ThunkConfig, ThunkExtraArgKeys } from '@/app/providers/storeProvider';
+import { BadRequestErr } from '@/shared/HTTPClient';
+import { ApiError } from '@/shared/HTTPClient/ApiError';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export interface PostRegisterRequest {
     email: string;
@@ -10,11 +10,11 @@ export interface PostRegisterRequest {
     second_name: string;
     user_name: string;
     date_of_birth?: Date | null;
-    gender?: "male" | "female";
+    gender?: 'male' | 'female';
 }
 
 export const postPostRegister = createAsyncThunk<void, PostRegisterRequest, ThunkConfig<ApiError>>(
-    "auth/postPostRegister",
+    'auth/postPostRegister',
     async (req, ctx) => {
         const { extra, rejectWithValue } = ctx;
 
@@ -27,7 +27,7 @@ export const postPostRegister = createAsyncThunk<void, PostRegisterRequest, Thun
                 return rejectWithValue(await e.parseApiError());
             }
 
-            throw new Error("unhandled error in postRecoverPasswordUpdate!");
+            throw new Error('unhandled error in postRecoverPasswordUpdate!');
         }
     },
 );

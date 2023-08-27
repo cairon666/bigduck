@@ -1,4 +1,4 @@
-import { Gender } from "@/entities/User/model/Gender";
+import { Gender } from '@/entities/User/model/Gender';
 
 export interface User {
     id: string;

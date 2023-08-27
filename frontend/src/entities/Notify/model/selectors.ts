@@ -1,3 +1,3 @@
-import { useAppSelector } from "@/shared/hooks";
+import { useAppSelector } from '@/shared/hooks';
 
 export const useNotifyViewer = () => useAppSelector((state) => state.notify);

@@ -1,6 +1,6 @@
-import { FormEvent, useCallback, useRef } from "react";
+import { FormEvent, useCallback, useRef } from 'react';
 
-const CodeRegExp = new RegExp("^[0-9]{4}$");
+const CodeRegExp = new RegExp('^[0-9]{4}$');
 
 function isCode(value: string): boolean {
     return value.length == 4 && CodeRegExp.test(value);
@@ -41,7 +41,7 @@ export function useConfirmCodeStage(onSubmit: (code: string) => void) {
             // проверка что value это число
             if (e.currentTarget.value.length != 0 && isNaN(Number(e.currentTarget.value))) {
                 // reset если не число
-                e.currentTarget.value = "";
+                e.currentTarget.value = '';
                 return;
             }
 
@@ -69,16 +69,16 @@ export function useConfirmCodeStage(onSubmit: (code: string) => void) {
             }
 
             switch (e.currentTarget.name) {
-                case "firstNumber":
+                case 'firstNumber':
                     refSecondInput.current.focus();
                     break;
-                case "secondNumber":
+                case 'secondNumber':
                     refThirdInput.current.focus();
                     break;
-                case "thirdNumber":
+                case 'thirdNumber':
                     refFourInput.current.focus();
                     break;
-                case "fourNumber":
+                case 'fourNumber':
                     refFourInput.current.blur();
                     onClick();
                     break;

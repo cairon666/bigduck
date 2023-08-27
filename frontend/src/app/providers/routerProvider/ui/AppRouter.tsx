@@ -5,10 +5,10 @@ import {
     RecoverPasswordSendForm,
     RecoverPasswordUpdateForm,
     RegisterForm,
-} from "@/features/auth-forms";
-import { AuthPage } from "@/pages/AuthPage";
-import { ForTestPage } from "@/pages/ForTestPage";
-import { Navigate, Route, Routes } from "react-router-dom";
+} from '@/features/auth-forms';
+import { AuthPage } from '@/pages/AuthPage';
+import { ForTestPage } from '@/pages/ForTestPage';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 // {
 //     path: "/panel",
@@ -48,19 +48,19 @@ import { Navigate, Route, Routes } from "react-router-dom";
 export function AppRouter() {
     return (
         <Routes>
-            <Route path={"/auth"} element={<AuthPage />}>
-                <Route path={"login"} element={<LoginForm />} />
-                <Route path={"register"} element={<RegisterForm />} />
-                <Route path={"recover"} element={<RecoverPasswordLayout />}>
-                    <Route index path={"send"} element={<RecoverPasswordSendForm />} />
-                    <Route path={"confirm"} element={<RecoverPasswordConfirmForm />} />
-                    <Route path={"update"} element={<RecoverPasswordUpdateForm />} />
-                    <Route path={""} element={<Navigate to={"send"} />} />
+            <Route path={'/auth'} element={<AuthPage />}>
+                <Route path={'login'} element={<LoginForm />} />
+                <Route path={'register'} element={<RegisterForm />} />
+                <Route path={'recover'} element={<RecoverPasswordLayout />}>
+                    <Route index path={'send'} element={<RecoverPasswordSendForm />} />
+                    <Route path={'confirm'} element={<RecoverPasswordConfirmForm />} />
+                    <Route path={'update'} element={<RecoverPasswordUpdateForm />} />
+                    <Route path={''} element={<Navigate to={'send'} />} />
                 </Route>
-                <Route path={""} element={<Navigate to={"login"} />} />
+                <Route path={''} element={<Navigate to={'login'} />} />
             </Route>
-            <Route path={""} element={<ForTestPage />} />
-            <Route path={"*"} element={<Navigate to={"/auth"} />} />
+            <Route path={''} element={<ForTestPage />} />
+            <Route path={'*'} element={<Navigate to={'/auth'} />} />
         </Routes>
     );
 }

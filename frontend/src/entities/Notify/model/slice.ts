@@ -1,5 +1,5 @@
-import { NotifyScheme } from "@/entities/Notify/model/notifyScheme";
-import { createSlice } from "@reduxjs/toolkit";
+import { NotifyScheme } from '@/entities/Notify/model/notifyScheme';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState: NotifyScheme = {
     notifies: [],
@@ -8,7 +8,7 @@ const initialState: NotifyScheme = {
 };
 
 const slice = createSlice({
-    name: "notify",
+    name: 'notify',
     initialState: initialState,
     reducers: {},
 });

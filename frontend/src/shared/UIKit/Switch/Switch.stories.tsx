@@ -1,11 +1,11 @@
-import { SwitchButton } from "@/shared/UIKit";
-import type { Meta, StoryObj } from "@storybook/react";
-import { FaFortAwesome } from "react-icons/fa";
+import { SwitchButton } from '@/shared/UIKit';
+import type { Meta, StoryObj } from '@storybook/react';
+import { FaFortAwesome } from 'react-icons/fa';
 
-import { Switch } from "./Switch";
+import { Switch } from './Switch';
 
 const meta: Meta<typeof Switch> = {
-    title: "Switch",
+    title: 'Switch',
     component: Switch,
 };
 
@@ -14,16 +14,16 @@ type Story = StoryObj<typeof Switch>;
 
 const items = [
     {
-        label: "example",
-        value: "0",
+        label: 'example',
+        value: '0',
     },
     {
-        label: "reset",
+        label: 'reset',
         value: undefined,
     },
     {
-        label: "with icon",
-        value: "1",
+        label: 'with icon',
+        value: '1',
         icon: FaFortAwesome,
     },
 ];

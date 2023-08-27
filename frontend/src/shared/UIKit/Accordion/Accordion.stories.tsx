@@ -1,9 +1,9 @@
-import { Accordion, AccordionItem } from "@/shared/UIKit";
-import { Meta, StoryObj } from "@storybook/react";
-import { GiPlasticDuck } from "react-icons/gi";
+import { Accordion, AccordionItem } from '@/shared/UIKit';
+import { Meta, StoryObj } from '@storybook/react';
+import { GiPlasticDuck } from 'react-icons/gi';
 
 const meta: Meta<typeof Accordion> = {
-    title: "Accordion",
+    title: 'Accordion',
     component: Accordion,
 };
 
@@ -12,19 +12,19 @@ type Story = StoryObj<typeof Accordion>;
 
 const defaultItems = [
     {
-        value: "1",
-        title: "title of 1",
-        children: "some content of 1",
+        value: '1',
+        title: 'title of 1',
+        children: 'some content of 1',
     },
     {
-        value: "2",
-        title: "title of 2",
-        children: "some content of 2",
+        value: '2',
+        title: 'title of 2',
+        children: 'some content of 2',
     },
     {
-        value: "3",
-        title: "title of 3",
-        children: "some content of 3",
+        value: '3',
+        title: 'title of 3',
+        children: 'some content of 3',
     },
 ];
 
@@ -35,7 +35,7 @@ export const Default: Story = {
                 <Accordion {...props}>
                     {defaultItems.map((item) => {
                         return (
-                            <AccordionItem theme={"default"} key={item.value} title={item.title} value={item.value}>
+                            <AccordionItem theme={'default'} key={item.value} title={item.title} value={item.value}>
                                 {item.children}
                             </AccordionItem>
                         );
@@ -53,7 +53,7 @@ export const Flush: Story = {
                 <Accordion {...props}>
                     {defaultItems.map((item) => {
                         return (
-                            <AccordionItem theme={"flush"} key={item.value} title={item.title} value={item.value}>
+                            <AccordionItem theme={'flush'} key={item.value} title={item.title} value={item.value}>
                                 {item.children}
                             </AccordionItem>
                         );
@@ -81,7 +81,7 @@ export const Single: Story = {
         );
     },
     args: {
-        type: "single",
+        type: 'single',
     },
 };
 
@@ -102,7 +102,7 @@ export const Multiple: Story = {
         );
     },
     args: {
-        type: "multiple",
+        type: 'multiple',
     },
 };
 
@@ -114,7 +114,7 @@ export const WithLeftContent: Story = {
                     {defaultItems.map((item) => {
                         return (
                             <AccordionItem
-                                left={<GiPlasticDuck className={"mr-2 h-4 w-4"} />}
+                                left={<GiPlasticDuck className={'mr-2 h-4 w-4'} />}
                                 key={item.value}
                                 title={item.title}
                                 value={item.value}
@@ -128,6 +128,6 @@ export const WithLeftContent: Story = {
         );
     },
     args: {
-        type: "multiple",
+        type: 'multiple',
     },
 };

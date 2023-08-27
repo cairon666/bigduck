@@ -1,1 +1,1 @@
-export * from "./NotifyBlock";
+export * from './NotifyBlock';

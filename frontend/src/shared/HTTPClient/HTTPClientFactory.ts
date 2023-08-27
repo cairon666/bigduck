@@ -1,5 +1,5 @@
-import { HTTPClient } from "./HTTPClient";
-import { KyHTTPClient } from "./KyHTTPClient";
+import { HTTPClient } from './HTTPClient';
+import { KyHTTPClient } from './KyHTTPClient';
 
 export class HTTPClientFactory {
     public constructor(private prefixUrl: string) {}

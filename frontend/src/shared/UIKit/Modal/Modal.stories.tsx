@@ -1,10 +1,10 @@
-import { useModal } from "@/shared/hooks";
+import { useModal } from '@/shared/hooks';
 //👇 This default export determines where your story goes in the story list
-import { Button, Card, Modal } from "@/shared/UIKit";
-import { Meta, StoryObj } from "@storybook/react";
+import { Button, Card, Modal } from '@/shared/UIKit';
+import { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Modal> = {
-    title: "Modal",
+    title: 'Modal',
     component: Modal,
 };
 
@@ -16,8 +16,8 @@ export const WithSomeContent: Story = {
         isOpen: true,
         onClose: () => {},
         children: (
-            <Card className={"p-4"}>
-                <p className={"w-full text-center"}>Some content</p>
+            <Card className={'p-4'}>
+                <p className={'w-full text-center'}>Some content</p>
             </Card>
         ),
     },
@@ -36,8 +36,8 @@ export const Dynamic: Story = {
     },
     args: {
         children: (
-            <Card className={"p-4"}>
-                <p className={"w-full text-center"}>Some content</p>
+            <Card className={'p-4'}>
+                <p className={'w-full text-center'}>Some content</p>
             </Card>
         ),
     },

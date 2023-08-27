@@ -1,54 +1,54 @@
-import classNames from "classnames";
-import { Dayjs } from "dayjs";
-import { useCallback } from "react";
+import classNames from 'classnames';
+import { Dayjs } from 'dayjs';
+import { useCallback } from 'react';
 
 const item = [
     {
-        label: "Янв",
+        label: 'Янв',
         value: 0,
     },
     {
-        label: "Фев",
+        label: 'Фев',
         value: 1,
     },
     {
-        label: "Мар",
+        label: 'Мар',
         value: 2,
     },
     {
-        label: "Апр",
+        label: 'Апр',
         value: 3,
     },
     {
-        label: "Май",
+        label: 'Май',
         value: 4,
     },
     {
-        label: "Июн",
+        label: 'Июн',
         value: 5,
     },
     {
-        label: "Июл",
+        label: 'Июл',
         value: 6,
     },
     {
-        label: "Авг",
+        label: 'Авг',
         value: 7,
     },
     {
-        label: "Сен",
+        label: 'Сен',
         value: 8,
     },
     {
-        label: "Окт",
+        label: 'Окт',
         value: 9,
     },
     {
-        label: "Ноя",
+        label: 'Ноя',
         value: 10,
     },
     {
-        label: "Дек",
+        label: 'Дек',
         value: 11,
     },
 ];
@@ -62,12 +62,12 @@ export function MonthGrid({ onSelect, value }: MonthGridProps) {
     const onClick = useCallback((month: number) => () => onSelect(month), [onSelect]);
 
     return (
-        <div className={"grid grid-cols-4"}>
+        <div className={'grid grid-cols-4'}>
             {item.map((item) => {
                 const isActive = item.value === value?.month();
                 const className = classNames(
-                    "items-center flex justify-center hover:bg-gray-20 h-[50px] font-light text-gray-1000 ",
-                    isActive ? "font-normal bg-gray-20" : "",
+                    'items-center flex justify-center hover:bg-gray-20 h-[50px] font-light text-gray-1000 ',
+                    isActive ? 'font-normal bg-gray-20' : '',
                 );
 
                 return (

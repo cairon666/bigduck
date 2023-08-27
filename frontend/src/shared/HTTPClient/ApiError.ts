@@ -1,7 +1,7 @@
-import { ApiErrorCodes, ValidateErrorCodes } from "@/shared/HTTPClient/ApiErrorCodes";
+import { ApiErrorCodes, ValidateErrorCodes } from '@/shared/HTTPClient/ApiErrorCodes';
 
 export interface ValidateError {
-    message: "validate";
+    message: 'validate';
     validate: Record<
         string,
         {
@@ -12,7 +12,7 @@ export interface ValidateError {
 }
 
 export interface ApiError {
-    message: "app";
+    message: 'app';
     error: {
         message: string;
         code: ApiErrorCodes;

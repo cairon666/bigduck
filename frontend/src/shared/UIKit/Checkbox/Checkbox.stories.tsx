@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Checkbox } from "./Checkbox";
+import { Checkbox } from './Checkbox';
 
 const meta: Meta<typeof Checkbox> = {
-    title: "Checkbox",
+    title: 'Checkbox',
     component: Checkbox,
 };
 
@@ -16,6 +16,6 @@ export const Default: Story = {
 
 export const WithLabel: Story = {
     args: {
-        label: "example",
+        label: 'example',
     },
 };

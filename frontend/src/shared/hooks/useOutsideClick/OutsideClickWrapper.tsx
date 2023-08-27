@@ -1,12 +1,12 @@
-import { ComponentProps, useRef } from "react";
+import { ComponentProps, useRef } from 'react';
 
-import { useOnClickOutside } from "../index";
+import { useOnClickOutside } from '../index';
 
 interface OutsideClickWrapperOwnProps {
     onOutsideClick: () => void;
 }
 
-export type OutsideClickWrapperProps = Omit<ComponentProps<"div">, keyof OutsideClickWrapperOwnProps> &
+export type OutsideClickWrapperProps = Omit<ComponentProps<'div'>, keyof OutsideClickWrapperOwnProps> &
     OutsideClickWrapperOwnProps;
 
 export function OutsideClickWrapper({ onOutsideClick, ...props }: OutsideClickWrapperProps) {

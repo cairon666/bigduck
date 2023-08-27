@@ -1,6 +1,6 @@
-import { UserScheme } from "@/entities/User";
-import { getUserDataById } from "@/entities/User/api/getUserDataById";
-import { createSlice } from "@reduxjs/toolkit";
+import { UserScheme } from '@/entities/User';
+import { getUserDataById } from '@/entities/User/api/getUserDataById';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState: UserScheme = {
     userData: undefined,
@@ -8,7 +8,7 @@ const initialState: UserScheme = {
 };
 
 const userSlice = createSlice({
-    name: "user",
+    name: 'user',
     initialState,
     reducers: {},
     extraReducers: (builder) => {

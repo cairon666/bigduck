@@ -1,11 +1,11 @@
-import { BadRequestError } from "@/shared/HTTPClient/ApiError";
+import { BadRequestError } from '@/shared/HTTPClient/ApiError';
 
 export class HTTPErr extends Error {
     public response: Response;
     public request: Request;
 
     public constructor(response: Response, request: Request) {
-        super("HTTP Error");
+        super('HTTP Error');
         this.response = response;
         this.request = request;
     }

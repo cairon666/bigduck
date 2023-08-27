@@ -1,2 +1,2 @@
-export * from "./mapRecord";
-export * from "./delay";
+export * from './mapRecord';
+export * from './delay';

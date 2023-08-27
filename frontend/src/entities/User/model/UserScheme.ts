@@ -1,4 +1,4 @@
-import { User } from "@/entities/User/model/User";
+import { User } from '@/entities/User/model/User';
 
 export interface UserScheme {
     userData?: User;

@@ -1,6 +1,6 @@
-import { Transition } from "@headlessui/react";
-import classNames from "classnames";
-import dayjs, { Dayjs } from "dayjs";
+import { Transition } from '@headlessui/react';
+import classNames from 'classnames';
+import dayjs, { Dayjs } from 'dayjs';
 import React, {
     ForwardedRef,
     Fragment,
@@ -10,19 +10,19 @@ import React, {
     useImperativeHandle,
     useRef,
     useState,
-} from "react";
-import { AiOutlineCalendar } from "react-icons/ai";
+} from 'react';
+import { AiOutlineCalendar } from 'react-icons/ai';
 
-import { OutsideClickWrapper, useModal } from "../../hooks";
-import { Input, InputProps } from "../Input";
-import { DDMMYYYYWithDot, DatePickerAdapter } from "./DatePickerAdapter";
-import { DatePickerContext } from "./DatePickerContext";
+import { OutsideClickWrapper, useModal } from '../../hooks';
+import { Input, InputProps } from '../Input';
+import { DDMMYYYYWithDot, DatePickerAdapter } from './DatePickerAdapter';
+import { DatePickerContext } from './DatePickerContext';
 
 export type DataTimePickerProps = {
     children?: ReactNode;
     // DatePickerAdapter - how date was display. default is DDMMYYYWithDot
     adapter?: DatePickerAdapter;
-    inputProps?: Omit<InputProps, "ref">;
+    inputProps?: Omit<InputProps, 'ref'>;
     minDate?: Dayjs;
     maxDate?: Dayjs;
     initDate?: Dayjs;
@@ -64,7 +64,7 @@ export const DatePicker = forwardRef(function DatePicker(
     );
 
     const classNameInput = classNames(inputProps?.className, {
-        ["w-full"]: fullWidth,
+        ['w-full']: fullWidth,
     });
 
     useImperativeHandle(ref, () => refInput.current as HTMLInputElement);
@@ -81,15 +81,15 @@ export const DatePicker = forwardRef(function DatePicker(
                 close: onClose,
             }}
         >
-            <OutsideClickWrapper className={classNames(className, "relative ")} onOutsideClick={onClose}>
+            <OutsideClickWrapper className={classNames(className, 'relative ')} onOutsideClick={onClose}>
                 <Input
                     onFocus={onOpen}
                     onClick={onOpen}
                     type="text"
                     ref={refInput}
                     readOnly
-                    value={adapter(chooseDate) || ""}
-                    rightIcon={<AiOutlineCalendar className={"h-4 w-4 text-gray-600"} />}
+                    value={adapter(chooseDate) || ''}
+                    rightIcon={<AiOutlineCalendar className={'h-4 w-4 text-gray-600'} />}
                     {...inputProps}
                     className={classNameInput}
                 />
@@ -105,11 +105,11 @@ export const DatePicker = forwardRef(function DatePicker(
                 >
                     <div
                         style={{
-                            top: "calc(100% + 4px)",
+                            top: 'calc(100% + 4px)',
                         }}
                         className={classNames(
                             classNameContent,
-                            "absolute left-2/4 z-10 -translate-x-2/4 rounded border bg-white shadow",
+                            'absolute left-2/4 z-10 -translate-x-2/4 rounded border bg-white shadow',
                         )}
                     >
                         {children}

@@ -1,2 +1,2 @@
-export * from "./NotifyBlock";
-export * from "./NotifyBlockSkeleton";
+export * from './NotifyBlock';
+export * from './NotifyBlockSkeleton';

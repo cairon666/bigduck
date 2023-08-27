@@ -9,6 +9,10 @@ import (
 )
 
 func main() {
+	postgresMigrations()
+}
+
+func postgresMigrations() {
 	if len(os.Args) != 3 { //nolint:gomnd
 		panic("migrations should start with: dir postgresUrl")
 	}

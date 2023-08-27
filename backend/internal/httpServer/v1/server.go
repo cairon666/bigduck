@@ -6,8 +6,10 @@ import (
 	"net/http"
 
 	"backend/internal/config"
+	"backend/internal/domain/usecases/attachmentusecase"
 	"backend/internal/domain/usecases/authusecase"
 	"backend/internal/domain/usecases/userusecase"
+	"backend/internal/httpServer/v1/attachmentcontroller"
 	"backend/internal/httpServer/v1/authcontroller"
 	"backend/internal/httpServer/v1/authhelper"
 	"backend/internal/httpServer/v1/httphelper"
@@ -26,9 +28,10 @@ type Controller interface {
 }
 
 type Server struct {
-	conf           *config.Config
-	authController Controller
-	userController Controller
+	conf                 *config.Config
+	authController       Controller
+	userController       Controller
+	attachmentController Controller
 
 	authHelper AuthHelper
 	server     *http.Server
@@ -37,10 +40,11 @@ type Server struct {
 type Params struct {
 	dig.In
 
-	Log         logger.Logger
-	Conf        *config.Config
-	AuthUsecase *authusecase.Usecase
-	UserUsecase *userusecase.Usecase
+	Log              logger.Logger
+	Conf             *config.Config
+	AuthUsecase      *authusecase.Usecase
+	UserUsecase      *userusecase.Usecase
+	AttachentUsecase *attachmentusecase.Usecase
 }
 
 func NewServer(params Params) *Server {
@@ -64,6 +68,11 @@ func NewServer(params Params) *Server {
 			UserUsecase: params.UserUsecase,
 			HTTPHelper:  httpHelper,
 			AuthHelper:  authHelper,
+		}),
+		attachmentController: attachmentcontroller.NewController(attachmentcontroller.Params{
+			AttachmentUsecase: params.AttachentUsecase,
+			HTTPHelper:        httpHelper,
+			AuthHelper:        authHelper,
 		}),
 	}
 }

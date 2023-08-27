@@ -14,4 +14,6 @@ const (
 	CodeIDAlreadyExist
 	CodeRoleAlreadyExist
 	CodeNewEmailEqualOldEmail
+	CodeLargeImage
+	CodeBadImageExtension
 )

@@ -1,9 +1,9 @@
-import { AccordionContext } from "@/shared/UIKit/Accordion/AccordionContext";
-import classNames from "classnames";
-import { ComponentProps, ReactNode, useCallback, useContext, useEffect } from "react";
-import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
+import { AccordionContext } from '@/shared/UIKit/Accordion/AccordionContext';
+import classNames from 'classnames';
+import { ComponentProps, ReactNode, useCallback, useContext, useEffect } from 'react';
+import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 
-import style from "./AccordionItem.module.scss";
+import style from './AccordionItem.module.scss';
 
 export interface AccordionItemOwnProps {
     className?: string;
@@ -12,10 +12,10 @@ export interface AccordionItemOwnProps {
     title: ReactNode;
     children?: ReactNode;
     value: string;
-    theme?: "default" | "flush";
+    theme?: 'default' | 'flush';
 }
 
-export type AccordionItemProps = Omit<ComponentProps<"div">, keyof AccordionItemOwnProps> & AccordionItemOwnProps;
+export type AccordionItemProps = Omit<ComponentProps<'div'>, keyof AccordionItemOwnProps> & AccordionItemOwnProps;
 
 export function AccordionItem({
     left,
@@ -24,7 +24,7 @@ export function AccordionItem({
     value: valueProps,
     isInit,
     children,
-    theme = "default",
+    theme = 'default',
     ...props
 }: AccordionItemProps) {
     const { value, onChange } = useContext(AccordionContext);
@@ -44,13 +44,13 @@ export function AccordionItem({
 
     const wrapperClassName = classNames(style.wrapper, {
         [style.active]: isActive,
-        [style.default]: theme === "default",
-        [style.flush]: theme === "flush",
+        [style.default]: theme === 'default',
+        [style.flush]: theme === 'flush',
     });
 
     return (
         <div className={wrapperClassName} {...props}>
-            <button type={"button"} className={style.button} onClick={onClick}>
+            <button type={'button'} className={style.button} onClick={onClick}>
                 <p className={style.header}>
                     {left}
                     <span className={style.title}>{title}</span>

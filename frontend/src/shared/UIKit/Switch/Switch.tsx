@@ -1,6 +1,6 @@
-import { SwitchContext } from "@/shared/UIKit/Switch/SwitchContext";
-import classNames from "classnames";
-import { ReactNode, useCallback, useState } from "react";
+import { SwitchContext } from '@/shared/UIKit/Switch/SwitchContext';
+import classNames from 'classnames';
+import { ReactNode, useCallback, useState } from 'react';
 
 export type SwitchProps = {
     children?: ReactNode;
@@ -26,7 +26,7 @@ export function Switch({ children, onChange: onChangeProps, className }: SwitchP
                 onChange: onChange,
             }}
         >
-            <div className={classNames(className, "flex items-center gap-2")}>{children}</div>
+            <div className={classNames(className, 'flex items-center gap-2')}>{children}</div>
         </SwitchContext.Provider>
     );
 }

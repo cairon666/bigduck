@@ -6,19 +6,19 @@ import {
     RecoverPasswordUpdateRequest,
     postPostLogin,
     postPostRegister,
-} from "@/features/auth-forms";
-import { mapRecord } from "@/shared/utils";
-import { createSlice } from "@reduxjs/toolkit";
+} from '@/features/auth-forms';
+import { mapRecord } from '@/shared/utils';
+import { createSlice } from '@reduxjs/toolkit';
 
 export interface AuthScheme {
     login: {
         isLoading?: boolean;
-        error?: "emailNotFound" | "wrongPassword";
+        error?: 'emailNotFound' | 'wrongPassword';
         validateError?: Partial<Record<keyof PostLoginRequest, string>>;
     };
     register: {
         isLoading?: boolean;
-        error?: "emailAlreadyExist";
+        error?: 'emailAlreadyExist';
         validateError?: Partial<Record<keyof PostRegisterRequest, string>>;
     };
     recoverPassword: {
@@ -49,7 +49,7 @@ const initialState: AuthScheme = {
 };
 
 const slice = createSlice({
-    name: "auth",
+    name: 'auth',
     initialState: initialState,
     reducers: {},
     extraReducers: (builder) => {
@@ -66,7 +66,7 @@ const slice = createSlice({
                 if (!action.payload) return;
 
                 switch (action.payload.message) {
-                    case "app": {
+                    case 'app': {
                         for (const err of action.payload.error) {
                             // switch (err.code) {
                             //     case
@@ -74,7 +74,7 @@ const slice = createSlice({
                         }
                         break;
                     }
-                    case "validate": {
+                    case 'validate': {
                         state.login.validateError = mapRecord(action.payload.validate, (_, v) => v.message);
                         break;
                     }

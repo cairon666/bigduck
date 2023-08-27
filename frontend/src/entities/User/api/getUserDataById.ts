@@ -1,9 +1,9 @@
-import { ThunkConfig, ThunkExtraArgKeys } from "@/app/providers/storeProvider";
-import { Gender, User } from "@/entities/User";
-import { localStorageKeys } from "@/shared/const/localStorage";
-import { BadRequestErr } from "@/shared/HTTPClient";
-import { ApiError } from "@/shared/HTTPClient/ApiError";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { ThunkConfig, ThunkExtraArgKeys } from '@/app/providers/storeProvider';
+import { Gender, User } from '@/entities/User';
+import { localStorageKeys } from '@/shared/const/localStorage';
+import { BadRequestErr } from '@/shared/HTTPClient';
+import { ApiError } from '@/shared/HTTPClient/ApiError';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 interface getUserByIdResponse {
     id: string;
@@ -17,13 +17,13 @@ interface getUserByIdResponse {
 }
 
 export const getUserDataById = createAsyncThunk<User, string, ThunkConfig<ApiError>>(
-    "user/getUserDataById",
+    'user/getUserDataById',
     async (id_user, ctx) => {
         const { extra, rejectWithValue } = ctx;
 
         try {
             const res = await extra[ThunkExtraArgKeys.api]
-                .createAuthorizedClient(localStorage.getItem(localStorageKeys.ACCESS_TOKEN) || "")
+                .createAuthorizedClient(localStorage.getItem(localStorageKeys.ACCESS_TOKEN) || '')
                 .get(`/api/v1/user/${id_user}`)
                 .then((res) => res.json() as Promise<getUserByIdResponse>);
 
@@ -44,7 +44,7 @@ export const getUserDataById = createAsyncThunk<User, string, ThunkConfig<ApiErr
                 return rejectWithValue(await e.parseApiError());
             }
 
-            throw new Error("unhandled error in getUserDataById!");
+            throw new Error('unhandled error in getUserDataById!');
         }
     },
 );

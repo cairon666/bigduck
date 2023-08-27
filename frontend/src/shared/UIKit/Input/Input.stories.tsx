@@ -1,11 +1,11 @@
-import { PasswordInput } from "@/shared/UIKit/Input/PasswordInput";
-import type { Meta, StoryObj } from "@storybook/react";
-import { GiPlasticDuck } from "react-icons/gi";
+import { PasswordInput } from '@/shared/UIKit/Input/PasswordInput';
+import type { Meta, StoryObj } from '@storybook/react';
+import { GiPlasticDuck } from 'react-icons/gi';
 
-import { Input } from "./Input";
+import { Input } from './Input';
 
 const meta: Meta<typeof Input> = {
-    title: "Input",
+    title: 'Input',
     component: Input,
 };
 
@@ -14,22 +14,22 @@ type Story = StoryObj<typeof Input>;
 
 export const Filled: Story = {
     args: {
-        label: "example",
-        placeholder: "example",
+        label: 'example',
+        placeholder: 'example',
     },
 };
 
 export const Primary: Story = {
     args: {
         ...Filled.args,
-        theme: "primary",
+        theme: 'primary',
     },
 };
 
 export const Clear: Story = {
     args: {
         ...Filled.args,
-        theme: "clear",
+        theme: 'clear',
     },
 };
 
@@ -43,14 +43,14 @@ export const Required: Story = {
 export const WithError: Story = {
     args: {
         ...Filled.args,
-        error: "example",
+        error: 'example',
     },
 };
 
 export const WithRightIcon: Story = {
     args: {
         ...Filled.args,
-        rightIcon: <GiPlasticDuck className={"h-4 w-4"} />,
+        rightIcon: <GiPlasticDuck className={'h-4 w-4'} />,
     },
 };
 

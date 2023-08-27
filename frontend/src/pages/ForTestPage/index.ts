@@ -1,1 +1,1 @@
-export * from "./ForTestPage";
+export * from './ForTestPage';

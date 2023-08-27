@@ -1,2 +1,2 @@
-export * from "./UserAvatar";
-export * from "./UserNav";
+export * from './UserAvatar';
+export * from './UserNav';

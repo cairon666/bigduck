@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Loader } from "./Loader";
+import { Loader } from './Loader';
 
 const meta: Meta<typeof Loader> = {
-    title: "Loader",
+    title: 'Loader',
     component: Loader,
 };
 
@@ -12,18 +12,18 @@ type Story = StoryObj<typeof Loader>;
 
 export const Small: Story = {
     args: {
-        size: "small",
+        size: 'small',
     },
 };
 
 export const Medium: Story = {
     args: {
-        size: "medium",
+        size: 'medium',
     },
 };
 
 export const Large: Story = {
     args: {
-        size: "large",
+        size: 'large',
     },
 };

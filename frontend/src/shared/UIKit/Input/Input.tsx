@@ -1,9 +1,9 @@
-import classNames from "classnames";
-import { ComponentProps, ForwardedRef, ReactNode, forwardRef } from "react";
+import classNames from 'classnames';
+import { ComponentProps, ForwardedRef, ReactNode, forwardRef } from 'react';
 
-import { Error } from "../Error";
-import { Label } from "../Label";
-import style from "./Input.module.scss";
+import { Error } from '../Error';
+import { Label } from '../Label';
+import style from './Input.module.scss';
 
 export type InputOwnProps = {
     rightIcon?: ReactNode;
@@ -12,11 +12,11 @@ export type InputOwnProps = {
     isError?: boolean;
     className?: string;
     label?: ReactNode;
-    theme?: "clear" | "primary";
+    theme?: 'clear' | 'primary';
     required?: boolean;
 };
 
-export type InputProps = Omit<ComponentProps<"input">, keyof InputOwnProps | "ref"> & InputOwnProps;
+export type InputProps = Omit<ComponentProps<'input'>, keyof InputOwnProps | 'ref'> & InputOwnProps;
 
 export const Input = forwardRef(function Input(
     {
@@ -27,7 +27,7 @@ export const Input = forwardRef(function Input(
         className,
         rightIcon,
         onClickRightIcon,
-        theme = "primary",
+        theme = 'primary',
         ...otherProps
     }: InputProps,
     ref: ForwardedRef<HTMLInputElement>,
@@ -35,8 +35,8 @@ export const Input = forwardRef(function Input(
     const inputClassName = classNames(className, style.input);
 
     const labelClassName = classNames(style.label, {
-        [style.primary]: theme === "primary",
-        [style.clear]: theme === "clear",
+        [style.primary]: theme === 'primary',
+        [style.clear]: theme === 'clear',
         [style.error]: error || isError,
     });
 
@@ -46,7 +46,7 @@ export const Input = forwardRef(function Input(
             <div className={style.wrapper}>
                 <input {...otherProps} ref={ref} className={inputClassName} required={required} />
                 {rightIcon && (
-                    <button type={"button"} onClick={onClickRightIcon} className={style.button}>
+                    <button type={'button'} onClick={onClickRightIcon} className={style.button}>
                         {rightIcon}
                     </button>
                 )}

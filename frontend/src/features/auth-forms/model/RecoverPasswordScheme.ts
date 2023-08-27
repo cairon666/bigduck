@@ -1,11 +1,11 @@
-import { object, ref, string } from "yup";
+import { object, ref, string } from 'yup';
 
 export interface SendEmailFormScheme {
     email: string;
 }
 
 export const sendEmailFormScheme = object<SendEmailFormScheme>({
-    email: string().required("Почта обязательное поле").email("Неправильный формат почты"),
+    email: string().required('Почта обязательное поле').email('Неправильный формат почты'),
 });
 
 export interface UpdatePasswordFormScheme {
@@ -14,13 +14,13 @@ export interface UpdatePasswordFormScheme {
 }
 
 export const updatePasswordFormScheme = object<UpdatePasswordFormScheme>({
-    password: string().required("Пароль обязательное поле"),
+    password: string().required('Пароль обязательное поле'),
     repeatPassword: string()
-        .required("Пароль обязательное поле")
-        .oneOf([ref("password")], "Пароли должны совпадать"),
+        .required('Пароль обязательное поле')
+        .oneOf([ref('password')], 'Пароли должны совпадать'),
 });
 
-const CodeRegExp = new RegExp("^[0-9]{4}$");
+const CodeRegExp = new RegExp('^[0-9]{4}$');
 
 export interface ConfirmCodeFormScheme {
     code: string;

@@ -1,10 +1,10 @@
-import "./styles/index.scss";
+import './styles/index.scss';
 
-import { AppRouter } from "@/app/providers/routerProvider/ui/AppRouter";
-import { StrictMode } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { AppRouter } from '@/app/providers/routerProvider/ui/AppRouter';
+import { StrictMode } from 'react';
+import { BrowserRouter } from 'react-router-dom';
 
-import { StoreProvider } from "./providers/storeProvider";
+import { StoreProvider } from './providers/storeProvider';
 
 export const App = () => {
     return (

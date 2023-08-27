@@ -1,5 +1,5 @@
 const config = {
-    singleQuote: false,
+    singleQuote: true,
     trailingComma: 'all',
     quoteProps: 'consistent',
     jsxSingleQuote: false,

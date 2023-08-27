@@ -1,4 +1,4 @@
-import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
+import { RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri';
 
 export interface ChangeArrowsProps {
     onNext: () => void;
@@ -7,9 +7,9 @@ export interface ChangeArrowsProps {
 
 export function ChangeArrows({ onNext, onPrev }: ChangeArrowsProps) {
     return (
-        <div className={"flex items-center gap-2"}>
-            <RiArrowLeftSLine onClick={onPrev} className={"h-5 w-5 cursor-pointer rounded-full text-gray-900"} />
-            <RiArrowRightSLine onClick={onNext} className={"h-5 w-5 cursor-pointer rounded-full text-gray-900"} />
+        <div className={'flex items-center gap-2'}>
+            <RiArrowLeftSLine onClick={onPrev} className={'h-5 w-5 cursor-pointer rounded-full text-gray-900'} />
+            <RiArrowRightSLine onClick={onNext} className={'h-5 w-5 cursor-pointer rounded-full text-gray-900'} />
         </div>
     );
 }

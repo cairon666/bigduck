@@ -12,5 +12,5 @@ type AppHTTPError struct {
 }
 
 func (h *HTTPHelper) sendAppError(w http.ResponseWriter, err *exceptions.Error) {
-	h.SendJSON(w, AppHTTPError{HTTPError{"app"}, err}, http.StatusBadRequest)
+	h.SendJSON(w, AppHTTPError{HTTPError{"app"}, err}, err.HTTPStatus)
 }

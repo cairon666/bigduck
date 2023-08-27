@@ -13,4 +13,5 @@ var (
 	regexpNotNumberCharacterSpecial = regexp.MustCompile(`[^0-9a-zA-Z_]`)
 	regexpNotLettersAndSpace        = regexp.MustCompile(`[^\p{L} ]`)
 	regexpFourCode                  = regexp.MustCompile(`^[0-9]{4}$`)
+	regexpFilenameImage             = regexp.MustCompile(`.(?:jpg|gif|png)$`)
 )

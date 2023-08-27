@@ -66,6 +66,12 @@ type Config struct {
 	NATS struct {
 		URL string `env:"NATS_URL" envDefault:"nats://0.0.0.0:4222"`
 	}
+	AWS struct {
+		Region          string `env:"AWS_REGION"            envDefault:"us-east-1"`
+		AccessKeyID     string `env:"AWS_ACCESS_KEY_ID"     envDefault:"minioadmin"`
+		SecretAccessKey string `env:"AWS_SECRET_ACCESS_KEY" envDefault:"minioadmin"`
+		Endpoint        string `env:"AWS_ENDPOINT"          envDefault:"http://localhost:9000"`
+	}
 }
 
 var (

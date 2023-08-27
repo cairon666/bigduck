@@ -1,8 +1,8 @@
-import ky, { HTTPError as KyHTTPError } from "ky";
-import { KyInstance } from "ky/distribution/types/ky";
+import ky, { HTTPError as KyHTTPError } from 'ky';
+import { KyInstance } from 'ky/distribution/types/ky';
 
-import { ApiOptions, HTTPClient } from "./HTTPClient";
-import { BadRequestErr, ForbiddenErr, InternalErr, UnauthorizedErr, UnknownErr } from "./HTTPErr";
+import { ApiOptions, HTTPClient } from './HTTPClient';
+import { BadRequestErr, ForbiddenErr, InternalErr, UnauthorizedErr, UnknownErr } from './HTTPErr';
 
 export interface KyApiClientOptions {
     prefixUrl?: string;
@@ -25,7 +25,7 @@ export class KyHTTPClient implements HTTPClient {
 
         if (options?.body) {
             body = JSON.stringify(options.body);
-            headers.set("Content-Type", "application/json");
+            headers.set('Content-Type', 'application/json');
         }
 
         return this.client
@@ -51,23 +51,23 @@ export class KyHTTPClient implements HTTPClient {
                     }
                 }
 
-                throw new Error("Unhandled error when call request!");
+                throw new Error('Unhandled error when call request!');
             });
     }
 
     public post(endpoint: string, options?: ApiOptions): Promise<Response> {
-        return this.fetch(endpoint, "POST", options);
+        return this.fetch(endpoint, 'POST', options);
     }
 
     public put(endpoint: string, options?: ApiOptions): Promise<Response> {
-        return this.fetch(endpoint, "PUT", options);
+        return this.fetch(endpoint, 'PUT', options);
     }
 
     public get(endpoint: string, options?: ApiOptions): Promise<Response> {
-        return this.fetch(endpoint, "GET", options);
+        return this.fetch(endpoint, 'GET', options);
     }
 
     public delete(endpoint: string, options?: ApiOptions): Promise<Response> {
-        return this.fetch(endpoint, "DELETE", options);
+        return this.fetch(endpoint, 'DELETE', options);
     }
 }

@@ -1,11 +1,11 @@
-import { NotifyBlock, NotifyBlockSkeleton } from "@/entities/Notify";
-import { useNotifyViewer } from "@/entities/Notify/model/selectors";
-import { useModal, useOnClickOutside } from "@/shared/hooks";
-import { Button, Card } from "@/shared/UIKit";
-import { Transition } from "@headlessui/react";
-import classNames from "classnames";
-import { Fragment, useRef } from "react";
-import { MdOutlineNotificationsNone } from "react-icons/md";
+import { NotifyBlock, NotifyBlockSkeleton } from '@/entities/Notify';
+import { useNotifyViewer } from '@/entities/Notify/model/selectors';
+import { useModal, useOnClickOutside } from '@/shared/hooks';
+import { Button, Card } from '@/shared/UIKit';
+import { Transition } from '@headlessui/react';
+import classNames from 'classnames';
+import { Fragment, useRef } from 'react';
+import { MdOutlineNotificationsNone } from 'react-icons/md';
 
 export function Notify() {
     const ref = useRef<HTMLDivElement>(null);
@@ -19,16 +19,16 @@ export function Notify() {
         <div
             ref={ref}
             className={classNames(
-                "relative flex h-full items-center justify-center px-2 py-2 hover:bg-gray-20",
-                isOpen ? "bg-gray-20" : "",
+                'relative flex h-full items-center justify-center px-2 py-2 hover:bg-gray-20',
+                isOpen ? 'bg-gray-20' : '',
             )}
         >
-            <Button onClick={onOpen} onFocus={onOpen} theme={"gray"} onlyIcon>
-                <MdOutlineNotificationsNone className={"h-5 w-5 text-gray-400"} />
+            <Button onClick={onOpen} onFocus={onOpen} theme={'gray'} onlyIcon>
+                <MdOutlineNotificationsNone className={'h-5 w-5 text-gray-400'} />
                 {hasUnViewed && (
                     <>
-                        <div className={"absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-800"} />
-                        <div className={"absolute -top-1 -right-1 h-2 w-2 animate-ping rounded-full bg-red-800"} />
+                        <div className={'absolute -right-1 -top-1 h-2 w-2 rounded-full bg-red-800'} />
+                        <div className={'absolute -right-1 -top-1 h-2 w-2 animate-ping rounded-full bg-red-800'} />
                     </>
                 )}
             </Button>
@@ -44,11 +44,11 @@ export function Notify() {
             >
                 <Card
                     className={
-                        "absolute right-0 top-full z-20 flex w-72 flex-col overflow-hidden !rounded-t-none font-light shadow"
+                        'absolute right-0 top-full z-20 flex w-72 flex-col overflow-hidden !rounded-t-none font-light shadow'
                     }
                 >
-                    <div className={"bg-gray-40 py-1 px-4 text-lg font-normal"}>Уведомления</div>
-                    <div className={"scrollbar flex max-h-56 flex-col overflow-y-auto"}>
+                    <div className={'bg-gray-40 px-4 py-1 text-lg font-normal'}>Уведомления</div>
+                    <div className={'scrollbar flex max-h-56 flex-col overflow-y-auto'}>
                         {isLoading && !notifies && (
                             <>
                                 <NotifyBlockSkeleton />

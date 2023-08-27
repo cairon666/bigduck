@@ -1,3 +1,3 @@
-import { Support } from "./Support";
+import { Support } from './Support';
 
 export default Support;

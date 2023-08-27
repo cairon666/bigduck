@@ -1,11 +1,11 @@
-import { Transition } from "@headlessui/react";
-import classNames from "classnames";
-import React, { Fragment, ReactNode, useCallback, useEffect, useRef, useState } from "react";
-import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
+import { Transition } from '@headlessui/react';
+import classNames from 'classnames';
+import React, { Fragment, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 
-import { OutsideClickWrapper, useModal } from "../../hooks";
-import { Input, InputProps } from "../Input";
-import { SelectContext } from "./SelectContext";
+import { OutsideClickWrapper, useModal } from '../../hooks';
+import { Input, InputProps } from '../Input';
+import { SelectContext } from './SelectContext';
 
 export type SelectItemValue = {
     label: string;
@@ -17,7 +17,7 @@ interface SelectOwnProps {
     value?: SelectItemValue;
     children?: ReactNode;
     onChange?: (value?: SelectItemValue) => void;
-    inputProps?: Omit<InputProps, "value" | "ref">;
+    inputProps?: Omit<InputProps, 'value' | 'ref'>;
 }
 
 export type SelectProps = SelectOwnProps;
@@ -42,20 +42,20 @@ export function Select({ value: valueProps, initValue, inputProps, children, onC
 
     return (
         <SelectContext.Provider value={{ value: value, change: onChange }}>
-            <OutsideClickWrapper onOutsideClick={onClose} className={"relative"}>
+            <OutsideClickWrapper onOutsideClick={onClose} className={'relative'}>
                 <Input
                     readOnly
                     ref={refInput}
-                    value={value?.label || ""}
+                    value={value?.label || ''}
                     rightIcon={
                         isOpen ? (
-                            <RiArrowUpSLine className={"h-5 w-5 text-gray-600"} />
+                            <RiArrowUpSLine className={'h-5 w-5 text-gray-600'} />
                         ) : (
-                            <RiArrowDownSLine className={"h-5 w-5 text-gray-600"} />
+                            <RiArrowDownSLine className={'h-5 w-5 text-gray-600'} />
                         )
                     }
                     {...inputProps}
-                    className={classNames("cursor-pointer", inputProps?.className)}
+                    className={classNames('cursor-pointer', inputProps?.className)}
                     onClick={onOpen}
                 />
                 <Transition
@@ -70,9 +70,9 @@ export function Select({ value: valueProps, initValue, inputProps, children, onC
                 >
                     <div
                         style={{
-                            top: "calc(100% + 4px)",
+                            top: 'calc(100% + 4px)',
                         }}
-                        className={"absolute left-0 right-0 z-10 rounded border bg-white px-1 py-2 shadow"}
+                        className={'absolute left-0 right-0 z-10 rounded border bg-white px-1 py-2 shadow'}
                     >
                         {children}
                     </div>

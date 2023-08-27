@@ -1,4 +1,4 @@
-import { object, string } from "yup";
+import { object, string } from 'yup';
 
 export interface LoginFormScheme {
     email: string;
@@ -6,6 +6,6 @@ export interface LoginFormScheme {
 }
 
 export const loginFormScheme = object({
-    email: string().required("Почта обязательное поле"),
-    password: string().required("Пароль обязательное поле"),
+    email: string().required('Почта обязательное поле'),
+    password: string().required('Пароль обязательное поле'),
 });

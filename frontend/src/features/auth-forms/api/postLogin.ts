@@ -1,8 +1,8 @@
-import { ThunkConfig, ThunkExtraArgKeys } from "@/app/providers/storeProvider";
-import { localStorageKeys } from "@/shared/const/localStorage";
-import { BadRequestErr, BadRequestError } from "@/shared/HTTPClient";
-import { delay } from "@/shared/utils";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { ThunkConfig, ThunkExtraArgKeys } from '@/app/providers/storeProvider';
+import { localStorageKeys } from '@/shared/const/localStorage';
+import { BadRequestErr, BadRequestError } from '@/shared/HTTPClient';
+import { delay } from '@/shared/utils';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export interface PostLoginRequest {
     email: string;
@@ -15,7 +15,7 @@ export interface PostLoginResponse {
 }
 
 export const postPostLogin = createAsyncThunk<PostLoginResponse, PostLoginRequest, ThunkConfig<BadRequestError>>(
-    "auth/postPostLogin",
+    'auth/postPostLogin',
     async (req, ctx) => {
         const { extra, rejectWithValue, fulfillWithValue } = ctx;
 
@@ -30,7 +30,7 @@ export const postPostLogin = createAsyncThunk<PostLoginResponse, PostLoginReques
             localStorage.setItem(localStorageKeys.USER_ID, resp.id_user);
             localStorage.setItem(localStorageKeys.ACCESS_TOKEN, resp.access_token);
 
-            extra[ThunkExtraArgKeys.navigate]("/panel");
+            extra[ThunkExtraArgKeys.navigate]('/panel');
 
             return fulfillWithValue(resp);
         } catch (e: unknown) {
@@ -38,7 +38,7 @@ export const postPostLogin = createAsyncThunk<PostLoginResponse, PostLoginReques
                 return rejectWithValue(await e.parseApiError());
             }
 
-            throw new Error("unhandled error in postRecoverPasswordUpdate!");
+            throw new Error('unhandled error in postRecoverPasswordUpdate!');
         }
     },
 );

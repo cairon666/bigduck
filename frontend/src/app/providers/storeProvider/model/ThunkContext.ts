@@ -1,10 +1,10 @@
-import { StateSchema } from "@/app/providers/storeProvider";
-import { HTTPClientFactory } from "@/shared/HTTPClient";
-import { NavigateFunction, useNavigate } from "react-router-dom";
+import { StateSchema } from '@/app/providers/storeProvider';
+import { HTTPClientFactory } from '@/shared/HTTPClient';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
 export enum ThunkExtraArgKeys {
-    api = "api",
-    navigate = "navigate",
+    api = 'api',
+    navigate = 'navigate',
 }
 
 export interface ThunkExtraArg {

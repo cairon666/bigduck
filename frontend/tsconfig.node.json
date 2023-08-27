@@ -6,6 +6,7 @@
     "allowSyntheticDefaultImports": true
   },
   "include": [
-    "*.config.ts"
+    "*.config.ts",
+    "*.config.js"
   ]
 }

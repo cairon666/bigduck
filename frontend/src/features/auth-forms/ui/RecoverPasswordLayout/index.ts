@@ -1,1 +1,1 @@
-export * from "./RecoverPasswordLayout";
+export * from './RecoverPasswordLayout';

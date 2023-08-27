@@ -1,10 +1,10 @@
-import { postRecoverPasswordConfirm, postRecoverPasswordSend, useRecoverPasswordViewer } from "@/features/auth-forms";
-import { useAppDispatch } from "@/shared/hooks";
-import { Button, Info, Input } from "@/shared/UIKit";
-import { useCallback } from "react";
+import { postRecoverPasswordConfirm, postRecoverPasswordSend, useRecoverPasswordViewer } from '@/features/auth-forms';
+import { useAppDispatch } from '@/shared/hooks';
+import { Button, Info, Input } from '@/shared/UIKit';
+import { useCallback } from 'react';
 
-import { TimerBlock } from "./TimerBlock";
-import { useConfirmCodeStage } from "./useConfirmCodeStage";
+import { TimerBlock } from './TimerBlock';
+import { useConfirmCodeStage } from './useConfirmCodeStage';
 
 export function RecoverPasswordConfirmForm() {
     const dispatch = useAppDispatch();
@@ -16,7 +16,7 @@ export function RecoverPasswordConfirmForm() {
     const onRepeatSend = useCallback(() => {
         dispatch(
             postRecoverPasswordSend({
-                email: email || "",
+                email: email || '',
             }),
         );
     }, [email]);
@@ -25,7 +25,7 @@ export function RecoverPasswordConfirmForm() {
         (code: string) => {
             dispatch(
                 postRecoverPasswordConfirm({
-                    email: email || "",
+                    email: email || '',
                     code: code,
                 }),
             );
@@ -37,46 +37,46 @@ export function RecoverPasswordConfirmForm() {
         useConfirmCodeStage(onSubmit);
 
     return (
-        <form className={"flex flex-col gap-2"}>
-            <Info className={"text-center"} type={"warn"} as={"p"}>
+        <form className={'flex flex-col gap-2'}>
+            <Info className={'text-center'} type={'warn'} as={'p'}>
                 Введите код, который мы выслали на почту
             </Info>
-            <div className={"flex justify-between gap-2"}>
+            <div className={'flex justify-between gap-2'}>
                 <Input
-                    name={"firstNumber"}
-                    placeholder={"0"}
+                    name={'firstNumber'}
+                    placeholder={'0'}
                     ref={refFirstInput}
                     onInput={onInput}
-                    className={"text-center"}
+                    className={'text-center'}
                     isError={!!validateError?.code}
                 />
                 <Input
-                    name={"secondNumber"}
-                    className={"text-center"}
-                    placeholder={"0"}
+                    name={'secondNumber'}
+                    className={'text-center'}
+                    placeholder={'0'}
                     ref={refSecondInput}
                     onInput={onInput}
                     isError={!!validateError?.code}
                 />
                 <Input
-                    name={"thirdNumber"}
-                    className={"text-center"}
-                    placeholder={"0"}
+                    name={'thirdNumber'}
+                    className={'text-center'}
+                    placeholder={'0'}
                     ref={refThirdInput}
                     onInput={onInput}
                     isError={!!validateError?.code}
                 />
                 <Input
-                    name={"fourNumber"}
-                    className={"text-center"}
-                    placeholder={"0"}
+                    name={'fourNumber'}
+                    className={'text-center'}
+                    placeholder={'0'}
                     ref={refFourInput}
                     onInput={onInput}
                     isError={!!validateError?.code}
                 />
             </div>
             <TimerBlock onRepeatSend={onRepeatSend} />
-            <Button type={"button"} onClick={onClick} disabled={isLoading} isLoading={isLoading} className={"w-full"}>
+            <Button type={'button'} onClick={onClick} disabled={isLoading} isLoading={isLoading} className={'w-full'}>
                 Отправить
             </Button>
         </form>

@@ -1,2 +1,2 @@
-export * from "./ui/StoreProvider";
-export * from "./model";
+export * from './ui/StoreProvider';
+export * from './model';

@@ -1,9 +1,9 @@
-import classNames from "classnames";
-import React, { useCallback, useContext } from "react";
+import classNames from 'classnames';
+import React, { useCallback, useContext } from 'react';
 
-import { SelectItemValue } from "../Select";
-import { SelectContext } from "../SelectContext";
-import { SelectItem } from "../SelectItem/SelectItem";
+import { SelectItemValue } from '../Select';
+import { SelectContext } from '../SelectContext';
+import { SelectItem } from '../SelectItem/SelectItem';
 
 export interface SelectItemsProps {
     items: SelectItemValue[];
@@ -16,8 +16,8 @@ export function SelectItems({ items, className }: SelectItemsProps) {
     const onClick = useCallback((value: SelectItemValue | undefined) => () => change(value), [change]);
 
     return (
-        <div className={classNames("scrollbar max-h-[200px] overflow-y-auto", className)}>
-            <div className={"flex w-full flex-col px-2 "}>
+        <div className={classNames('scrollbar max-h-[200px] overflow-y-auto', className)}>
+            <div className={'flex w-full flex-col px-2 '}>
                 {items.map((item) => (
                     <SelectItem
                         isActive={value?.value === item.value}

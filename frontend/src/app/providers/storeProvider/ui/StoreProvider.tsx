@@ -1,6 +1,6 @@
-import { createReduxStore } from "@/app/providers/storeProvider";
-import { ReactNode } from "react";
-import { Provider } from "react-redux";
+import { createReduxStore } from '@/app/providers/storeProvider';
+import { ReactNode } from 'react';
+import { Provider } from 'react-redux';
 
 interface StoreProviderProps {
     children?: ReactNode;

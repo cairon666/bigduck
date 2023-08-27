@@ -1,1 +1,1 @@
-export * from "./PanelPage";
+export * from './PanelPage';

@@ -1,2 +1,2 @@
-export * from "./useOutsideClick";
-export * from "./OutsideClickWrapper";
+export * from './useOutsideClick';
+export * from './OutsideClickWrapper';

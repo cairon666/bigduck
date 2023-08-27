@@ -1,1 +1,1 @@
-export * from "./RecoverPasswordUpdateForm";
+export * from './RecoverPasswordUpdateForm';

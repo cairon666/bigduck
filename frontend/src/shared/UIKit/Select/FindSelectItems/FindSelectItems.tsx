@@ -1,7 +1,7 @@
-import { Input, InputProps } from "@/shared/UIKit";
-import { SelectItems, SelectItemsProps } from "@/shared/UIKit/Select/SelectItems/SelectItems";
-import { ChangeEvent, useCallback, useState, useTransition } from "react";
-import { BiSearch } from "react-icons/all";
+import { Input, InputProps } from '@/shared/UIKit';
+import { SelectItems, SelectItemsProps } from '@/shared/UIKit/Select/SelectItems/SelectItems';
+import { ChangeEvent, useCallback, useState, useTransition } from 'react';
+import { BiSearch } from 'react-icons/bi';
 
 export interface FindSelectItemsOwnProps {
     findInputProps?: InputProps;
@@ -30,9 +30,9 @@ export function FindSelectItems({ items: itemsProps, findInputProps, ...props }:
             <Input
                 {...findInputProps}
                 onChange={onChange}
-                rightIcon={<BiSearch className={"h-4 w-4 text-gray-400"} />}
+                rightIcon={<BiSearch className={'h-4 w-4 text-gray-400'} />}
             />
-            <SelectItems className={"mt-2 border-t-2 border-t-gray-40"} items={items} {...props} />
+            <SelectItems className={'mt-2 border-t-2 border-t-gray-40'} items={items} {...props} />
         </>
     );
 }

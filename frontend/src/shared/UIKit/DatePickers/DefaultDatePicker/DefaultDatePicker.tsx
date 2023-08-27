@@ -1,19 +1,19 @@
-import classNames from "classnames";
-import dayjs, { Dayjs } from "dayjs";
-import { useCallback, useContext, useState } from "react";
+import classNames from 'classnames';
+import dayjs, { Dayjs } from 'dayjs';
+import { useCallback, useContext, useState } from 'react';
 
-import { ChangeArrows } from "../components/ChangeArrows";
-import { ChooseMonth } from "../components/ChooseMonth";
-import { ChooseYear } from "../components/ChooseYear";
-import { DayGrid, DayOfTheWeek } from "../components/DayGrid";
-import { MonthGrid } from "../components/MonthGrid";
-import { YearGrid } from "../components/YearGrid";
-import { DatePickerContext } from "../DatePickerContext";
+import { ChangeArrows } from '../components/ChangeArrows';
+import { ChooseMonth } from '../components/ChooseMonth';
+import { ChooseYear } from '../components/ChooseYear';
+import { DayGrid, DayOfTheWeek } from '../components/DayGrid';
+import { MonthGrid } from '../components/MonthGrid';
+import { YearGrid } from '../components/YearGrid';
+import { DatePickerContext } from '../DatePickerContext';
 
 enum stageEnum {
-    year = "year",
-    month = "month",
-    day = "day",
+    year = 'year',
+    month = 'month',
+    day = 'day',
 }
 
 function initYearsState(maxDate?: Dayjs, minDate?: Dayjs): { start: number; end: number } {
@@ -30,8 +30,8 @@ export function DefaultDatePicker() {
     const [years, setYears] = useState(initYearsState(maxDate, minDate));
 
     const onSelectMonth = useCallback((month: number) => {
-        setCurrentDate((prev) => prev.set("month", month));
-        setChooseDate((prev) => (prev ? prev.set("month", month) : undefined));
+        setCurrentDate((prev) => prev.set('month', month));
+        setChooseDate((prev) => (prev ? prev.set('month', month) : undefined));
         setStage(stageEnum.day);
     }, []);
 
@@ -41,8 +41,8 @@ export function DefaultDatePicker() {
     }, []);
 
     const onSelectYear = useCallback((year: number) => {
-        setCurrentDate((prev) => prev.set("year", year));
-        setChooseDate((prev) => (prev ? prev.set("year", year) : undefined));
+        setCurrentDate((prev) => prev.set('year', year));
+        setChooseDate((prev) => (prev ? prev.set('year', year) : undefined));
         setStage(stageEnum.month);
     }, []);
 
@@ -54,8 +54,8 @@ export function DefaultDatePicker() {
             }));
         } else {
             setChooseDate((prev) => {
-                setCurrentDate((prev) => prev.add(1, "month"));
-                return prev ? prev.add(1, "month") : undefined;
+                setCurrentDate((prev) => prev.add(1, 'month'));
+                return prev ? prev.add(1, 'month') : undefined;
             });
         }
     }, [stage]);
@@ -67,8 +67,8 @@ export function DefaultDatePicker() {
                 end: prev.end - 12,
             }));
         } else {
-            setCurrentDate((prev) => prev.add(-1, "month"));
-            setChooseDate((prev) => (prev ? prev.add(-1, "month") : undefined));
+            setCurrentDate((prev) => prev.add(-1, 'month'));
+            setChooseDate((prev) => (prev ? prev.add(-1, 'month') : undefined));
         }
     }, [stage]);
 
@@ -79,8 +79,8 @@ export function DefaultDatePicker() {
         <>
             <div
                 className={classNames(
-                    "flex items-center justify-between bg-gray-20 px-5",
-                    stage === stageEnum.day ? "pt-2" : "py-2",
+                    'flex items-center justify-between bg-gray-20 px-5',
+                    stage === stageEnum.day ? 'pt-2' : 'py-2',
                 )}
             >
                 <ChooseYear
@@ -96,7 +96,7 @@ export function DefaultDatePicker() {
                 <ChangeArrows onNext={onNextArrow} onPrev={onPrevArrow} />
             </div>
             {stage === stageEnum.day && <DayOfTheWeek />}
-            <div className={"p-2"}>
+            <div className={'p-2'}>
                 {stage === stageEnum.year && (
                     <YearGrid
                         start={years.start}

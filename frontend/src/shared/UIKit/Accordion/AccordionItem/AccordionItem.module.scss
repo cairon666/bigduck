@@ -1,5 +1,5 @@
 .wrapper {
-    @apply border-l border-r border-b;
+    @apply border-b border-l border-r;
 
     // color for texts
     .button,
@@ -58,7 +58,7 @@
     // padding for content and button
     .content,
     .button {
-        @apply py-4 px-1;
+        @apply px-1 py-4;
     }
 }
 

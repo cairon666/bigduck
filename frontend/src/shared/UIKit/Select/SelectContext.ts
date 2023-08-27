@@ -1,6 +1,6 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
-import { SelectItemValue } from "./Select";
+import { SelectItemValue } from './Select';
 
 interface SelectContextType {
     value: SelectItemValue | undefined;

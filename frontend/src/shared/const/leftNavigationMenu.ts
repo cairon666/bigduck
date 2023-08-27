@@ -1,5 +1,5 @@
-import { IconType } from "react-icons";
-import { AiOutlineHome } from "react-icons/all";
+import { IconType } from 'react-icons';
+import { AiOutlineHome } from 'react-icons/ai';
 
 interface NavigationItem {
     icon: IconType;
@@ -10,7 +10,7 @@ interface NavigationItem {
 export const navigationMenuList: NavigationItem[] = [
     {
         icon: AiOutlineHome,
-        title: "Главная",
-        to: "/panel",
+        title: 'Главная',
+        to: '/panel',
     },
 ];

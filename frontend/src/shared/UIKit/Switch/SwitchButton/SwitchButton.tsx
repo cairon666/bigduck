@@ -1,16 +1,16 @@
-import { Button, ButtonProps } from "@/shared/UIKit";
-import { SwitchContext } from "@/shared/UIKit/Switch/SwitchContext";
-import { MouseEvent, useCallback, useContext, useEffect } from "react";
+import { Button, ButtonProps } from '@/shared/UIKit';
+import { SwitchContext } from '@/shared/UIKit/Switch/SwitchContext';
+import { MouseEvent, useCallback, useContext, useEffect } from 'react';
 
 export interface SwitchButtonOwnProps {
     value?: string;
-    themeFunc?: (isActive: boolean) => keyof ButtonProps["theme"];
+    themeFunc?: (isActive: boolean) => keyof ButtonProps['theme'];
     isInit?: boolean;
 }
 
 export type SwitchButtonProps = Omit<ButtonProps, keyof SwitchButtonOwnProps> & SwitchButtonOwnProps;
 
-const defaultThemeFunc = (isActive: boolean) => (isActive ? "contained" : "text");
+const defaultThemeFunc = (isActive: boolean) => (isActive ? 'contained' : 'text');
 
 export function SwitchButton({
     value,
@@ -45,5 +45,5 @@ export function SwitchButton({
     // else defaultThemeFunc
     const theme = themeProps ? themeProps : themeFunc ? themeFunc(isActive) : defaultThemeFunc(isActive);
 
-    return <Button type={"button"} size={"small"} theme={theme} onClick={onClick} {...props} />;
+    return <Button type={'button'} size={'small'} theme={theme} onClick={onClick} {...props} />;
 }

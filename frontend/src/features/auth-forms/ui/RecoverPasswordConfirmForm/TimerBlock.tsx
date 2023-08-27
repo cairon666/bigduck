@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
 interface TimerBlockProps {
     onRepeatSend: () => void;
@@ -24,12 +24,12 @@ export function TimerBlock(props: TimerBlockProps) {
 
     return (
         <button
-            type={"button"}
+            type={'button'}
             onClick={onClick}
-            className={" text-xs text-gray-800 underline disabled:opacity-50"}
+            className={' text-xs text-gray-800 underline disabled:opacity-50'}
             disabled={count > 0}
         >
-            Не получили код? Отправить еще раз {count > 0 ? `(${count})` : ""}
+            Не получили код? Отправить еще раз {count > 0 ? `(${count})` : ''}
         </button>
     );
 }

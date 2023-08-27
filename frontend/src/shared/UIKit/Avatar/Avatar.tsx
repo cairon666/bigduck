@@ -1,21 +1,21 @@
-import classNames from "classnames";
+import classNames from 'classnames';
 
-import styles from "./Avatar.module.scss";
+import styles from './Avatar.module.scss';
 
 export interface AvatarProps {
     firstName?: string;
     secondName?: string;
     avatarURL?: string;
-    size?: "extraSmall" | "small" | "base" | "large" | "extraLarge";
+    size?: 'extraSmall' | 'small' | 'base' | 'large' | 'extraLarge';
 }
 
-export function Avatar({ size = "base", ...props }: AvatarProps) {
+export function Avatar({ size = 'base', ...props }: AvatarProps) {
     const wrapperClassName = classNames(styles.wrap, {
-        [styles.extraSmall]: size === "extraSmall",
-        [styles.small]: size === "small",
-        [styles.base]: size === "base",
-        [styles.large]: size === "large",
-        [styles.extraLarge]: size === "extraLarge",
+        [styles.extraSmall]: size === 'extraSmall',
+        [styles.small]: size === 'small',
+        [styles.base]: size === 'base',
+        [styles.large]: size === 'large',
+        [styles.extraLarge]: size === 'extraLarge',
     });
 
     return (
@@ -25,9 +25,9 @@ export function Avatar({ size = "base", ...props }: AvatarProps) {
     );
 }
 
-function AvatarContent({ firstName, secondName, avatarURL }: Omit<AvatarProps, "size">) {
+function AvatarContent({ firstName, secondName, avatarURL }: Omit<AvatarProps, 'size'>) {
     if (avatarURL) {
-        return <img className={"h-full w-full object-cover"} src={avatarURL} alt="avatar" />;
+        return <img className={'h-full w-full object-cover'} src={avatarURL} alt="avatar" />;
     }
 
     if (firstName && firstName.length > 0 && secondName && secondName.length > 0) {
@@ -40,7 +40,7 @@ function AvatarContent({ firstName, secondName, avatarURL }: Omit<AvatarProps, "
 
     return (
         <svg
-            className="absolute -left-1 -bottom-2 h-12 w-12 animate-pulse text-gray-400"
+            className="absolute -bottom-2 -left-1 h-12 w-12 animate-pulse text-gray-400"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"backend/pkg/middleware"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/riandyrn/otelchi"
 )
@@ -11,7 +12,7 @@ import (
 func (s *Server) router() http.Handler {
 	r := chi.NewRouter()
 
-	r.Use(middleware.Recoverer)
+	r.Use(s.RecovererMiddleware)
 	r.Use(middleware.BodyCloser)
 	r.Use(otelchi.Middleware("backend_service"))
 	r.Use(middleware.RequestID)

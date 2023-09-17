@@ -1,0 +1,6 @@
+{
+  "extends": ["@bigduck/eslint-config-bigduck"],
+  "parserOptions": {
+    "project": ["./tsconfig.json"]
+  }
+}

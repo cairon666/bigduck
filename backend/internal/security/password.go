@@ -6,6 +6,7 @@ import (
 	"io"
 
 	"backend/internal/exceptions"
+
 	"golang.org/x/crypto/bcrypt"
 )
 

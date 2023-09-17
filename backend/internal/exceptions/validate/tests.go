@@ -2,8 +2,9 @@ package validate
 
 import (
 	"backend/internal/domain/models"
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -120,7 +121,7 @@ func TestUsername(username string) *Field {
 		return FieldLong
 	}
 
-	if !regexpNotLettersAndSpace.MatchString(username) {
+	if regexpNotLettersAndSpace.MatchString(username) {
 		return FieldBadFormat
 	}
 

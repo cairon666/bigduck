@@ -1,0 +1,1 @@
+export { RegisterContent } from './RegisterContent';

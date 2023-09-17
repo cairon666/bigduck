@@ -1,0 +1,1 @@
+export { usePostRegister } from './usePostRegister';

@@ -9,7 +9,7 @@ var (
 	ErrRoleAlreadyExist            = NewAppError("ErrRoleAlreadyExist", CodeRoleAlreadyExist, http.StatusBadRequest)
 	ErrEmailAlreadyExist           = NewAppError("ErrEmailAlreadyExist", CodeEmailAlreadyExist, http.StatusBadRequest)
 	ErrUserNameAlreadyExist        = NewAppError("ErrUserNameAlreadyExist", CodeUserNameAlreadyExist, http.StatusBadRequest)
-	ErrNotFound                    = NewAppError("not found", CodeNotFound, http.StatusNotFound)
+	ErrNotFound                    = NewAppError("not found", CodeNotFound, http.StatusBadRequest)
 	ErrBadPassword                 = NewAppError("bad password", CodeBadPassword, http.StatusBadRequest)
 	ErrBadRecoverCode              = NewAppError("bad recover code", CodeBadRecoverCode, http.StatusBadRequest)
 	ErrRecoverEmailNotConfirm      = NewAppError("email was not be confirm", CodeRecoverEmailNotConfirm, http.StatusBadRequest)

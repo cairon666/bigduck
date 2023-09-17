@@ -13,6 +13,9 @@ services:
       - "POSTGRESQL_URL=postgresql://admin:admin@postgres:5432/root"
       - "TRACE_GRPC_ADDR=otel_collector:4317"
       - "METRIC_GRPC_ADDR=otel_collector:12345"
+      - "AWS_ACCESS_KEY_ID=minioadmin"
+      - "AWS_SECRET_ACCESS_KEY=minioadmin"
+      - "AWS_ENDPOINT=http://minio:9000"
     depends_on:
       - redis
       - postgres

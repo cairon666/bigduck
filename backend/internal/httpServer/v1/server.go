@@ -15,6 +15,7 @@ import (
 	"backend/internal/httpServer/v1/httphelper"
 	"backend/internal/httpServer/v1/usercontroller"
 	"backend/pkg/logger"
+
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/dig"
 )
@@ -28,13 +29,14 @@ type Controller interface {
 }
 
 type Server struct {
-	conf                 *config.Config
 	authController       Controller
 	userController       Controller
 	attachmentController Controller
+	authHelper           AuthHelper
 
-	authHelper AuthHelper
-	server     *http.Server
+	conf   *config.Config
+	server *http.Server
+	log    logger.Logger
 }
 
 type Params struct {
@@ -58,6 +60,7 @@ func NewServer(params Params) *Server {
 
 	return &Server{
 		conf:       params.Conf,
+		log:        params.Log,
 		authHelper: authHelper,
 		authController: authcontroller.NewAuthController(authcontroller.Params{
 			AuthUsecase: params.AuthUsecase,

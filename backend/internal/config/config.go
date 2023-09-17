@@ -46,12 +46,6 @@ type Config struct {
 		TTLAccess  time.Duration `env:"JWT_TTL_ACCESS"  envDefault:"1h"`
 		TTLRefresh time.Duration `env:"JWT_TTL_REFRESH" envDefault:"720h"`
 	}
-	// S3 struct {
-	//	ConfigPath    string
-	//	Endpoint      string
-	//	SigningRegion string
-	//	PartitionID   string
-	//}
 	Redis struct {
 		URL string `env:"REDIS_URL" envDefault:"redis://admin:admin@0.0.0.0:6379/0"`
 	}
@@ -70,7 +64,7 @@ type Config struct {
 		Region          string `env:"AWS_REGION"            envDefault:"us-east-1"`
 		AccessKeyID     string `env:"AWS_ACCESS_KEY_ID"     envDefault:"minioadmin"`
 		SecretAccessKey string `env:"AWS_SECRET_ACCESS_KEY" envDefault:"minioadmin"`
-		Endpoint        string `env:"AWS_ENDPOINT"          envDefault:"http://localhost:9000"`
+		Endpoint        string `env:"AWS_ENDPOINT"          envDefault:"0.0.0.0:9000"`
 	}
 }
 

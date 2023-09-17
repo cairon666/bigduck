@@ -6,6 +6,7 @@ import (
 
 	"backend/internal/domain/usecases/authusecase"
 	"backend/internal/exceptions/validate"
+
 	"github.com/google/uuid"
 )
 
